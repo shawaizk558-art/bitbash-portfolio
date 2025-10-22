@@ -2,50 +2,50 @@ import { Play, Star } from "lucide-react";
 
 const testimonials = [
   {
-    quote: "We're ranking for our agency on the top of Google. We've been doing it for 2 months now and it comes down to how easy it is to create...",
+    quote: "BitBash built a custom scraper that extracts 50,000+ products daily from our competitors. We now have real-time pricing intelligence. ROI in 3 weeks.",
     name: "Sarah Mitchell",
-    role: "Agency Owner",
-    company: "@TechSolutions",
+    role: "E-Commerce Director",
+    company: "@TechMart",
     rating: 5,
     videoPlaceholder: "purple"
   },
   {
-    quote: "I've been absolutely blown away. I've been able to take on so many more clients and increase my business because I'm not spending forever...",
+    quote: "Their mobile automation solution reduced our app testing time from 2 weeks to 2 hours. Game-changing for our release cycle.",
     name: "James Rodriguez",
-    role: "Founder",
-    company: "@CloudVentures",
-    rating: 5,
-    videoPlaceholder: "purple"
-  },
-  {
-    quote: "Helping us rank a lot of our clients in a short span of two months for very specific keywords that they wanted or rank for initially...",
-    name: "Emily Chen",
-    role: "Agency Owner",
-    company: "@DigitalGrowth",
-    rating: 5,
-    videoPlaceholder: "purple"
-  },
-  {
-    quote: "The automation features have saved us countless hours. Our team can now focus on strategy instead of repetitive tasks. Absolutely game-changing...",
-    name: "Michael Brown",
     role: "CTO",
-    company: "@InnovateLabs",
+    company: "@AppVentures",
     rating: 5,
     videoPlaceholder: "purple"
   },
   {
-    quote: "Best investment we've made this year. The ROI speaks for itself - we've doubled our client capacity without hiring additional staff...",
+    quote: "We needed stealth web scraping for market research. BitBash delivered an undetectable solution that's been running 24/7 for 6 months without issues.",
+    name: "Emily Chen",
+    role: "Data Lead",
+    company: "@MarketInsights",
+    rating: 5,
+    videoPlaceholder: "purple"
+  },
+  {
+    quote: "The data extraction automation saves us 40 hours per week. We can now focus on analysis instead of manual data collection. Incredible ROI.",
+    name: "Michael Brown",
+    role: "Analytics Manager",
+    company: "@DataCorp",
+    rating: 5,
+    videoPlaceholder: "purple"
+  },
+  {
+    quote: "BitBash automated our entire lead generation process. We went from 50 leads per month to 500+ with the same team. Revenue doubled.",
     name: "Lisa Anderson",
-    role: "CEO",
-    company: "@ScaleUp.io",
+    role: "Marketing Director",
+    company: "@GrowthAgency",
     rating: 5,
     videoPlaceholder: "purple"
   },
   {
-    quote: "Integration was seamless and the support team is incredible. We were up and running in less than a day with full functionality...",
+    quote: "Their workflow automation eliminated 90% of our manual tasks. Setup was seamless and the support team is incredible. Highly recommend.",
     name: "David Kim",
-    role: "Product Manager",
-    company: "@DevStream",
+    role: "Operations Manager",
+    company: "@ProcessFlow",
     rating: 5,
     videoPlaceholder: "purple"
   }
@@ -67,10 +67,10 @@ export const Showcase = () => {
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Join <span className="text-purple-600">10,000+</span> Companies and Developers
+            Trusted by <span className="text-purple-600">50+</span> Businesses Worldwide
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            BitBash helps teams and developers build better software faster with modern tools and expert development practices.
+            BitBash helps businesses automate processes, extract data, and scale operations with intelligent automation solutions.
           </p>
         </div>
         {/* Testimonial Grid */}

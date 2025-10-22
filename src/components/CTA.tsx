@@ -111,10 +111,10 @@ export const CTA = () => {
             <div className="relative z-10 px-8 pt-16 pb-48 md:px-16 md:pt-20 md:pb-60">
               <div className="text-center space-y-6">
                 <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
-                  Automate Your Business Today
+                  Stop Wasting Time on Repetitive Tasks
           </h2>
                 <p className="text-xl text-gray-700 max-w-2xl mx-auto">
-                  Get your free consultation and start automating repetitive tasks for your business.
+                  Get a custom automation plan for your business. See 70-90% time savings with intelligent automation.
                 </p>
                 
                 {/* Email Form */}
@@ -128,7 +128,7 @@ export const CTA = () => {
                     size="lg" 
                     className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white h-14 px-8 font-semibold shadow-lg"
                   >
-                    Get Free Consultation
+                    Book Free Automation Audit
             </Button>
                 </div>
 
@@ -143,7 +143,7 @@ export const CTA = () => {
                     ))}
                   </div>
                   <p className="text-sm text-gray-700">
-                    Trusted by <span className="font-bold text-gray-900">500+</span> Companies Worldwide
+                    Trusted by <span className="font-bold text-gray-900">50+</span> Businesses Worldwide
                   </p>
                 </div>
               </div>

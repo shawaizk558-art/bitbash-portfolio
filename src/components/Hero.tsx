@@ -16,13 +16,11 @@ export const Hero = () => {
          <div className="max-w-4xl mx-auto space-y-8 animate-fade-in">
            <div className="space-y-4">
              <h1 className="font-bold leading-[1.1] tracking-tight font-sans" style={{ fontSize: '48px' }}>
-               Transform Your Business Today
-               <br />
-               with <span className="text-primary">Intelligent</span> Software Solutions
+               Automate Any Process <br /> Scale Without Limits.
              </h1>
              
              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-               The Complete Platform for Modern Teams and Innovators
+               Browser Automation, Data Scraping & Mobile Automation Built for Growth
              </p>
            </div>
           
@@ -37,7 +35,7 @@ export const Hero = () => {
               size="lg" 
               className="absolute right-2 top-1/2 -translate-y-1/2 h-12 px-6 text-base font-semibold rounded-xl"
             >
-              Get Started Free
+              Book Free Automation Audit
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
@@ -49,7 +47,7 @@ export const Hero = () => {
               ))}
             </div>
             <p className="text-sm text-muted-foreground">
-              Trusted by <span className="font-semibold text-foreground">10,000+</span> Teams Worldwide
+              Trusted by <span className="font-semibold text-foreground">50+</span> Businesses Worldwide
             </p>
           </div>
         </div>

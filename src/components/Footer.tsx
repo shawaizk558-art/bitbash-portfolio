@@ -1,54 +1,30 @@
-export const Footer = () => {
+export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
   return (
-    <footer className="relative pt-80 pb-32 bg-[#1a1d29] text-white z-10">
+    <footer className={`relative ${isHomepage ? 'pt-80 pb-32' : 'pt-16 pb-16'} bg-[#1a1d29] text-white z-10`}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Footer Links Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-20 mb-32">
-          {/* Development Services */}
-          <div>
-            <h3 className="text-sm font-bold text-white mb-4 uppercase tracking-wider">Development</h3>
-            <ul className="space-y-3">
-              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Custom Software</a></li>
-              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Web Applications</a></li>
-              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Mobile Apps</a></li>
-              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">API Development</a></li>
-              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">UI/UX Design</a></li>
-            </ul>
-          </div>
-
-          {/* Automation */}
+        <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-20 ${isHomepage ? 'mb-32' : 'mb-16'}`}>
+          {/* Automation - PRIMARY (80%) */}
           <div>
             <h3 className="text-sm font-bold text-white mb-4 uppercase tracking-wider">Automation</h3>
             <ul className="space-y-3">
+              <li><a href="/browser-automation" className="text-sm text-gray-400 hover:text-white transition-colors">Browser Automation</a></li>
+              <li><a href="/mobile-automation" className="text-sm text-gray-400 hover:text-white transition-colors">Mobile Automation</a></li>
               <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Web Scraping</a></li>
               <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Data Extraction</a></li>
               <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Workflow Automation</a></li>
-              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Browser Automation</a></li>
-              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">API Integration</a></li>
+              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Stealth Technology</a></li>
             </ul>
           </div>
 
-          {/* Resources */}
+          {/* Development - SECONDARY (20%) */}
           <div>
-            <h3 className="text-sm font-bold text-white mb-4 uppercase tracking-wider">Resources</h3>
+            <h3 className="text-sm font-bold text-white mb-4 uppercase tracking-wider">Development</h3>
             <ul className="space-y-3">
-              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Pricing</a></li>
-              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Documentation</a></li>
-              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Blog</a></li>
-              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Case Studies</a></li>
-              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">API Docs</a></li>
-            </ul>
-          </div>
-
-          {/* Integrations */}
-          <div>
-            <h3 className="text-sm font-bold text-white mb-4 uppercase tracking-wider">Integrations</h3>
-            <ul className="space-y-3">
-              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">GitHub</a></li>
-              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">AWS</a></li>
-              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Slack</a></li>
-              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Zapier</a></li>
-              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Webhooks</a></li>
+              <li><a href="/development-services" className="text-sm text-gray-400 hover:text-white transition-colors">Web Applications</a></li>
+              <li><a href="/development-services" className="text-sm text-gray-400 hover:text-white transition-colors">Mobile Apps</a></li>
+              <li><a href="/development-services" className="text-sm text-gray-400 hover:text-white transition-colors">API Development</a></li>
+              <li><a href="/development-services" className="text-sm text-gray-400 hover:text-white transition-colors">UI/UX Design</a></li>
             </ul>
           </div>
 
@@ -57,23 +33,47 @@ export const Footer = () => {
             <h3 className="text-sm font-bold text-white mb-4 uppercase tracking-wider">Solutions</h3>
             <ul className="space-y-3">
               <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">E-Commerce</a></li>
+              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Real Estate</a></li>
+              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Finance</a></li>
+              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Marketing</a></li>
               <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Enterprise</a></li>
-              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Startups</a></li>
-              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Agencies</a></li>
-              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">SaaS</a></li>
+            </ul>
+          </div>
+
+          {/* Resources */}
+          <div>
+            <h3 className="text-sm font-bold text-white mb-4 uppercase tracking-wider">Resources</h3>
+            <ul className="space-y-3">
+              <li><a href="/case-studies" className="text-sm text-gray-400 hover:text-white transition-colors">Case Studies</a></li>
+              <li><a href="/pricing" className="text-sm text-gray-400 hover:text-white transition-colors">Pricing</a></li>
+              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Blog</a></li>
+              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Documentation</a></li>
+              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">API Docs</a></li>
+            </ul>
+          </div>
+
+          {/* Company */}
+          <div>
+            <h3 className="text-sm font-bold text-white mb-4 uppercase tracking-wider">Company</h3>
+            <ul className="space-y-3">
+              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">About Us</a></li>
+              <li><a href="/contact" className="text-sm text-gray-400 hover:text-white transition-colors">Contact</a></li>
+              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Careers</a></li>
+              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Privacy</a></li>
+              <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Terms</a></li>
             </ul>
           </div>
         </div>
 
         {/* Footer Bottom */}
-        <div className="pt-16 border-t border-gray-800">
+        <div className={`${isHomepage ? 'pt-16' : 'pt-8'} border-t border-gray-800`}>
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center space-x-2">
+            <a href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
               <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-purple-700 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">B</span>
               </div>
               <span className="text-xl font-bold text-white">BitBash</span>
-            </div>
+            </a>
             
             <div className="flex items-center gap-6">
               <a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">support@bitbash.com</a>

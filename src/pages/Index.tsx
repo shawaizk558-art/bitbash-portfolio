@@ -15,7 +15,7 @@ const Index = () => {
       <Showcase />
       <FAQ />
       <CTA />
-      <Footer />
+      <Footer isHomepage={true} />
     </div>
   );
 };

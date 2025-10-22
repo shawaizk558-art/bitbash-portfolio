@@ -1,32 +1,27 @@
 import { Card } from "@/components/ui/card";
-import { Code, Smartphone, Cloud, Shield, Zap } from "lucide-react";
+import { Globe, Smartphone, Database, Zap, Shield, Code, Cloud } from "lucide-react";
 import { useState, createElement } from "react";
 
 const features = [
   {
-    icon: Code,
-    title: "Full-Stack Development",
-    description: "End-to-end software solutions from frontend to backend"
+    icon: Globe,
+    title: "Browser Automation",
+    description: "Stealth web scraping, bot detection bypass, and headless browser automation"
   },
   {
     icon: Smartphone,
-    title: "Mobile Applications",
-    description: "Native and cross-platform mobile apps for iOS and Android"
+    title: "Mobile Automation",
+    description: "Automated testing and data extraction for iOS and Android applications"
   },
   {
-    icon: Cloud,
-    title: "Cloud Solutions",
-    description: "Scalable cloud infrastructure and deployment services"
-  },
-  {
-    icon: Shield,
-    title: "Security & Compliance",
-    description: "Enterprise-grade security and regulatory compliance"
+    icon: Database,
+    title: "Data Extraction",
+    description: "Custom scrapers for any website. Handle dynamic content, APIs, and complex data"
   },
   {
     icon: Zap,
-    title: "Performance Optimization",
-    description: "High-performance applications with lightning-fast load times"
+    title: "Workflow Automation",
+    description: "Eliminate repetitive tasks. 70-90% time savings with custom automation"
   }
 ];
 
@@ -34,11 +29,11 @@ export const Features = () => {
   const [activeTab, setActiveTab] = useState(0);
 
   const tabs = [
-    { icon: Code, title: "Extensive Formatting", label: "Your Blog" },
-    { icon: Smartphone, title: "Relevant Images", label: "Image Gallery" },
-    { icon: Cloud, title: "Relevant Videos", label: "Video Content" },
-    { icon: Shield, title: "Relevant Links", label: "Link Manager" },
-    { icon: Zap, title: "Table of Contents", label: "Navigation" }
+    { icon: Globe, title: "Browser Automation", label: "Web Scraping" },
+    { icon: Smartphone, title: "Mobile Automation", label: "App Testing" },
+    { icon: Shield, title: "Stealth Technology", label: "Bot Detection" },
+    { icon: Database, title: "Data Processing", label: "Data Pipeline" },
+    { icon: Zap, title: "API Integration", label: "Platform Connect" }
   ];
 
   const handleTabClick = (index: number) => {
@@ -52,10 +47,10 @@ export const Features = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-6xl mx-auto mb-16 space-y-4">
           <h2 className="text-2xl sm:text-3xl lg:text-3xl font-bold text-gray-900 leading-tight">
-            More Than Just Code. Your Complete <span className="text-purple-600">Software Development</span> Partner.
+            More Than Just Code. Your Complete <span className="text-purple-600">Automation</span> Partner.
           </h2>
           <p className="text-base text-gray-600">
-            Build scalable, secure, and high-performance applications with modern technologies and best practices.
+            Automate any process with stealth technology, custom scrapers, and intelligent workflows that scale your business.
           </p>
         </div>
         
@@ -108,34 +103,34 @@ export const Features = () => {
           </div>
         </div>
 
-        {/* Card 1: Full-Stack Development */}
+        {/* Card 1: Browser Automation */}
         <div className="mt-20 overflow-hidden shadow-lg bg-white border border-gray-200">
           <div className="grid grid-cols-1 lg:grid-cols-2">
             {/* Left side - Text content */}
             <div className="bg-white p-12 flex flex-col justify-center border-r border-gray-200">
               <div className="inline-flex items-center gap-2 mb-6">
-                <Code className="w-5 h-5 text-purple-600" />
-                <span className="font-semibold text-purple-600 uppercase text-xs tracking-wide">FULL-STACK DEVELOPMENT</span>
+                <Globe className="w-5 h-5 text-purple-600" />
+                <span className="font-semibold text-purple-600 uppercase text-xs tracking-wide">BROWSER AUTOMATION</span>
               </div>
               <h3 className="text-4xl font-bold text-gray-900 mb-8">
-                Build Complete Web Applications
+                Scrape Any Website. Bypass Anti-Bot.
               </h3>
               <div className="space-y-5">
                 <div className="flex items-start gap-3">
-                  <Code className="w-5 h-5 text-purple-600 mt-1 flex-shrink-0" />
-                  <p className="text-gray-700 text-lg">Modern React, Vue, and Angular frameworks</p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Cloud className="w-5 h-5 text-purple-600 mt-1 flex-shrink-0" />
-                  <p className="text-gray-700 text-lg">Scalable Node.js and Python backends</p>
+                  <Globe className="w-5 h-5 text-purple-600 mt-1 flex-shrink-0" />
+                  <p className="text-gray-700 text-lg">Selenium, Puppeteer, and Playwright automation</p>
                 </div>
                 <div className="flex items-start gap-3">
                   <Shield className="w-5 h-5 text-purple-600 mt-1 flex-shrink-0" />
-                  <p className="text-gray-700 text-lg">RESTful APIs and GraphQL integration</p>
+                  <p className="text-gray-700 text-lg">Stealth technology to bypass detection</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Zap className="w-5 h-5 text-purple-600 mt-1 flex-shrink-0" />
+                  <p className="text-gray-700 text-lg">Handle JavaScript, AJAX, and dynamic content</p>
                 </div>
               </div>
               <button className="mt-8 text-purple-600 font-semibold flex items-center gap-2 hover:gap-3 transition-all text-lg">
-                Explore Solutions →
+                Explore Automation →
               </button>
             </div>
 
@@ -159,19 +154,19 @@ export const Features = () => {
           </div>
         </div>
 
-        {/* Card 2: Mobile App Development */}
+        {/* Card 2: Mobile Automation */}
         <div className="mt-20 overflow-hidden shadow-lg bg-white border border-gray-200">
           <div className="grid grid-cols-1 lg:grid-cols-2">
             <div className="bg-white p-12 flex flex-col justify-center border-r border-gray-200">
               <div className="inline-flex items-center gap-2 mb-6">
                 <Smartphone className="w-5 h-5 text-purple-600" />
-                <span className="font-semibold text-purple-600 uppercase text-xs tracking-wide">MOBILE DEVELOPMENT</span>
+                <span className="font-semibold text-purple-600 uppercase text-xs tracking-wide">MOBILE AUTOMATION</span>
               </div>
               <h3 className="text-4xl font-bold text-gray-900 mb-8">
-                Create Native Mobile Experiences
+                Automate iOS & Android Apps
               </h3>
               <p className="text-gray-700 leading-relaxed text-lg mb-6">
-                Build high-performance mobile applications for iOS and Android using React Native, Flutter, and native technologies. Seamless integration with device features and smooth user experiences.
+                Automate mobile app testing, data extraction, and user interactions. Handle complex gestures, form filling, and app navigation with precision. Perfect for QA testing and data collection.
               </p>
             </div>
 
@@ -194,29 +189,29 @@ export const Features = () => {
           </div>
         </div>
 
-        {/* Card 3: Cloud & DevOps */}
+        {/* Card 3: Data Extraction & Processing */}
         <div className="mt-20 overflow-hidden shadow-lg bg-white border border-gray-200">
           <div className="grid grid-cols-1 lg:grid-cols-2">
             <div className="bg-white p-12 flex flex-col justify-center border-r border-gray-200">
               <div className="inline-flex items-center gap-2 mb-6">
-                <Cloud className="w-5 h-5 text-purple-600" />
-                <span className="font-semibold text-purple-600 uppercase text-xs tracking-wide">CLOUD & DEVOPS</span>
+                <Database className="w-5 h-5 text-purple-600" />
+                <span className="font-semibold text-purple-600 uppercase text-xs tracking-wide">DATA EXTRACTION</span>
               </div>
               <h3 className="text-4xl font-bold text-gray-900 mb-8">
-                Automate Deployment & Scaling
+                Extract Data from Any Source
               </h3>
               <div className="space-y-5">
                 <div className="flex items-start gap-3">
-                  <Cloud className="w-5 h-5 text-purple-600 mt-1 flex-shrink-0" />
-                  <p className="text-gray-700 text-lg">AWS, Azure, and Google Cloud infrastructure</p>
+                  <Database className="w-5 h-5 text-purple-600 mt-1 flex-shrink-0" />
+                  <p className="text-gray-700 text-lg">Custom scrapers for any website or API</p>
                 </div>
                 <div className="flex items-start gap-3">
                   <Zap className="w-5 h-5 text-purple-600 mt-1 flex-shrink-0" />
-                  <p className="text-gray-700 text-lg">CI/CD pipelines with automated testing</p>
+                  <p className="text-gray-700 text-lg">Real-time data processing and cleaning</p>
                 </div>
                 <div className="flex items-start gap-3">
-                  <Shield className="w-5 h-5 text-purple-600 mt-1 flex-shrink-0" />
-                  <p className="text-gray-700 text-lg">Docker, Kubernetes orchestration</p>
+                  <Cloud className="w-5 h-5 text-purple-600 mt-1 flex-shrink-0" />
+                  <p className="text-gray-700 text-lg">Deliver data in any format (CSV, JSON, API)</p>
                 </div>
               </div>
               <button className="mt-8 text-purple-600 font-semibold flex items-center gap-2 hover:gap-3 transition-all text-lg">
