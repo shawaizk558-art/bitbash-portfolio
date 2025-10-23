@@ -1,27 +1,79 @@
 import { Button } from "@/components/ui/button";
-import { ChevronDown, Code, Smartphone, Palette, Zap, Database, Globe, Cloud, Github, Slack, Building2, ShoppingCart, Rocket, BookOpen, FileText, GraduationCap, Bot, GitBranch, Shield } from "lucide-react";
+import { ChevronDown, Code, Smartphone, Palette, Zap, Database, Globe, Cloud, Github, Slack, Building2, ShoppingCart, Rocket, BookOpen, FileText, GraduationCap, Bot, GitBranch, Shield, Menu, X } from "@/lib/icons";
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
+import { useIsMobile, useResponsive } from "@/hooks/use-mobile";
 
 export const Navigation = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const isMobile = useIsMobile();
+  const { isTablet } = useResponsive();
+  const location = useLocation();
+
+  // Function to check if a page is currently active (mobile only)
+  const isActivePage = (path: string) => {
+    if (path === '/' && location.pathname === '/') {
+      return true;
+    }
+    return location.pathname === path;
+  };
 
   const toggleDropdown = (dropdown: string) => {
     setOpenDropdown(openDropdown === dropdown ? null : dropdown);
   };
 
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+    setOpenDropdown(null); // Close any open dropdowns
+  };
+
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
+    setOpenDropdown(null);
+  };
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container-responsive">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <a href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+          <a href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity" onClick={closeMobileMenu}>
             <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-purple-700 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">B</span>
             </div>
             <span className="text-xl font-bold text-gray-900">BitBash</span>
           </a>
           
-          {/* Navigation Links with Dropdowns */}
+          {/* Mobile Menu Button - Sleek & Simple */}
+          <button
+            onClick={toggleMobileMenu}
+            className="md:hidden flex items-center justify-center mobile-hamburger-btn"
+            aria-label="Toggle mobile menu"
+          >
+            <div className="relative w-5 h-5">
+              <span
+                className={`hamburger-line ${
+                  mobileMenuOpen ? 'hamburger-line-1-open' : ''
+                }`}
+                style={{ transform: mobileMenuOpen ? 'rotate(45deg)' : 'translateY(-4px)' }}
+              />
+              <span
+                className={`hamburger-line ${
+                  mobileMenuOpen ? 'hamburger-line-2-open' : ''
+                }`}
+                style={{ transform: mobileMenuOpen ? 'scale(0)' : 'translateY(0px)' }}
+              />
+              <span
+                className={`hamburger-line ${
+                  mobileMenuOpen ? 'hamburger-line-3-open' : ''
+                }`}
+                style={{ transform: mobileMenuOpen ? 'rotate(-45deg)' : 'translateY(4px)' }}
+              />
+            </div>
+          </button>
+          
+          {/* Desktop Navigation Links with Dropdowns */}
           <div className="hidden md:flex items-center space-x-2">
             {/* Automation Dropdown - PRIMARY */}
             <div className="relative">
@@ -312,12 +364,124 @@ export const Navigation = () => {
           </div>
           
           {/* CTA Button */}
-          <div className="flex items-center">
+          <div className="hidden md:flex items-center">
             <a href="/contact">
             <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white">
                 Book Free Audit
             </Button>
             </a>
+          </div>
+        </div>
+        
+        {/* Mobile Menu with Slide Animation */}
+        <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+          mobileMenuOpen 
+            ? 'max-h-screen opacity-100' 
+            : 'max-h-0 opacity-0'
+        }`}>
+          <div className="border-t border-gray-200 bg-white">
+            <div className="px-4 py-6 space-y-4">
+              {/* Mobile Navigation Links with Staggered Animation */}
+              <div className="space-y-2">
+                <a 
+                  href="/" 
+                  className={`block px-4 py-3 text-lg font-medium rounded-lg transition-all duration-300 hover:translate-x-2 hover:shadow-md mobile-menu-item ${
+                    mobileMenuOpen ? 'mobile-menu-item-enter-active' : 'mobile-menu-item-enter'
+                  } ${
+                    isActivePage('/') 
+                      ? 'bg-purple-100 text-purple-700 border-l-4 border-purple-600 font-semibold' 
+                      : 'text-gray-900 hover:bg-gray-50'
+                  }`}
+                  onClick={closeMobileMenu}
+                  style={{ transitionDelay: mobileMenuOpen ? '50ms' : '0ms' }}
+                >
+                  Home
+                </a>
+                <a 
+                  href="/automation-services" 
+                  className={`block px-4 py-3 text-lg font-medium rounded-lg transition-all duration-300 hover:translate-x-2 hover:shadow-md mobile-menu-item ${
+                    mobileMenuOpen ? 'mobile-menu-item-enter-active' : 'mobile-menu-item-enter'
+                  } ${
+                    isActivePage('/automation-services') 
+                      ? 'bg-purple-100 text-purple-700 border-l-4 border-purple-600 font-semibold' 
+                      : 'text-gray-900 hover:bg-gray-50'
+                  }`}
+                  onClick={closeMobileMenu}
+                  style={{ transitionDelay: mobileMenuOpen ? '100ms' : '0ms' }}
+                >
+                  Automation Services
+                </a>
+                <a 
+                  href="/development-services" 
+                  className={`block px-4 py-3 text-lg font-medium rounded-lg transition-all duration-300 hover:translate-x-2 hover:shadow-md mobile-menu-item ${
+                    mobileMenuOpen ? 'mobile-menu-item-enter-active' : 'mobile-menu-item-enter'
+                  } ${
+                    isActivePage('/development-services') 
+                      ? 'bg-purple-100 text-purple-700 border-l-4 border-purple-600 font-semibold' 
+                      : 'text-gray-900 hover:bg-gray-50'
+                  }`}
+                  onClick={closeMobileMenu}
+                  style={{ transitionDelay: mobileMenuOpen ? '150ms' : '0ms' }}
+                >
+                  Development Services
+                </a>
+                <a 
+                  href="/pricing" 
+                  className={`block px-4 py-3 text-lg font-medium rounded-lg transition-all duration-300 hover:translate-x-2 hover:shadow-md mobile-menu-item ${
+                    mobileMenuOpen ? 'mobile-menu-item-enter-active' : 'mobile-menu-item-enter'
+                  } ${
+                    isActivePage('/pricing') 
+                      ? 'bg-purple-100 text-purple-700 border-l-4 border-purple-600 font-semibold' 
+                      : 'text-gray-900 hover:bg-gray-50'
+                  }`}
+                  onClick={closeMobileMenu}
+                  style={{ transitionDelay: mobileMenuOpen ? '200ms' : '0ms' }}
+                >
+                  Pricing
+                </a>
+                <a 
+                  href="/case-studies" 
+                  className={`block px-4 py-3 text-lg font-medium rounded-lg transition-all duration-300 hover:translate-x-2 hover:shadow-md mobile-menu-item ${
+                    mobileMenuOpen ? 'mobile-menu-item-enter-active' : 'mobile-menu-item-enter'
+                  } ${
+                    isActivePage('/case-studies') 
+                      ? 'bg-purple-100 text-purple-700 border-l-4 border-purple-600 font-semibold' 
+                      : 'text-gray-900 hover:bg-gray-50'
+                  }`}
+                  onClick={closeMobileMenu}
+                  style={{ transitionDelay: mobileMenuOpen ? '250ms' : '0ms' }}
+                >
+                  Case Studies
+                </a>
+                <a 
+                  href="/contact" 
+                  className={`block px-4 py-3 text-lg font-medium rounded-lg transition-all duration-300 hover:translate-x-2 hover:shadow-md mobile-menu-item ${
+                    mobileMenuOpen ? 'mobile-menu-item-enter-active' : 'mobile-menu-item-enter'
+                  } ${
+                    isActivePage('/contact') 
+                      ? 'bg-purple-100 text-purple-700 border-l-4 border-purple-600 font-semibold' 
+                      : 'text-gray-900 hover:bg-gray-50'
+                  }`}
+                  onClick={closeMobileMenu}
+                  style={{ transitionDelay: mobileMenuOpen ? '300ms' : '0ms' }}
+                >
+                  Contact
+                </a>
+              </div>
+              
+              {/* Mobile CTA Button with Professional Animation */}
+              <div className="pt-4 border-t border-gray-200">
+                <a href="/contact" onClick={closeMobileMenu}>
+                  <Button className={`w-full bg-purple-600 hover:bg-purple-700 text-white py-3 text-lg font-semibold btn-professional mobile-menu-item ${
+                    mobileMenuOpen ? 'mobile-menu-item-enter-active' : 'mobile-menu-item-enter'
+                  }`}
+                  style={{ transitionDelay: mobileMenuOpen ? '350ms' : '0ms' }}
+                  >
+                    Book Free Audit
+                  </Button>
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>

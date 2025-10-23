@@ -18,7 +18,7 @@ import {
   BarChart3,
   Target,
   Award
-} from "lucide-react";
+} from "@/lib/icons";
 
 const CaseStudies = () => {
   const caseStudies = [

@@ -52,34 +52,34 @@ export const FAQ = () => {
   };
 
   return (
-    <section className="py-24 pb-80 bg-gray-50">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-12 sm:py-16 md:py-24 pb-40 sm:pb-60 md:pb-80 bg-gray-50">
+      <div className="container-responsive">
         {/* Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+        <div className="text-center mb-12 sm:mb-16">
+          <h2 className="text-responsive-3xl sm:text-responsive-4xl md:text-5xl font-bold text-gray-900 mb-4">
             Still Have Questions?
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-responsive-base sm:text-responsive-lg text-gray-600 max-w-2xl mx-auto">
             Find answers to common questions about our platform, features, and services.
           </p>
         </div>
 
-        {/* FAQ Grid */}
-        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* FAQ Grid - Mobile Optimized */}
+        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
           {faqs.map((faq, index) => (
             <div
               key={index}
-              className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:border-purple-200 transition-colors"
+              className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:border-purple-200 transition-colors hover-mobile"
             >
               <button
                 onClick={() => toggleFAQ(index)}
-                className="w-full px-6 py-5 text-left flex items-start justify-between gap-4 hover:bg-gray-50 transition-colors"
+                className="w-full px-4 sm:px-6 py-4 sm:py-5 text-left flex items-start justify-between gap-3 sm:gap-4 hover:bg-gray-50 transition-colors touch-friendly focus-mobile"
               >
-                <span className="font-semibold text-gray-900 text-base leading-relaxed pr-2">
+                <span className="font-semibold text-gray-900 text-responsive-sm leading-relaxed pr-2">
                   {faq.question}
                 </span>
                 <ChevronDown
-                  className={`w-5 h-5 text-gray-500 flex-shrink-0 mt-0.5 transition-transform duration-200 ${
+                  className={`w-4 h-4 sm:w-5 sm:h-5 text-gray-500 flex-shrink-0 mt-0.5 transition-transform duration-200 ${
                     openIndex === index ? "rotate-180" : ""
                   }`}
                 />
@@ -90,8 +90,8 @@ export const FAQ = () => {
                   openIndex === index ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
                 }`}
               >
-                <div className="px-6 pb-5 pt-0">
-                  <p className="text-gray-600 text-sm leading-relaxed">
+                <div className="px-4 sm:px-6 pb-4 sm:pb-5 pt-0">
+                  <p className="text-gray-600 text-responsive-xs leading-relaxed">
                     {faq.answer}
                   </p>
                 </div>
