@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Globe, Smartphone, Database, Zap, Shield, Code, Cloud } from "@/lib/icons";
-import { useState, createElement } from "react";
+import { useState, createElement, useEffect } from "react";
 
 const features = [
   {
@@ -45,12 +45,12 @@ export const Features = () => {
   return (
     <section id="features" className="py-12 sm:py-16 md:py-24 bg-white">
       <div className="container-responsive">
-        <div className="text-center max-w-6xl mx-auto mb-12 sm:mb-16 space-responsive-sm">
-          <h2 className="text-responsive-2xl sm:text-responsive-3xl font-bold text-gray-900 leading-tight">
-            More Than Just Code. Your Complete <span className="text-purple-600">Automation</span> Partner.
+        <div className="text-center max-w-7xl mx-auto mb-12 sm:mb-16 space-responsive-sm">
+          <h2 className="text-4xl sm:text-4xl font-bold text-gray-900 leading-tight whitespace-nowrap">
+            More Than Just Developers. Your Complete Product Engineering Team
           </h2>
-          <p className="text-responsive-base text-gray-600">
-            Automate any process with stealth technology, custom scrapers, and intelligent workflows that scale your business.
+          <p className="text-lg text-gray-600">
+            'Full-Stack Development', 'AI Solutions', 'Automation System', 'Data Scraping', 'Data Analysing'.
           </p>
         </div>
         
@@ -66,7 +66,7 @@ export const Features = () => {
                   ${index > 0 ? 'border-l border-gray-200' : ''}`}
               >
                 <tab.icon className="w-5 h-5 sm:w-7 sm:h-7 text-purple-600 mx-auto mb-1 sm:mb-2" />
-                <h4 className="font-bold text-gray-900 text-xs sm:text-sm leading-tight">{tab.title}</h4>
+                <h4 className="font-bold text-gray-900 text-sm sm:text-base leading-tight">{tab.title}</h4>
                 
                 {/* Animated underline for each tab */}
                 {activeTab === index && (
@@ -96,8 +96,8 @@ export const Features = () => {
                 <div className="h-2 sm:h-3 bg-gray-200 rounded w-full"></div>
                 <div className="h-2 sm:h-3 bg-gray-200 rounded w-4/5"></div>
               </div>
-              <div className="mt-4 bg-gradient-to-br from-purple-100 to-purple-200 rounded-lg h-32 sm:h-48 flex items-center justify-center">
-                {createElement(tabs[activeTab].icon, { className: "w-12 h-12 sm:w-16 sm:h-16 text-purple-600" })}
+              <div className="mt-4 bg-gradient-to-br from-purple-100 to-purple-200 rounded-lg h-48 sm:h-64 md:h-80 flex items-center justify-center">
+                {createElement(tabs[activeTab].icon, { className: "w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 text-purple-600" })}
               </div>
             </div>
           </div>
