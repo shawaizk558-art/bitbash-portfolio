@@ -3,52 +3,68 @@ import { ChevronDown } from "lucide-react";
 
 const faqs = [
   {
-    question: "What automation services does BitBash specialize in?",
-    answer: "BitBash specializes in business process automation, data scraping, workflow automation, API integrations, and intelligent automation systems. We help businesses eliminate repetitive tasks, streamline operations, and scale efficiently through custom automation solutions."
+    question: "How long does it take to build a project?",
+    answer: "Most MVPs are delivered within 30 days. Larger or custom projects depend on scope and complexity, but we always share clear timelines before we start."
   },
   {
-    question: "What types of data scraping projects can you handle?",
-    answer: "We build custom web scrapers for any website or data source including e-commerce sites, social media platforms, business directories, real estate listings, and more. Our scrapers handle dynamic content, pagination, authentication, and deliver clean, structured data in any format you need."
+    question: "What technologies do you use?",
+    answer: "Our core stack includes Python, Django, React, Node.js, and Flutter — but we're flexible and adapt to your project's technical needs."
   },
   {
-    question: "Can you automate our existing business processes?",
-    answer: "Absolutely! We analyze your current workflows and build custom automation solutions for tasks like data entry, report generation, email processing, inventory management, customer onboarding, and any repetitive process. Most clients see 70-90% time savings."
+    question: "How do you handle project communication?",
+    answer: "We keep it simple and transparent — you'll get regular updates, demo previews, and direct access to your assigned project manager or developer."
   },
   {
-    question: "What technologies do you use for automation projects?",
-    answer: "We use Python (Selenium, Scrapy, BeautifulSoup), Node.js, Puppeteer, and headless browsers for web automation. For data processing, we leverage Pandas, APIs, cloud functions, and databases. Every solution is tailored to your specific requirements."
+    question: "Do you offer post-launch support and maintenance?",
+    answer: "Yes. We offer ongoing maintenance, updates, and scaling support to keep your software running smoothly after launch."
   },
   {
-    question: "How do you handle websites with anti-scraping measures?",
-    answer: "We implement advanced techniques including rotating proxies, user-agent rotation, request throttling, session management, and browser fingerprinting. We ensure ethical scraping that respects robots.txt and terms of service while delivering reliable results."
+    question: "Can I hire your developers for my team?",
+    answer: "Absolutely. You can hire our engineers as dedicated or contract-based team members for short or long-term projects."
   },
   {
-    question: "Can you integrate automation with our existing tools?",
-    answer: "Yes! We integrate with CRMs (Salesforce, HubSpot), project management tools (Asana, Jira), spreadsheets (Google Sheets, Excel), databases, email systems, and any platform with an API. We create seamless workflows across all your business tools."
+    question: "Do you sign NDAs or protect my project idea?",
+    answer: "Yes. Every project starts with a confidentiality agreement to ensure your data and ideas stay secure."
   },
   {
-    question: "How long does it take to build an automation solution?",
-    answer: "Simple automation scripts can be delivered in 1-2 weeks. Complex data scraping systems typically take 3-4 weeks. Enterprise-level workflow automation projects may require 6-8 weeks. We provide accurate timelines after reviewing your specific requirements."
+    question: "How do I get started?",
+    answer: "Just reach out through our contact form or schedule a quick call. We'll discuss your goals, suggest a development plan, and provide a free quote."
   },
   {
-    question: "Do you provide maintenance for automation scripts?",
-    answer: "Yes! Websites change and automation needs updates. We offer maintenance packages to monitor your scripts, fix issues when sites update, add new features, and ensure continuous operation. Most clients opt for monthly or quarterly maintenance plans."
+    question: "What payment methods do you accept?",
+    answer: "We accept payments via Wise, Payoneer, Bank Transfer (USD/EUR/GBP), and Cryptocurrency (USDT TRC20 or ERC20)."
   },
   {
-    question: "Is data scraping legal and ethical?",
-    answer: "We only scrape publicly available data and ensure compliance with website terms of service, robots.txt files, and data protection regulations (GDPR, CCPA). We provide guidance on legal considerations and implement ethical scraping practices for all projects."
+    question: "Do you require an upfront payment?",
+    answer: "Yes. Most projects begin with a small upfront milestone (around 20–30%), with the balance due after delivery and approval."
   },
   {
-    question: "What ROI can I expect from automation projects?",
-    answer: "Most clients see immediate ROI through time savings and reduced errors. Typical results include: 80% reduction in manual work, 95% fewer errors, ability to process 10x more data, and staff reallocation to higher-value tasks. We provide ROI projections during consultation."
+    question: "Can I pay after testing the software?",
+    answer: "Of course. We provide a working demo or test phase before final payment — ensuring you're satisfied with the results first."
+  },
+  {
+    question: "Do you offer refunds?",
+    answer: "We don't usually issue refunds after delivery, but if a milestone isn't met or a feature doesn't work as agreed, we'll fix it or refund that portion."
+  },
+  {
+    question: "Do you charge monthly or one-time fees?",
+    answer: "That depends on the project. One-time payments for standalone software or MVPs. Monthly retainers for ongoing automation, maintenance, or support."
   }
 ];
 
 export const FAQ = () => {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [openCards, setOpenCards] = useState<Set<string>>(new Set());
 
-  const toggleFAQ = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
+  const toggleFAQ = (cardKey: string) => {
+    setOpenCards(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(cardKey)) {
+        newSet.delete(cardKey);
+      } else {
+        newSet.add(cardKey);
+      }
+      return newSet;
+    });
   };
 
   return (
@@ -56,48 +72,92 @@ export const FAQ = () => {
       <div className="container-responsive">
         {/* Header */}
         <div className="text-center mb-12 sm:mb-16">
-          <h2 className="text-responsive-3xl sm:text-responsive-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="text-responsive-2xl sm:text-responsive-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Still Have Questions?
           </h2>
-          <p className="text-responsive-base sm:text-responsive-lg text-gray-600 max-w-2xl mx-auto">
-            Find answers to common questions about our platform, features, and services.
-          </p>
         </div>
 
-        {/* FAQ Grid - Mobile Optimized */}
-        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-          {faqs.map((faq, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:border-purple-200 transition-colors hover-mobile"
+        {/* FAQ Grid - 2 Column */}
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row gap-6 sm:gap-8">
+            {/* Left Column */}
+            <div className="flex-1 space-y-6 sm:space-y-8">
+              {faqs.filter((_, index) => index % 2 === 0).map((faq, columnIndex) => {
+                const leftStateKey = `left-${columnIndex}`;
+                return (
+                  <div
+                    key={`left-${columnIndex}`}
+                    className="bg-white rounded-xl border border-gray-200 overflow-hidden"
+                  >
+                    <button
+                      onClick={() => toggleFAQ(leftStateKey)}
+                      className="w-full px-4 sm:px-6 py-4 sm:py-5 text-left flex items-start justify-between gap-3 sm:gap-4"
+                    >
+                      <span className="font-semibold text-gray-900 text-responsive-base leading-relaxed pr-2">
+                        {faq.question}
+                      </span>
+                      <ChevronDown
+                        className={`w-4 h-4 sm:w-5 sm:h-5 text-gray-500 flex-shrink-0 mt-0.5 ${
+                          openCards.has(leftStateKey) ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+                    
+                    <div
+                      className={`overflow-hidden transition-all duration-200 ${
+                        openCards.has(leftStateKey) ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                      }`}
+                    >
+                      <div className="px-4 sm:px-6 pb-4 sm:pb-5 pt-0">
+                        <p className="text-gray-600 text-responsive-sm leading-relaxed">
+                          {faq.answer}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            
+            {/* Right Column */}
+            <div className="flex-1 space-y-6 sm:space-y-8">
+              {faqs.filter((_, index) => index % 2 === 1).map((faq, columnIndex) => {
+                const rightStateKey = `right-${columnIndex}`;
+                return (
+                  <div
+                    key={`right-${columnIndex}`}
+                    className="bg-white rounded-xl border border-gray-200 overflow-hidden"
             >
               <button
-                onClick={() => toggleFAQ(index)}
-                className="w-full px-4 sm:px-6 py-4 sm:py-5 text-left flex items-start justify-between gap-3 sm:gap-4 hover:bg-gray-50 transition-colors touch-friendly focus-mobile"
+                      onClick={() => toggleFAQ(rightStateKey)}
+                      className="w-full px-4 sm:px-6 py-4 sm:py-5 text-left flex items-start justify-between gap-3 sm:gap-4"
               >
-                <span className="font-semibold text-gray-900 text-responsive-sm leading-relaxed pr-2">
+                      <span className="font-semibold text-gray-900 text-responsive-base leading-relaxed pr-2">
                   {faq.question}
                 </span>
                 <ChevronDown
-                  className={`w-4 h-4 sm:w-5 sm:h-5 text-gray-500 flex-shrink-0 mt-0.5 transition-transform duration-200 ${
-                    openIndex === index ? "rotate-180" : ""
+                        className={`w-4 h-4 sm:w-5 sm:h-5 text-gray-500 flex-shrink-0 mt-0.5 ${
+                          openCards.has(rightStateKey) ? "rotate-180" : ""
                   }`}
                 />
               </button>
               
               <div
-                className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                  openIndex === index ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                      className={`overflow-hidden transition-all duration-200 ${
+                        openCards.has(rightStateKey) ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
                 }`}
               >
                 <div className="px-4 sm:px-6 pb-4 sm:pb-5 pt-0">
-                  <p className="text-gray-600 text-responsive-xs leading-relaxed">
+                        <p className="text-gray-600 text-responsive-sm leading-relaxed">
                     {faq.answer}
                   </p>
                 </div>
               </div>
             </div>
-          ))}
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
     </section>

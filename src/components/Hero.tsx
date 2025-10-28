@@ -12,17 +12,16 @@ export const Hero = () => {
       <div className="absolute top-20 left-4 sm:left-10 w-48 h-48 sm:w-72 sm:h-72 bg-primary/20 rounded-full blur-3xl animate-float" />
       <div className="absolute bottom-20 right-4 sm:right-10 w-64 h-64 sm:w-96 sm:h-96 bg-accent/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
       
-      <div className="relative z-10 container-responsive text-center -mt-8">
+      <div className="relative z-10 container-responsive text-center -mt-20">
          <div className="max-w-4xl mx-auto space-responsive-lg animate-fade-in">
            <div className="space-responsive-sm mt-8 sm:mt-14">
-             <h1 className="text-4xl sm:text-[48px] font-bold leading-[1.1] tracking-tight font-sans">
-               <span className="block sm:inline">Your Software, Built <span className="text-purple-600">Right</span> and Delivered <span className="text-purple-600">Fast </span></span>
-               <span className="block sm:inline">by a Team That Always Delivers</span>
-             </h1>
+            <h1 className="text-4xl sm:text-[48px] font-bold leading-[1.1] tracking-tight font-sans">
+              <span className="block sm:inline">Your Software, Built <span className="text-purple-600">Right</span> — Delivered <span className="text-purple-600">Fast</span> by a Team You Can Count On.</span>
+            </h1>
              
-             <p className="text-responsive-base sm:text-responsive-lg text-black max-w-2xl mx-auto">
-               The Agency for Automation Scripts and Full-Stack Apps.
-             </p>
+            <p className="text-[19px] sm:text-[21px] text-black mx-auto max-w-none whitespace-normal overflow-visible break-words">
+              The Software Development Agency for Full Stack Apps and Scripts
+            </p>
            </div>
           
           {/* Mobile-First Email Form */}
@@ -46,16 +45,19 @@ export const Hero = () => {
               </Button>
             </div>
             
-            {/* Mobile-Optimized Social Proof */}
-            <div className="flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-2 mt-4">
-            <div className="flex -space-x-2">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-primary to-accent border-2 border-background" />
-              ))}
-            </div>
-             <p className="text-responsive-xs text-black text-center sm:text-left">
-               <span className="font-semibold text-black">25+ Expert Developers</span>, One Mission — Build Better Software
-             </p>
+            {/* Social Proof - Match CTA styling */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-6 pb-8">
+              <div className="flex -space-x-2">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div 
+                    key={i} 
+                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 border-2 border-white shadow-lg"
+                  />
+                ))}
+              </div>
+              <p className="text-sm sm:text-base text-gray-700 text-center sm:text-left">
+                <span className="font-semibold text-gray-900">25+ Expert Developers</span>, One Mission — Build Better Software
+              </p>
             </div>
           </div>
         </div>

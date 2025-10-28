@@ -69,9 +69,6 @@ export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
         <div className={`${isHomepage ? 'pt-12 sm:pt-16' : 'pt-6 sm:pt-8'} border-t border-gray-800`}>
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <a href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity touch-friendly">
-              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-purple-600 to-purple-700 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm sm:text-lg">B</span>
-              </div>
               <span className="text-lg sm:text-xl font-bold text-white">BitBash</span>
             </a>
             
@@ -83,7 +80,7 @@ export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
           </div>
           
           <p className="text-responsive-xs text-gray-500 text-center sm:text-left mt-4">
-            Copyright 2025. BITBASH PTE. LTD. All rights reserved!
+            Copyright 2025. BITBASH. LTD. All rights reserved!
           </p>
         </div>
       </div>

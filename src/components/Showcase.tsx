@@ -66,11 +66,11 @@ export const Showcase = () => {
       <div className="container-responsive">
         {/* Header */}
         <div className="text-center mb-12 sm:mb-16">
-          <h2 className="text-responsive-3xl sm:text-responsive-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Trusted by <span className="text-purple-600">50+</span> Businesses Worldwide
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <span className="text-purple-600">500+</span> Completed Projects. Proven Engineering.
           </h2>
-          <p className="text-responsive-base sm:text-responsive-lg text-gray-600 max-w-3xl mx-auto">
-            BitBash helps businesses automate processes, extract data, and scale operations with intelligent automation solutions.
+          <p className="text-base sm:text-lg text-gray-600 max-w-3xl mx-auto">
+            Every system below was designed, built, and delivered by our in-house development team
           </p>
         </div>
         {/* Testimonial Grid - Mobile Optimized */}
@@ -91,12 +91,6 @@ export const Showcase = () => {
                   </div>
                 </div>
 
-                {/* Subtitle overlay - Mobile Optimized */}
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-3 sm:p-4">
-                  <p className="text-white text-xs font-medium line-clamp-2">
-                    {testimonial.quote.substring(0, 60)}...
-                  </p>
-                </div>
               </div>
 
               {/* Card Content - Mobile Optimized */}
@@ -139,6 +133,142 @@ export const Showcase = () => {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Testimonials Section Heading */}
+        <div className="mt-32 sm:mt-40 mb-16 sm:mb-20">
+          <h2 className="text-responsive-2xl sm:text-responsive-3xl md:text-4xl font-bold text-gray-900 text-center">
+            Stories From the People We Build For
+          </h2>
+        </div>
+
+        {/* Featured Testimonial Card */}
+        <div className="mt-0">
+          <div className="bg-white rounded-3xl shadow-lg overflow-hidden h-[340px] sm:h-[400px] border border-gray-200">
+            <div className="grid grid-cols-1 lg:grid-cols-[65%_35%] h-full">
+              {/* Left side - Text content */}
+              <div className="p-8 sm:p-12 flex flex-col justify-center h-full">
+                <div className="max-w-[40rem] ml-8">
+                  <blockquote className="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight mb-6">
+                    "2,100+ Monthly Users in the Actuarial Niche"
+                  </blockquote>
+                  <p className="text-xl text-gray-600 leading-relaxed">
+                    They delivered exactly what we needed, when we needed it, with exceptional quality and support.
+                  </p>
+                </div>
+              </div>
+
+              {/* Right side - Video thumbnail */}
+              <div className="relative bg-gradient-to-br from-purple-100 to-purple-200 h-full rounded-r-3xl lg:rounded-l-3xl lg:rounded-r-none lg:rounded-br-3xl overflow-hidden">
+                {/* Video placeholder with play button */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                    <Play className="w-6 h-6 sm:w-8 sm:h-8 text-gray-900 ml-1" fill="currentColor" />
+                  </div>
+                </div>
+
+                {/* Author info overlay */}
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 sm:p-6">
+                  <div className="flex items-center gap-3">
+                    {/* Profile picture */}
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center flex-shrink-0">
+                      <span className="text-white font-bold text-sm sm:text-base">SA</span>
+                    </div>
+                    <div>
+                      <p className="text-white font-bold text-sm sm:text-base">Syed</p>
+                      <p className="text-white/80 text-xs sm:text-sm">Founder @ActuaryList</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Second Testimonial Card */}
+        <div className="mt-16 sm:mt-20">
+          <div className="bg-white rounded-3xl shadow-lg overflow-hidden h-[340px] sm:h-[400px] border border-gray-200">
+            <div className="grid grid-cols-1 lg:grid-cols-[65%_35%] h-full">
+              {/* Left side - Text content */}
+              <div className="p-8 sm:p-12 flex flex-col justify-center h-full">
+                <div className="max-w-[40rem] ml-8">
+                  <blockquote className="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight mb-6">
+                    "10,000+ Instagram Tasks Automated Daily"
+                  </blockquote>
+                  <p className="text-xl text-gray-600 leading-relaxed">
+                    Their innovative approach and technical expertise exceeded all our expectations.
+                  </p>
+                </div>
+              </div>
+
+              {/* Right side - Video thumbnail */}
+              <div className="relative bg-gradient-to-br from-blue-100 to-blue-200 h-full rounded-r-3xl lg:rounded-l-3xl lg:rounded-r-none lg:rounded-br-3xl overflow-hidden">
+                {/* Video placeholder with play button */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                    <Play className="w-6 h-6 sm:w-8 sm:h-8 text-gray-900 ml-1" fill="currentColor" />
+                  </div>
+                </div>
+
+                {/* Author info overlay */}
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 sm:p-6">
+                  <div className="flex items-center gap-3">
+                    {/* Profile picture */}
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center flex-shrink-0">
+                      <span className="text-white font-bold text-sm sm:text-base">JK</span>
+                    </div>
+                    <div>
+                      <p className="text-white font-bold text-sm sm:text-base">Jackee</p>
+                      <p className="text-white/80 text-xs sm:text-sm">Founder @InstaAppilot</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Third Testimonial Card */}
+        <div className="mt-16 sm:mt-20">
+          <div className="bg-white rounded-3xl shadow-lg overflow-hidden h-[340px] sm:h-[400px] border border-gray-200">
+            <div className="grid grid-cols-1 lg:grid-cols-[65%_35%] h-full">
+              {/* Left side - Text content */}
+              <div className="p-8 sm:p-12 flex flex-col justify-center h-full">
+                <div className="max-w-[40rem] ml-8">
+                  <blockquote className="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight mb-6">
+                    "500+ Appointments Every Week"
+                  </blockquote>
+                  <p className="text-xl text-gray-600 leading-relaxed">
+                    Professional, reliable, and always available when we needed support or updates.
+                  </p>
+                </div>
+              </div>
+
+              {/* Right side - Video thumbnail */}
+              <div className="relative bg-gradient-to-br from-green-100 to-green-200 h-full rounded-r-3xl lg:rounded-l-3xl lg:rounded-r-none lg:rounded-br-3xl overflow-hidden">
+                {/* Video placeholder with play button */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                    <Play className="w-6 h-6 sm:w-8 sm:h-8 text-gray-900 ml-1" fill="currentColor" />
+                  </div>
+                </div>
+
+                {/* Author info overlay */}
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 sm:p-6">
+                  <div className="flex items-center gap-3">
+                    {/* Profile picture */}
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center flex-shrink-0">
+                      <span className="text-white font-bold text-sm sm:text-base">LC</span>
+                    </div>
+                    <div>
+                      <p className="text-white font-bold text-sm sm:text-base">Linda</p>
+                      <p className="text-white/80 text-xs sm:text-sm">CEO @Petla</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

@@ -40,10 +40,7 @@ export const Navigation = () => {
         <div className="flex items-center h-16">
           {/* Logo - Left Side */}
           <a href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity" onClick={closeMobileMenu}>
-            <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-purple-700 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">B</span>
-            </div>
-            <span className="text-xl font-bold text-gray-900">BitBash</span>
+            <span className="text-2xl font-bold text-gray-900">BitBash</span>
           </a>
           
           {/* Mobile Menu Button - Sleek & Simple */}
