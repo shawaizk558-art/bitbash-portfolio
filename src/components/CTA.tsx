@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { SocialProof } from "@/components/SocialProof";
 
 export const CTA = () => {
   return (
@@ -135,42 +135,34 @@ export const CTA = () => {
                   Schedule your consultation and turn your idea into a real, working product.
                 </p>
                 
-                {/* Email Form - Mobile Optimized */}
+                {/* Call-to-Action Buttons */}
                 <div className="relative max-w-3xl mx-auto pt-4">
-                  <div className="relative">
-                    <Input 
-                      type="email" 
-                      placeholder="your@email.com"
-                      className="h-12 sm:h-16 text-responsive-base shadow-lg w-full rounded-2xl sm:pr-52"
-                    />
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
+                    <Button 
+                      variant="outline" 
+                      size="lg" 
+                      className="h-12 py-4 px-6 text-lg font-semibold rounded-xl w-full sm:w-auto bg-transparent hover:bg-transparent text-gray-900 hover:text-gray-900 border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-lg shadow-gray-400/20 hover:shadow-gray-400/35 transition-colors transition-shadow duration-300"
+                      asChild
+                      style={{ height: '48px' }}
+                    >
+                      <a href="/contact">Contact Us</a>
+                    </Button>
                     <Button 
                       variant="hero" 
                       size="lg" 
-                      className="h-12 sm:absolute sm:right-2 sm:top-1/2 sm:-translate-y-1/2 py-4 px-6 text-lg font-semibold rounded-xl w-full sm:w-[180px] text-white hover:scale-100 shadow-none hover:shadow-none"
-                      style={{
-                        height: '48px'
-                      }}
+                      className="h-12 py-4 px-6 text-lg font-semibold rounded-xl w-full sm:w-auto hover:scale-100 shadow-sm hover:shadow-lg shadow-gray-400/20 hover:shadow-gray-400/35 transition-colors transition-shadow duration-300"
+                      style={{ height: '48px' }}
                     >
-                      <span className="hidden sm:inline">Schedule a Call</span>
-                      <span className="sm:hidden">Contact Us</span>
+                      Schedule a Call
                     </Button>
                   </div>
                 </div>
 
-                {/* Social Proof - Mobile Optimized */}
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-6 pb-8">
-                  <div className="flex -space-x-2">
-                    {[1, 2, 3, 4, 5].map((i) => (
-                      <div 
-                        key={i} 
-                        className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 border-2 border-white shadow-lg"
-                      />
-                    ))}
-                  </div>
-                  <p className="text-sm sm:text-base text-gray-700 text-center sm:text-left">
-                    <span className="font-semibold text-gray-900">25+ Expert Developers</span>, One Mission — Build Better Software
-                  </p>
-                </div>
+                {/* Social Proof - Reusable */}
+                <SocialProof 
+                  className="pt-6 pb-2"
+                  avatars={["/zee.jpg", "/awais.jpg", "/hassan-arslan.png", "/mughees.jpg", "/fras.png"]}
+                />
               </div>
             </div>
           </div>

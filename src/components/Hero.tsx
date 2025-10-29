@@ -1,10 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ArrowRight } from "lucide-react";
+import { SocialProof } from "@/components/SocialProof";
 
 export const Hero = () => {
   return (
-    <section className="relative min-h-[62vh] sm:min-h-[63vh] flex items-center justify-center overflow-hidden pt-16">
+    <section className="relative min-h-[57vh] sm:min-h-[57vh] flex items-center justify-center overflow-hidden pt-16">
       {/* Animated gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-gradient-start via-gradient-mid to-gradient-end animate-gradient opacity-60" />
       
@@ -12,7 +11,7 @@ export const Hero = () => {
       <div className="absolute top-20 left-4 sm:left-10 w-48 h-48 sm:w-72 sm:h-72 bg-primary/20 rounded-full blur-3xl animate-float" />
       <div className="absolute bottom-20 right-4 sm:right-10 w-64 h-64 sm:w-96 sm:h-96 bg-accent/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
       
-      <div className="relative z-10 container-responsive text-center -mt-20">
+      <div className="relative z-10 container-responsive text-center -mt-10">
          <div className="max-w-4xl mx-auto space-responsive-lg animate-fade-in">
            <div className="space-responsive-sm mt-8 sm:mt-14">
             <h1 className="text-4xl sm:text-[48px] font-bold leading-[1.1] tracking-tight font-sans">
@@ -24,41 +23,33 @@ export const Hero = () => {
             </p>
            </div>
           
-          {/* Mobile-First Email Form */}
-          <div className="relative max-w-3xl mx-auto -mt-20">
-            <div className="relative">
-              <Input 
-                type="email" 
-                placeholder="your@email.com"
-                className="h-12 sm:h-16 text-responsive-base shadow-lg w-full rounded-2xl sm:pr-52"
-              />
-               <Button 
-                 variant="hero" 
-                 size="lg" 
-                 className="h-12 sm:absolute sm:right-2 sm:top-1/2 sm:-translate-y-1/2 py-4 px-6 text-lg font-semibold rounded-xl w-full sm:w-[180px] text-white hover:scale-100 shadow-none hover:shadow-none"
-                 style={{
-                   height: '48px'
-                 }}
-               >
-                <span className="hidden sm:inline">Schedule a call</span>
-                <span className="sm:hidden">Schedule a call</span>
-              </Button>
-            </div>
+         {/* Call-to-Action Buttons (no input) */}
+         <div className="relative max-w-3xl mx-auto -mt-20">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 -translate-y-2">
+             <Button 
+               variant="outline" 
+               size="lg" 
+               className="h-12 py-4 px-6 text-lg font-semibold rounded-xl w-full sm:w-auto bg-transparent hover:bg-transparent text-gray-900 hover:text-gray-900 border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-lg shadow-gray-400/20 hover:shadow-gray-400/35 transition-colors transition-shadow duration-300"
+               asChild
+               style={{ height: '48px' }}
+             >
+               <a href="/contact">Contact Us</a>
+             </Button>
+             <Button 
+               variant="hero" 
+               size="lg" 
+               className="h-12 py-4 px-6 text-lg font-semibold rounded-xl w-full sm:w-auto hover:scale-100 shadow-sm hover:shadow-lg shadow-gray-400/20 hover:shadow-gray-400/35 transition-colors transition-shadow duration-300"
+               style={{ height: '48px' }}
+             >
+               Schedule a Call
+             </Button>
+           </div>
             
-            {/* Social Proof - Match CTA styling */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-6 pb-8">
-              <div className="flex -space-x-2">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <div 
-                    key={i} 
-                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 border-2 border-white shadow-lg"
-                  />
-                ))}
-              </div>
-              <p className="text-sm sm:text-base text-gray-700 text-center sm:text-left">
-                <span className="font-semibold text-gray-900">25+ Expert Developers</span>, One Mission — Build Better Software
-              </p>
-            </div>
+            {/* Social Proof - Reusable */}
+            <SocialProof 
+              className="pt-6 pb-8"
+              avatars={["/zee.jpg", "/awais.jpg", "/hassan-arslan.png", "/mughees.jpg", "/fras.png"]}
+            />
           </div>
         </div>
       </div>

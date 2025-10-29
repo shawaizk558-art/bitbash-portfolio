@@ -40,7 +40,16 @@ export const Navigation = () => {
         <div className="flex items-center h-16">
           {/* Logo - Left Side */}
           <a href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity" onClick={closeMobileMenu}>
-            <span className="text-2xl font-bold text-gray-900">BitBash</span>
+            <span className="text-2xl sm:text-3xl font-bold text-gray-900 leading-none">
+              B
+              <span className="relative inline-block align-baseline">
+                {/* Use dotless i to avoid the default black dot */}
+                ı
+                {/* Purple dot overlay */}
+                <span className="absolute top-[0.12em] left-1/2 -translate-x-1/2 w-[0.2em] h-[0.2em] bg-purple-600 rounded-full"></span>
+              </span>
+              tBash
+            </span>
           </a>
           
           {/* Mobile Menu Button - Sleek & Simple */}
