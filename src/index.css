@@ -93,6 +93,12 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground antialiased;
+    overflow-x: hidden;
+  }
+  
+  /* Ensure images are responsive by default */
+  img {
+    @apply max-w-full h-auto;
   }
 }
 
@@ -189,6 +195,10 @@ All colors MUST be HSL.
     transform-origin: left center;
   }
   
+  .animate-pulse-dot {
+    animation: pulseDot 2s ease-in-out infinite;
+  }
+  
   @keyframes fadeIn {
     0% {
       opacity: 0;
@@ -222,6 +232,15 @@ All colors MUST be HSL.
     }
     100% {
       transform: scaleX(1);
+    }
+  }
+  
+  @keyframes pulseDot {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
     }
   }
   
@@ -270,5 +289,15 @@ All colors MUST be HSL.
   
   .mobile-menu-item-enter-active {
     @apply translate-x-0 opacity-100;
+  }
+  
+  /* Prevent horizontal scroll on mobile */
+  .overflow-x-hidden {
+    overflow-x: hidden;
+  }
+  
+  /* Responsive image utilities */
+  .img-responsive {
+    @apply w-full h-auto max-w-full;
   }
 }

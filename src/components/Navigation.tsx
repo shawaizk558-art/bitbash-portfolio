@@ -3,6 +3,7 @@ import { ChevronDown, Code, Smartphone, Palette, Zap, Database, Globe, Cloud, Gi
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useIsMobile, useResponsive } from "@/hooks/use-mobile";
+import { Logo } from "@/components/Logo";
 
 export const Navigation = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -39,23 +40,14 @@ export const Navigation = () => {
       <div className="container-responsive">
         <div className="flex items-center h-16">
           {/* Logo - Left Side */}
-          <a href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity" onClick={closeMobileMenu}>
-            <span className="text-2xl sm:text-3xl font-bold text-gray-900 leading-none">
-              B
-              <span className="relative inline-block align-baseline">
-                {/* Use dotless i to avoid the default black dot */}
-                ı
-                {/* Purple dot overlay */}
-                <span className="absolute top-[0.12em] left-1/2 -translate-x-1/2 w-[0.2em] h-[0.2em] bg-purple-600 rounded-full"></span>
-              </span>
-              tBash
-            </span>
+          <a href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity lg:min-h-[44px] min-h-[44px]" onClick={closeMobileMenu}>
+            <Logo size="lg" variant="default" />
           </a>
           
           {/* Mobile Menu Button - Sleek & Simple */}
           <button
             onClick={toggleMobileMenu}
-            className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg focus:outline-none ml-auto"
+            className="lg:hidden flex items-center justify-center w-11 h-11 rounded-lg focus:outline-none ml-auto min-h-[44px] min-w-[44px]"
             aria-label="Toggle mobile menu"
           >
             {!mobileMenuOpen && (
@@ -85,40 +77,27 @@ export const Navigation = () => {
             )}
           </button>
           
-          {/* Tablet Navigation - Simplified */}
-          <div className="hidden md:flex lg:hidden items-center space-x-1 absolute left-1/2 transform -translate-x-1/2">
-            <a href="/automation-services" className="flex items-center space-x-1 cursor-pointer group px-2 py-2 rounded-lg hover:bg-gray-100 transition-colors">
-              <span className="font-normal text-black" style={{ fontSize: '17px' }}>Automation</span>
-            </a>
-            <a href="/development-services" className="flex items-center space-x-1 cursor-pointer group px-2 py-2 rounded-lg hover:bg-gray-100 transition-colors">
-              <span className="font-normal text-black" style={{ fontSize: '17px' }}>Development</span>
-            </a>
-            <a href="/pricing" className="flex items-center space-x-1 cursor-pointer group px-2 py-2 rounded-lg hover:bg-gray-100 transition-colors">
-              <span className="font-normal text-black" style={{ fontSize: '17px' }}>Pricing</span>
-            </a>
-          </div>
-          
           {/* Desktop Navigation Links with Dropdowns - Centered */}
           <div className="hidden lg:flex items-center space-x-1 xl:space-x-2 absolute left-1/2 transform -translate-x-1/2">
             {/* Automation Dropdown - PRIMARY */}
             <div className="relative">
               <div 
                 onClick={() => toggleDropdown('automation')}
-                className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+                className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0"
               >
-                <span className="font-normal text-black" style={{ fontSize: '17px' }}>Automation</span>
+                <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Automation</span>
                 <ChevronDown className={`w-4 h-4 text-gray-900 transition-transform duration-200 ${openDropdown === 'automation' ? 'rotate-180' : ''}`} />
               </div>
               
               {/* Automation Dropdown */}
               {openDropdown === 'automation' && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[600px] bg-white rounded-2xl shadow-2xl border border-gray-200 p-8 opacity-0 animate-fadeIn">
-                  <div className="grid grid-cols-2 gap-8">
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[90vw] max-w-[600px] lg:w-[600px] bg-white rounded-2xl shadow-2xl border border-gray-200 p-4 sm:p-6 lg:p-8 opacity-0 animate-fadeIn">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
                     {/* Browser & Mobile Column */}
                     <div>
-                      <h3 className="text-sm font-bold text-gray-900 mb-4">Browser & Mobile</h3>
-                      <div className="space-y-3">
-                        <a href="/automation-services" className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group">
+                      <h3 className="text-sm font-bold text-gray-900 mb-3 sm:mb-4">Browser & Mobile</h3>
+                      <div className="space-y-2 sm:space-y-3">
+                        <a href="/automation-services" className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg hover:bg-gray-50 transition-colors group min-h-[44px]">
                           <Globe className="w-5 h-5 text-purple-600 mt-0.5" />
                           <div>
                             <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">Browser Automation</div>
@@ -144,9 +123,9 @@ export const Navigation = () => {
 
                     {/* Data & Workflow Column */}
                     <div>
-                      <h3 className="text-sm font-bold text-gray-900 mb-4">Data & Workflow</h3>
-                      <div className="space-y-3">
-                        <a href="/automation-services" className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group">
+                      <h3 className="text-sm font-bold text-gray-900 mb-3 sm:mb-4">Data & Workflow</h3>
+                      <div className="space-y-2 sm:space-y-3">
+                        <a href="/automation-services" className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg hover:bg-gray-50 transition-colors group min-h-[44px]">
                           <Database className="w-5 h-5 text-purple-600 mt-0.5" />
                           <div>
                             <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">Data Extraction</div>
@@ -186,17 +165,17 @@ export const Navigation = () => {
             <div className="relative">
               <div 
                 onClick={() => toggleDropdown('development')}
-                className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+                className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0"
               >
-                <span className="font-normal text-black" style={{ fontSize: '17px' }}>Development</span>
+                <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Development</span>
                 <ChevronDown className={`w-4 h-4 text-gray-900 transition-transform duration-200 ${openDropdown === 'development' ? 'rotate-180' : ''}`} />
               </div>
               
               {/* Development Dropdown */}
               {openDropdown === 'development' && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[400px] bg-white rounded-2xl shadow-2xl border border-gray-200 p-8 opacity-0 animate-fadeIn">
-                      <div className="space-y-3">
-                    <a href="/development-services" className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group">
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[90vw] max-w-[400px] lg:w-[400px] bg-white rounded-2xl shadow-2xl border border-gray-200 p-4 sm:p-6 lg:p-8 opacity-0 animate-fadeIn">
+                      <div className="space-y-2 sm:space-y-3">
+                    <a href="/development-services" className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg hover:bg-gray-50 transition-colors group min-h-[44px]">
                       <Globe className="w-5 h-5 text-purple-600 mt-0.5" />
                           <div>
                         <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">Web Applications</div>
@@ -235,19 +214,19 @@ export const Navigation = () => {
             <div className="relative">
               <div 
                 onClick={() => toggleDropdown('solutions')}
-                className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+                className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0"
               >
-                <span className="font-normal text-black" style={{ fontSize: '17px' }}>Solutions</span>
+                <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Solutions</span>
                 <ChevronDown className={`w-4 h-4 text-gray-900 transition-transform duration-200 ${openDropdown === 'solutions' ? 'rotate-180' : ''}`} />
               </div>
               
               {openDropdown === 'solutions' && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[600px] bg-white rounded-2xl shadow-2xl border border-gray-200 p-8 opacity-0 animate-fadeIn">
-                  <div className="grid grid-cols-2 gap-8">
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[90vw] max-w-[600px] lg:w-[600px] bg-white rounded-2xl shadow-2xl border border-gray-200 p-4 sm:p-6 lg:p-8 opacity-0 animate-fadeIn">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
                     <div>
-                      <h3 className="text-sm font-bold text-gray-900 mb-4">By Industry</h3>
-                      <div className="space-y-3">
-                        <a href="#" className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group">
+                      <h3 className="text-sm font-bold text-gray-900 mb-3 sm:mb-4">By Industry</h3>
+                      <div className="space-y-2 sm:space-y-3">
+                        <a href="#" className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg hover:bg-gray-50 transition-colors group min-h-[44px]">
                           <ShoppingCart className="w-5 h-5 text-purple-600 mt-0.5" />
                           <div>
                             <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">E-Commerce</div>
@@ -271,9 +250,9 @@ export const Navigation = () => {
                       </div>
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold text-gray-900 mb-4">By Use Case</h3>
-                      <div className="space-y-3">
-                        <a href="#" className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group">
+                      <h3 className="text-sm font-bold text-gray-900 mb-3 sm:mb-4">By Use Case</h3>
+                      <div className="space-y-2 sm:space-y-3">
+                        <a href="#" className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg hover:bg-gray-50 transition-colors group min-h-[44px]">
                           <Zap className="w-5 h-5 text-purple-600 mt-0.5" />
                           <div>
                             <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">Marketing</div>
@@ -307,27 +286,27 @@ export const Navigation = () => {
               )}
             </div>
 
-            <a href="/pricing" className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors">
-              <span className="font-normal text-black" style={{ fontSize: '17px' }}>Pricing</span>
+            <a href="/pricing" className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0">
+              <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Pricing</span>
             </a>
 
             {/* Resources Dropdown */}
             <div className="relative">
               <div 
                 onClick={() => toggleDropdown('resources')}
-                className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+                className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0"
               >
-                <span className="font-normal text-black" style={{ fontSize: '17px' }}>Resources</span>
+                <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Resources</span>
                 <ChevronDown className={`w-4 h-4 text-gray-900 transition-transform duration-200 ${openDropdown === 'resources' ? 'rotate-180' : ''}`} />
               </div>
               
               {openDropdown === 'resources' && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[600px] bg-white rounded-2xl shadow-2xl border border-gray-200 p-8 opacity-0 animate-fadeIn">
-                  <div className="grid grid-cols-2 gap-8">
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[90vw] max-w-[600px] lg:w-[600px] bg-white rounded-2xl shadow-2xl border border-gray-200 p-4 sm:p-6 lg:p-8 opacity-0 animate-fadeIn">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
                     <div>
-                      <h3 className="text-sm font-bold text-gray-900 mb-4">Learn</h3>
-                      <div className="space-y-3">
-                        <a href="#" className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group">
+                      <h3 className="text-sm font-bold text-gray-900 mb-3 sm:mb-4">Learn</h3>
+                      <div className="space-y-2 sm:space-y-3">
+                        <a href="#" className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg hover:bg-gray-50 transition-colors group min-h-[44px]">
                           <BookOpen className="w-5 h-5 text-purple-600 mt-0.5" />
                           <div>
                             <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">Documentation</div>
@@ -351,9 +330,9 @@ export const Navigation = () => {
                       </div>
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold text-gray-900 mb-4">Support</h3>
-                      <div className="space-y-3">
-                        <a href="#" className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group">
+                      <h3 className="text-sm font-bold text-gray-900 mb-3 sm:mb-4">Support</h3>
+                      <div className="space-y-2 sm:space-y-3">
+                        <a href="#" className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg hover:bg-gray-50 transition-colors group min-h-[44px]">
                           <FileText className="w-5 h-5 text-purple-600 mt-0.5" />
                           <div>
                             <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">Blog</div>
@@ -388,21 +367,6 @@ export const Navigation = () => {
             </div>
           </div>
           
-          {/* Tablet CTA Buttons */}
-          <div className="hidden md:flex lg:hidden items-center space-x-3 ml-auto">
-            <a href="/contact" className="text-purple-600 hover:text-purple-700 font-bold text-sm transition-colors">
-              Contact
-            </a>
-            <a href="/contact">
-              <button 
-                className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 hover:shadow-primary/30 hover:scale-105 transition-all duration-300 font-bold text-sm px-3 py-1.5 rounded-md"
-                style={{ fontSize: '14px' }}
-              >
-                Schedule Call
-              </button>
-            </a>
-          </div>
-          
           {/* Desktop CTA Buttons - Right Side */}
           <div className="hidden lg:flex items-center space-x-4 xl:space-x-6 ml-auto">
             <a href="/contact" className="text-purple-600 hover:text-purple-700 font-bold text-base transition-colors">
@@ -427,7 +391,7 @@ export const Navigation = () => {
     
     {/* Mobile Menu - Sidebar Design - OUTSIDE NAV */}
     {mobileMenuOpen && (
-          <div className="md:hidden fixed inset-0" style={{ 
+          <div className="lg:hidden fixed inset-0" style={{ 
             zIndex: 9999
           }}>
             {/* Semi-transparent backdrop */}
@@ -436,21 +400,21 @@ export const Navigation = () => {
             }} onClick={closeMobileMenu} />
             
             {/* Menu Panel - Dark sidebar */}
-            <div className="absolute left-0 top-0 h-full w-80 z-10 flex flex-col" style={{ 
+            <div className="absolute left-0 top-0 h-full w-[85vw] sm:w-80 max-w-sm z-10 flex flex-col" style={{ 
               backgroundColor: 'oklch(21% 0.034 264.665)',
               opacity: 1
             }} onClick={(e) => e.stopPropagation()}>
-              <div className="p-8 space-y-8 flex-1">
+              <div className="p-6 sm:p-8 space-y-6 sm:space-y-8 flex-1">
               {/* Logo Section */}
               <div className="flex items-center space-x-3 pb-6">
-                <span className="text-xl font-bold text-white">BitBash</span>
+                <Logo size="md" variant="white" />
               </div>
 
               {/* Navigation Links */}
               <div className="space-y-1">
                 <a 
                   href="/" 
-                  className="flex items-center justify-between py-3 text-lg font-medium text-white hover:text-purple-300 transition-colors"
+                  className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
                   onClick={closeMobileMenu}
                 >
                   <span>Home</span>
@@ -460,7 +424,7 @@ export const Navigation = () => {
                 </a>
                 <a 
                   href="/automation-services" 
-                  className="flex items-center justify-between py-3 text-lg font-medium text-white hover:text-purple-300 transition-colors"
+                  className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
                   onClick={closeMobileMenu}
                 >
                   <span>Automation</span>
@@ -470,7 +434,7 @@ export const Navigation = () => {
                 </a>
                 <a 
                   href="/development-services" 
-                  className="flex items-center justify-between py-3 text-lg font-medium text-white hover:text-purple-300 transition-colors"
+                  className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
                   onClick={closeMobileMenu}
                 >
                   <span>Development</span>
@@ -480,14 +444,14 @@ export const Navigation = () => {
                 </a>
                 <a 
                   href="/pricing" 
-                  className="flex items-center justify-between py-3 text-lg font-medium text-white hover:text-purple-300 transition-colors"
+                  className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
                   onClick={closeMobileMenu}
                 >
                   <span>Pricing</span>
                 </a>
                 <a 
                   href="/case-studies" 
-                  className="flex items-center justify-between py-3 text-lg font-medium text-white hover:text-purple-300 transition-colors"
+                  className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
                   onClick={closeMobileMenu}
                 >
                   <span>Case Studies</span>
@@ -497,7 +461,7 @@ export const Navigation = () => {
                 </a>
                 <a 
                   href="/contact" 
-                  className="flex items-center justify-between py-3 text-lg font-medium text-white hover:text-purple-300 transition-colors"
+                  className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
                   onClick={closeMobileMenu}
                 >
                   <span>Contact</span>
@@ -509,13 +473,13 @@ export const Navigation = () => {
               </div>
               
               {/* CTA Buttons - At Bottom */}
-              <div className="px-6 py-6 pt-8">
-                <a href="/contact" onClick={closeMobileMenu} className="block w-full text-center py-3 text-base font-bold text-white border-2 border-white rounded-xl hover:bg-white hover:text-gray-900 transition-all duration-300 mb-4">
+              <div className="px-4 sm:px-6 py-4 sm:py-6 pt-6 sm:pt-8">
+                <a href="/contact" onClick={closeMobileMenu} className="block w-full text-center py-3 sm:py-4 text-base font-bold text-white border-2 border-white rounded-xl hover:bg-white hover:text-gray-900 transition-all duration-300 mb-3 sm:mb-4 min-h-[44px] flex items-center justify-center">
                   Contact us
                 </a>
                 <a href="/contact" onClick={closeMobileMenu} className="block">
                   <button 
-                    className="w-full py-3 text-base font-semibold text-white bg-purple-600 rounded-xl hover:bg-purple-700 transition-all duration-300"
+                    className="w-full py-3 sm:py-4 text-base font-semibold text-white bg-purple-600 rounded-xl hover:bg-purple-700 transition-all duration-300 min-h-[44px]"
                   >
                     Schedule a call
                   </button>

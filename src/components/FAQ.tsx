@@ -72,7 +72,7 @@ export const FAQ = () => {
       <div className="container-responsive">
         {/* Header */}
         <div className="text-center mb-12 sm:mb-16">
-          <h2 className="text-responsive-2xl sm:text-responsive-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 mb-4">
             Still Have Questions?
           </h2>
         </div>
@@ -91,9 +91,9 @@ export const FAQ = () => {
                   >
                     <button
                       onClick={() => toggleFAQ(leftStateKey)}
-                      className="w-full px-4 sm:px-6 py-4 sm:py-5 text-left flex items-start justify-between gap-3 sm:gap-4"
+                      className="w-full px-4 sm:px-6 py-4 sm:py-5 text-left flex items-start justify-between gap-3 sm:gap-4 min-h-[44px] lg:min-h-0"
                     >
-                      <span className="font-semibold text-gray-900 text-responsive-base leading-relaxed pr-2">
+                      <span className="font-semibold text-gray-900 text-base sm:text-lg lg:text-lg leading-relaxed pr-2">
                         {faq.question}
                       </span>
                       <ChevronDown
@@ -109,7 +109,7 @@ export const FAQ = () => {
                       }`}
                     >
                       <div className="px-4 sm:px-6 pb-4 sm:pb-5 pt-0">
-                        <p className="text-gray-600 text-responsive-sm leading-relaxed">
+                        <p className="text-gray-600 text-sm sm:text-base lg:text-base leading-relaxed">
                           {faq.answer}
                         </p>
                       </div>
@@ -129,26 +129,26 @@ export const FAQ = () => {
                     className="bg-white rounded-xl border border-gray-200 overflow-hidden"
             >
               <button
-                      onClick={() => toggleFAQ(rightStateKey)}
-                      className="w-full px-4 sm:px-6 py-4 sm:py-5 text-left flex items-start justify-between gap-3 sm:gap-4"
+                onClick={() => toggleFAQ(rightStateKey)}
+                className="w-full px-4 sm:px-6 py-4 sm:py-5 text-left flex items-start justify-between gap-3 sm:gap-4 min-h-[44px] lg:min-h-0"
               >
-                      <span className="font-semibold text-gray-900 text-responsive-base leading-relaxed pr-2">
+                <span className="font-semibold text-gray-900 text-base sm:text-lg lg:text-lg leading-relaxed pr-2">
                   {faq.question}
                 </span>
                 <ChevronDown
-                        className={`w-4 h-4 sm:w-5 sm:h-5 text-gray-500 flex-shrink-0 mt-0.5 ${
-                          openCards.has(rightStateKey) ? "rotate-180" : ""
+                  className={`w-4 h-4 sm:w-5 sm:h-5 text-gray-500 flex-shrink-0 mt-0.5 ${
+                    openCards.has(rightStateKey) ? "rotate-180" : ""
                   }`}
                 />
               </button>
               
               <div
-                      className={`overflow-hidden transition-all duration-200 ${
-                        openCards.has(rightStateKey) ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                className={`overflow-hidden transition-all duration-200 ${
+                  openCards.has(rightStateKey) ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
                 }`}
               >
                 <div className="px-4 sm:px-6 pb-4 sm:pb-5 pt-0">
-                        <p className="text-gray-600 text-responsive-sm leading-relaxed">
+                  <p className="text-gray-600 text-sm sm:text-base lg:text-base leading-relaxed">
                     {faq.answer}
                   </p>
                 </div>

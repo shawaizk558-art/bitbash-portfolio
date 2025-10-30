@@ -242,16 +242,16 @@ const Pricing = () => {
       
       {/* Hero Section */}
       <section className="relative pt-2 pb-8 bg-gradient-to-br from-purple-50 to-blue-50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container-responsive">
           <div className="max-w-4xl mx-auto text-center">
             <Badge className="mb-6 bg-purple-100 text-purple-700 border-purple-200">
               Transparent Pricing
             </Badge>
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
               Clear, Honest Pricing.
               <span className="text-purple-600"> No Hidden Fees.</span>
             </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            <p className="text-lg sm:text-xl lg:text-xl text-gray-600 mb-8 max-w-3xl mx-auto px-4 sm:px-0">
               Transparent pricing based on project complexity and requirements. 
               Get exactly what you need without paying for unnecessary features.
             </p>
@@ -270,12 +270,12 @@ const Pricing = () => {
 
       {/* Services Pricing */}
       <section className="py-20 bg-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container-responsive">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 mb-4">
               Service Pricing
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg sm:text-xl lg:text-xl text-gray-600 max-w-3xl mx-auto px-4 sm:px-0">
               Choose the service that fits your automation needs
             </p>
           </div>
@@ -285,11 +285,11 @@ const Pricing = () => {
               <div key={index} className="max-w-6xl mx-auto">
                 <div className="text-center mb-12">
                   <service.icon className="w-16 h-16 text-purple-600 mx-auto mb-4" />
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{service.name}</h3>
+                  <h3 className="text-xl sm:text-2xl lg:text-2xl font-bold text-gray-900 mb-2">{service.name}</h3>
                   <p className="text-gray-600">{service.description}</p>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                   {service.pricing.map((tier, tierIndex) => (
                     <Card key={tierIndex} className={`p-8 relative ${tierIndex === 1 ? 'ring-2 ring-purple-600 shadow-xl' : ''}`}>
                       {tierIndex === 1 && (

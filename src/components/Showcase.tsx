@@ -66,15 +66,15 @@ export const Showcase = () => {
       <div className="container-responsive">
         {/* Header */}
         <div className="text-center mb-12 sm:mb-16">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 mb-4">
             <span className="text-purple-600">500+</span> Completed Projects. Proven Engineering.
           </h2>
-          <p className="text-base sm:text-lg text-gray-600 max-w-3xl mx-auto">
+          <p className="text-base sm:text-lg lg:text-lg text-gray-600 max-w-3xl mx-auto px-4 sm:px-0">
             Every system below was designed, built, and delivered by our in-house development team
           </p>
         </div>
         {/* Testimonial Grid - Mobile Optimized */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-2 sm:px-0">
           {testimonials.map((testimonial, index) => (
             <div
               key={index}
@@ -96,7 +96,7 @@ export const Showcase = () => {
               {/* Card Content - Mobile Optimized */}
               <div className="p-4 sm:p-6">
                 {/* Quote */}
-                <p className="text-gray-700 text-responsive-xs leading-relaxed mb-4 line-clamp-3">
+                <p className="text-gray-700 text-xs sm:text-sm lg:text-sm leading-relaxed mb-4 line-clamp-3">
                   "{testimonial.quote}"
                 </p>
 
@@ -111,7 +111,7 @@ export const Showcase = () => {
                     </div>
                     
                     <div className="min-w-0 flex-1">
-                      <p className="font-semibold text-gray-900 text-responsive-xs truncate">
+                      <p className="font-semibold text-gray-900 text-xs sm:text-sm lg:text-sm truncate">
                         {testimonial.name}
                       </p>
                       <p className="text-xs text-gray-500 truncate">
@@ -137,22 +137,22 @@ export const Showcase = () => {
 
         {/* Testimonials Section Heading */}
         <div className="mt-32 sm:mt-40 mb-16 sm:mb-20">
-          <h2 className="text-responsive-2xl sm:text-responsive-3xl md:text-4xl font-bold text-gray-900 text-center">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 text-center">
             Stories From the People We Build For
           </h2>
         </div>
 
         {/* Featured Testimonial Card */}
         <div className="mt-0">
-          <div className="bg-white rounded-3xl shadow-lg overflow-hidden h-[340px] sm:h-[400px] border border-gray-200">
+          <div className="bg-white rounded-3xl shadow-lg overflow-hidden min-h-[340px] sm:min-h-[400px] lg:h-[400px] border border-gray-200">
             <div className="grid grid-cols-1 lg:grid-cols-[65%_35%] h-full">
               {/* Left side - Text content */}
               <div className="p-8 sm:p-12 flex flex-col justify-center h-full">
                 <div className="max-w-[40rem] ml-8">
-                  <blockquote className="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight mb-6">
+                  <blockquote className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 leading-tight mb-6">
                     "2,100+ Monthly Users in the Actuarial Niche"
                   </blockquote>
-                  <p className="text-xl text-gray-600 leading-relaxed">
+                  <p className="text-lg sm:text-xl lg:text-xl text-gray-600 leading-relaxed">
                     They delivered exactly what we needed, when we needed it, with exceptional quality and support.
                   </p>
                 </div>
@@ -187,15 +187,15 @@ export const Showcase = () => {
 
         {/* Second Testimonial Card */}
         <div className="mt-16 sm:mt-20">
-          <div className="bg-white rounded-3xl shadow-lg overflow-hidden h-[340px] sm:h-[400px] border border-gray-200">
+          <div className="bg-white rounded-3xl shadow-lg overflow-hidden min-h-[340px] sm:min-h-[400px] lg:h-[400px] border border-gray-200">
             <div className="grid grid-cols-1 lg:grid-cols-[65%_35%] h-full">
               {/* Left side - Text content */}
               <div className="p-8 sm:p-12 flex flex-col justify-center h-full">
                 <div className="max-w-[40rem] ml-8">
-                  <blockquote className="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight mb-6">
+                  <blockquote className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 leading-tight mb-6">
                     "10,000+ Instagram Tasks Automated Daily"
                   </blockquote>
-                  <p className="text-xl text-gray-600 leading-relaxed">
+                  <p className="text-lg sm:text-xl lg:text-xl text-gray-600 leading-relaxed">
                     Their innovative approach and technical expertise exceeded all our expectations.
                   </p>
                 </div>
@@ -230,15 +230,15 @@ export const Showcase = () => {
 
         {/* Third Testimonial Card */}
         <div className="mt-16 sm:mt-20">
-          <div className="bg-white rounded-3xl shadow-lg overflow-hidden h-[340px] sm:h-[400px] border border-gray-200">
+          <div className="bg-white rounded-3xl shadow-lg overflow-hidden min-h-[340px] sm:min-h-[400px] lg:h-[400px] border border-gray-200">
             <div className="grid grid-cols-1 lg:grid-cols-[65%_35%] h-full">
               {/* Left side - Text content */}
               <div className="p-8 sm:p-12 flex flex-col justify-center h-full">
                 <div className="max-w-[40rem] ml-8">
-                  <blockquote className="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight mb-6">
+                  <blockquote className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 leading-tight mb-6">
                     "500+ Appointments Every Week"
                   </blockquote>
-                  <p className="text-xl text-gray-600 leading-relaxed">
+                  <p className="text-lg sm:text-xl lg:text-xl text-gray-600 leading-relaxed">
                     Professional, reliable, and always available when we needed support or updates.
                   </p>
                 </div>
