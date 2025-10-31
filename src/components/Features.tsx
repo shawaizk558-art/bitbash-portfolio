@@ -485,6 +485,32 @@ export const Features = () => {
             </div>
           </div>
         </div>
+
+        {/* How We Work Section */}
+        <div className="mt-12 sm:mt-16 md:mt-24">
+          <div className="text-center pt-8 sm:pt-12 md:pt-16 mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 mb-4">
+              This is how we work
+            </h2>
+          </div>
+          
+          {/* Video Placeholder */}
+          <div className="relative w-full max-w-5xl mx-auto">
+            <div className="relative w-full aspect-video bg-gray-100 rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg border border-gray-200">
+              {/* Video placeholder content */}
+              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-purple-50 to-gray-100">
+                <div className="text-center p-8">
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 rounded-full bg-purple-600 flex items-center justify-center">
+                    <svg className="w-10 h-10 sm:w-12 sm:h-12 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z"/>
+                    </svg>
+                  </div>
+                  <p className="text-gray-600 text-sm sm:text-base font-medium">Video placeholder</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
