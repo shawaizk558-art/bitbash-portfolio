@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ChevronDown, Code, Smartphone, Palette, Zap, Database, Globe, Cloud, Github, Slack, Building2, ShoppingCart, Rocket, BookOpen, FileText, GraduationCap, Bot, GitBranch, Shield, Menu, X } from "@/lib/icons";
+import { ChevronDown, Code, Smartphone, Palette, Zap, Database, Globe, Cloud, Github, Building2, ShoppingCart, Rocket, Bot, GitBranch, Shield, Menu, X } from "@/lib/icons";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useIsMobile, useResponsive } from "@/hooks/use-mobile";
@@ -290,81 +290,10 @@ export const Navigation = () => {
               <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Pricing</span>
             </a>
 
-            {/* Resources Dropdown */}
-            <div className="relative">
-              <div 
-                onClick={() => toggleDropdown('resources')}
-                className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0"
-              >
-                <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Resources</span>
-                <ChevronDown className={`w-4 h-4 text-gray-900 transition-transform duration-200 ${openDropdown === 'resources' ? 'rotate-180' : ''}`} />
-              </div>
-              
-              {openDropdown === 'resources' && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[90vw] max-w-[600px] lg:w-[600px] bg-white rounded-2xl shadow-2xl border border-gray-200 p-4 sm:p-6 lg:p-8 opacity-0 animate-fadeIn">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-                    <div>
-                      <h3 className="text-sm font-bold text-gray-900 mb-3 sm:mb-4">Learn</h3>
-                      <div className="space-y-2 sm:space-y-3">
-                        <a href="#" className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg hover:bg-gray-50 transition-colors group min-h-[44px]">
-                          <BookOpen className="w-5 h-5 text-purple-600 mt-0.5" />
-                          <div>
-                            <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">Documentation</div>
-                            <p className="text-xs text-gray-500 mt-0.5">Complete technical guides</p>
-                          </div>
-                        </a>
-                        <a href="#" className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group">
-                          <GraduationCap className="w-5 h-5 text-purple-600 mt-0.5" />
-                          <div>
-                            <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">Tutorials</div>
-                            <p className="text-xs text-gray-500 mt-0.5">Step-by-step learning paths</p>
-                          </div>
-                        </a>
-                        <a href="#" className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group">
-                          <Code className="w-5 h-5 text-purple-600 mt-0.5" />
-                          <div>
-                            <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">Code Examples</div>
-                            <p className="text-xs text-gray-500 mt-0.5">Ready-to-use snippets</p>
-                          </div>
-                        </a>
-                      </div>
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-bold text-gray-900 mb-3 sm:mb-4">Support</h3>
-                      <div className="space-y-2 sm:space-y-3">
-                        <a href="#" className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg hover:bg-gray-50 transition-colors group min-h-[44px]">
-                          <FileText className="w-5 h-5 text-purple-600 mt-0.5" />
-                          <div>
-                            <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">Blog</div>
-                            <p className="text-xs text-gray-500 mt-0.5">Latest news and insights</p>
-                          </div>
-                        </a>
-                        <a href="#" className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group">
-                          <Slack className="w-5 h-5 text-purple-600 mt-0.5" />
-                          <div>
-                            <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">Community</div>
-                            <p className="text-xs text-gray-500 mt-0.5">Connect with developers</p>
-                          </div>
-                        </a>
-                        <a href="#" className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group">
-                          <Database className="w-5 h-5 text-purple-600 mt-0.5" />
-                          <div>
-                            <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">API Reference</div>
-                            <p className="text-xs text-gray-500 mt-0.5">Complete API documentation</p>
-                          </div>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-6 pt-6 border-t border-gray-200">
-                    <a href="#" className="text-sm font-semibold text-purple-600 hover:text-purple-700 flex items-center gap-2">
-                      Browse all resources
-                      <span>→</span>
-                    </a>
-                  </div>
-                </div>
-              )}
-            </div>
+            {/* Blog Link */}
+            <a href="/blog" className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0">
+              <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Blog</span>
+            </a>
           </div>
           
           {/* Desktop CTA Buttons - Right Side */}
@@ -448,6 +377,13 @@ export const Navigation = () => {
                   onClick={closeMobileMenu}
                 >
                   <span>Pricing</span>
+                </a>
+                <a 
+                  href="/blog" 
+                  className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
+                  onClick={closeMobileMenu}
+                >
+                  <span>Blog</span>
                 </a>
                 <a 
                   href="/case-studies" 

@@ -48,7 +48,7 @@ export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
             <ul className="space-y-2 sm:space-y-3 m-0 p-0 list-none" style={{ paddingLeft: 0, marginLeft: 0 }}>
               <li className="m-0 p-0" style={{ paddingLeft: 0, marginLeft: 0, listStyle: 'none' }}><a href="/case-studies" className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors" style={{ display: 'block' }}>Case Studies</a></li>
               <li className="m-0 p-0" style={{ paddingLeft: 0, marginLeft: 0, listStyle: 'none' }}><a href="/pricing" className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors" style={{ display: 'block' }}>Pricing</a></li>
-              <li className="m-0 p-0" style={{ paddingLeft: 0, marginLeft: 0, listStyle: 'none' }}><a href="#" className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors" style={{ display: 'block' }}>Blog</a></li>
+              <li className="m-0 p-0" style={{ paddingLeft: 0, marginLeft: 0, listStyle: 'none' }}><a href="/blog" className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors" style={{ display: 'block' }}>Blog</a></li>
               <li className="m-0 p-0" style={{ paddingLeft: 0, marginLeft: 0, listStyle: 'none' }}><a href="#" className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors" style={{ display: 'block' }}>Documentation</a></li>
               <li className="m-0 p-0" style={{ paddingLeft: 0, marginLeft: 0, listStyle: 'none' }}><a href="#" className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors" style={{ display: 'block' }}>API Docs</a></li>
             </ul>

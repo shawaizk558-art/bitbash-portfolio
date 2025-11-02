@@ -30,6 +30,8 @@ export {
   MessageCircle,
   Calendar,
   Users,
+  User,
+  Search,
   TrendingUp,
   DollarSign,
   Star,
