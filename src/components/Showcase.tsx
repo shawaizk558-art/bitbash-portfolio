@@ -135,6 +135,13 @@ export const Showcase = () => {
           ))}
         </div>
 
+        {/* View All Projects - Button */}
+        <div className="mt-8 sm:mt-10 flex justify-center">
+          <a href="/projects" className="text-black hover:text-black font-bold">
+            View all projects →
+          </a>
+        </div>
+
         {/* Testimonials Section Heading */}
         <div className="mt-32 sm:mt-40 mb-16 sm:mb-20">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 text-center">

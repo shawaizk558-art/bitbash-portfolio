@@ -328,13 +328,9 @@ const Contact = () => {
             Join 50+ businesses that have transformed their operations with our automation solutions.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
-            <Button size="lg" className="bg-white text-purple-600 hover:bg-gray-100 px-6 sm:px-8 py-3 sm:py-4 text-responsive-sm sm:text-base touch-friendly">
+            <Button size="lg" className="bg-white text-black hover:bg-gray-100 px-6 sm:px-8 py-3 sm:py-4 text-responsive-sm sm:text-base touch-friendly">
               Book Free Consultation
               <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
-            </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-purple-600 px-6 sm:px-8 py-3 sm:py-4 text-responsive-sm sm:text-base touch-friendly">
-              <Users className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-              View Case Studies
             </Button>
           </div>
         </div>

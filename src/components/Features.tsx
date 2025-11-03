@@ -84,7 +84,7 @@ export const Features = () => {
   };
 
   return (
-    <section id="features" className="py-12 sm:py-16 md:py-24 bg-white">
+    <section id="features" className="py-12 sm:py-16 md:py-24 bg-white overflow-x-hidden">
       <div className="container-responsive">
         <div className="text-center max-w-7xl mx-auto mb-12 sm:mb-16 space-responsive-sm">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 leading-tight lg:whitespace-nowrap px-2 sm:px-0">
@@ -98,7 +98,7 @@ export const Features = () => {
         {/* Large Showcase Card with Tabs */}
         <div className="shadow-lg bg-white border border-gray-200 rounded-2xl sm:rounded-3xl overflow-hidden">
           {/* Tab Navigation - Mobile Optimized with Horizontal Scroll */}
-          <div className="relative flex border-b border-gray-200 overflow-x-auto scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}>
+          <div className="relative flex border-b border-gray-200 md:overflow-x-auto scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}>
             <style>{`
               .scrollbar-hide::-webkit-scrollbar {
                 display: none;
@@ -108,12 +108,12 @@ export const Features = () => {
               <div
               key={index}
                 onClick={() => handleTabClick(index)}
-                className={`flex-shrink-0 min-w-[140px] sm:min-w-[150px] md:flex-1 md:min-w-0 lg:flex-1 lg:min-w-0 p-3 sm:p-4 lg:p-5 text-center cursor-pointer hover:bg-gray-50 transition-colors relative min-h-[44px] lg:min-h-0
+                className={`flex-shrink-0 min-w-0 flex-1 md:min-w-[140px] sm:min-w-[150px] md:flex-1 md:min-w-0 lg:flex-1 lg:min-w-0 p-2 sm:p-3 md:p-4 lg:p-5 text-center cursor-pointer hover:bg-gray-50 transition-colors relative min-h-[44px] lg:min-h-0
                   ${activeTab === index ? 'bg-white' : 'bg-gray-50'}
                   ${index > 0 ? 'border-l border-gray-200' : ''}`}
               >
-                <tab.icon className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-purple-600 mx-auto mb-1 sm:mb-2" />
-                <h4 className="font-bold text-gray-900 text-xs sm:text-sm lg:text-base leading-tight">{tab.title}</h4>
+                <tab.icon className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 text-purple-600 mx-auto mb-0.5 sm:mb-1 md:mb-2" />
+                <h4 className="font-bold text-gray-900 text-[10px] sm:text-xs md:text-sm lg:text-base leading-tight">{tab.title}</h4>
                 
                 {/* Animated underline for each tab */}
                 {activeTab === index && (
@@ -127,7 +127,7 @@ export const Features = () => {
           </div>
 
           {/* Photo Display Area - Mobile Optimized */}
-          <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-2 sm:p-4 relative overflow-visible">
+          <div className="bg-gradient-to-br from-purple-50 to-white p-2 sm:p-4 relative overflow-visible">
             <div className="bg-white rounded-lg shadow-xl p-2 sm:p-4 w-full max-w-4xl mx-auto transform translate-y-4 sm:translate-y-6 md:translate-y-8 relative">
               {/* Container for maintaining aspect ratio */}
               <div className="relative w-full overflow-hidden rounded-lg">
@@ -153,7 +153,7 @@ export const Features = () => {
             
             {/* Callout Box - Dynamic based on active tab - Only show for options 1, 2, and 5 */}
             {(activeTab === 0 || activeTab === 1 || activeTab === 4) && (
-              <div className={`relative mt-4 sm:mt-6 max-w-[300px] mx-auto sm:mx-0 sm:absolute sm:mt-0 z-20 ${
+              <div className={`hidden sm:block relative mt-4 sm:mt-6 max-w-[300px] mx-auto sm:mx-0 sm:absolute sm:mt-0 z-20 ${
                 activeTab === 0 ? 'sm:left-8 sm:top-40 md:top-44' : 
                 activeTab === 4 ? 'sm:right-4 sm:top-24 md:top-28' : 
                 'sm:right-4 sm:top-10'
@@ -190,19 +190,19 @@ export const Features = () => {
         <div className="mt-12 sm:mt-16 md:mt-20 overflow-hidden shadow-lg bg-white border border-gray-200 rounded-2xl sm:rounded-none">
           <div className="grid grid-cols-1 lg:grid-cols-2">
             {/* Left side - Text content */}
-            <div className="bg-white px-6 sm:px-8 md:px-12 py-0 flex flex-col border-r-0 lg:border-r border-gray-200">
+            <div className="bg-white px-6 sm:px-8 md:px-12 py-0 flex flex-col border-r-0 lg:border-r border-gray-200 order-2 lg:order-1 pb-4 sm:pb-0">
               {/* Label at the top */}
-              <div className="inline-flex items-center gap-2 pt-8 sm:pt-10">
+              <div className="inline-flex items-center gap-2 pt-4 sm:pt-8 md:pt-10">
                 <Code className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
                 <span className="font-semibold text-purple-600 uppercase text-xs tracking-wide">FULL-STACK DEVELOPMENT</span>
               </div>
               
               {/* Content positioned manually */}
-              <div className="flex flex-col mt-4 sm:mt-6">
-                <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">
+              <div className="flex flex-col mt-2 sm:mt-4 md:mt-6">
+                <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 md:mb-6">
                   Complete Web & Mobile Solutions
                 </h3>
-                <div className="space-y-4 sm:space-y-5 mb-0">
+                <div className="space-y-2 sm:space-y-4 md:space-y-5 mb-0">
                   <div className="flex items-start gap-3">
                     <Code className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 mt-1 flex-shrink-0" />
                     <p className="text-gray-700 text-sm sm:text-base lg:text-lg">Modern web & mobile apps using Django, React, Node.js.</p>
@@ -219,7 +219,7 @@ export const Features = () => {
               </div>
               
               {/* Button as separate div */}
-              <div className="mt-28 sm:mt-36">
+              <div className="mt-4 sm:mt-40 md:mt-52 lg:mt-64">
                 <button className="bg-white border border-gray-300 text-gray-900 font-bold px-3 py-2 rounded-sm shadow-sm hover:shadow-md transition-all flex items-center gap-1 text-xs sm:text-sm lg:text-sm w-fit min-h-[44px] lg:min-h-0">
                   View Development Services →
                 </button>
@@ -227,60 +227,42 @@ export const Features = () => {
             </div>
 
             {/* Right side - Visual mockups - Mobile Optimized */}
-            <div className="bg-white p-6 sm:p-8 md:p-12 flex items-center justify-center">
-              <div className="grid grid-cols-2 gap-2 sm:gap-4 w-full max-w-lg">
-                {[1, 2, 3, 4].map((item) => (
-                  <div key={item} className="bg-white shadow-md p-2 sm:p-4 border border-gray-200 rounded-sm">
-                    <div className="bg-gradient-to-br from-purple-100 to-purple-200 h-20 sm:h-32 mb-2 sm:mb-3 flex items-center justify-center rounded">
-                      <Code className="w-6 h-6 sm:w-8 sm:h-8 text-purple-600" />
-                    </div>
-                    <div className="space-y-1 sm:space-y-2">
-                      <div className="h-1 sm:h-2 bg-gray-200 w-3/4 rounded"></div>
-                      <div className="h-1 sm:h-2 bg-gray-200 w-full rounded"></div>
-                      <div className="h-1 sm:h-2 bg-gray-200 w-2/3 rounded"></div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <div className="bg-white flex items-center justify-center order-1 lg:order-2">
+              <img 
+                src="/stack1.png" 
+                alt="Full-Stack Development Stack" 
+                className="w-full h-auto object-cover"
+              />
             </div>
           </div>
         </div>
 
         {/* Card 2: AI Solutions - Mobile Optimized */}
-        <div className="mt-12 sm:mt-16 md:mt-20 overflow-hidden shadow-lg bg-white border border-gray-200 rounded-2xl sm:rounded-none">
+        <div className="mt-12 sm:mt-16 md:mt-20 overflow-hidden shadow-lg bg-white rounded-2xl sm:rounded-none border-t border-l border-r border-gray-200">
           <div className="grid grid-cols-1 lg:grid-cols-2">
             {/* Left side - Visual mockups - Mobile Optimized */}
-            <div className="bg-white p-6 sm:p-8 md:p-12 flex items-center justify-center lg:order-1">
-              <div className="grid grid-cols-2 gap-2 sm:gap-4 w-full max-w-lg">
-                {[1, 2, 3, 4].map((item) => (
-                  <div key={item} className="bg-white shadow-md p-2 sm:p-4 border border-gray-200 rounded-sm">
-                    <div className="bg-gradient-to-br from-purple-100 to-purple-200 h-20 sm:h-32 mb-2 sm:mb-3 flex items-center justify-center rounded">
-                      <Bot className="w-6 h-6 sm:w-8 sm:h-8 text-purple-600" />
-                    </div>
-                    <div className="space-y-1 sm:space-y-2">
-                      <div className="h-1 sm:h-2 bg-gray-200 w-3/4 rounded"></div>
-                      <div className="h-1 sm:h-2 bg-gray-200 w-full rounded"></div>
-                      <div className="h-1 sm:h-2 bg-gray-200 w-2/3 rounded"></div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <div className="bg-white flex items-center justify-start lg:order-1 pr-4 pb-4 pl-0 pt-0 order-1 lg:order-1">
+              <img 
+                src="/stack2.png" 
+                alt="AI Solutions Stack" 
+                className="w-full md:w-[95%] h-auto object-cover"
+              />
             </div>
 
             {/* Right side - Text content */}
-            <div className="bg-white px-6 sm:px-8 md:px-12 py-0 flex flex-col border-r-0 lg:border-l border-gray-200 lg:order-2">
+            <div className="bg-white px-6 sm:px-8 md:px-12 py-0 flex flex-col lg:order-2 pb-4 sm:pb-8 order-2 lg:order-2">
               {/* Label at the top */}
-              <div className="inline-flex items-center gap-2 pt-8 sm:pt-10">
+              <div className="inline-flex items-center gap-2 pt-4 sm:pt-8 md:pt-10">
                 <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
                 <span className="font-semibold text-purple-600 uppercase text-xs tracking-wide">AI SOLUTIONS</span>
               </div>
               
               {/* Content positioned manually */}
-              <div className="flex flex-col mt-4 sm:mt-6">
-                <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">
+              <div className="flex flex-col mt-2 sm:mt-4 md:mt-6">
+                <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 md:mb-6">
                   Intelligent Machine Learning Systems
                 </h3>
-                <div className="space-y-4 sm:space-y-5 mb-0">
+                <div className="space-y-2 sm:space-y-4 md:space-y-5 mb-0">
                   <div className="flex items-start gap-3">
                     <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 mt-1 flex-shrink-0" />
                     <p className="text-gray-700 text-sm sm:text-base lg:text-lg">Custom AI models and machine learning solutions</p>
@@ -297,7 +279,7 @@ export const Features = () => {
               </div>
               
               {/* Button as separate div */}
-              <div className="mt-28 sm:mt-36">
+              <div className="mt-4 sm:mt-20 md:mt-28 mb-0">
                 <button className="bg-white border border-gray-300 text-gray-900 font-bold px-3 py-2 rounded-sm shadow-sm hover:shadow-md transition-all flex items-center gap-1 text-xs sm:text-sm lg:text-sm w-fit min-h-[44px] lg:min-h-0">
                   Explore AI Solutions →
                 </button>
@@ -310,36 +292,36 @@ export const Features = () => {
         <div className="mt-12 sm:mt-16 md:mt-20 overflow-hidden shadow-lg bg-white border border-gray-200 rounded-2xl sm:rounded-none">
           <div className="grid grid-cols-1 lg:grid-cols-2">
             {/* Left side - Text content */}
-            <div className="bg-white px-6 sm:px-8 md:px-12 py-0 flex flex-col border-r-0 lg:border-r border-gray-200">
+            <div className="bg-white px-6 sm:px-8 md:px-10 py-0 flex flex-col pb-4 sm:pb-6 order-2 lg:order-1">
               {/* Label at the top */}
-              <div className="inline-flex items-center gap-2 pt-8 sm:pt-10">
+              <div className="inline-flex items-center gap-2 pt-4 sm:pt-6 md:pt-8">
                 <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
                 <span className="font-semibold text-purple-600 uppercase text-xs tracking-wide">AUTOMATION SYSTEM</span>
               </div>
               
               {/* Content positioned manually */}
-              <div className="flex flex-col mt-4 sm:mt-6">
-                <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">
+              <div className="flex flex-col mt-2 sm:mt-3 md:mt-4">
+                <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl font-bold text-gray-900 mb-2 sm:mb-3 md:mb-4">
                   Intelligent Process Automation
                 </h3>
-                <div className="space-y-4 sm:space-y-5 mb-0">
+                <div className="space-y-2 sm:space-y-3 mb-0">
                   <div className="flex items-start gap-3">
                     <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 mt-1 flex-shrink-0" />
-                    <p className="text-gray-700 text-sm sm:text-base lg:text-lg">Automation & AI Bots for business workflows</p>
+                    <p className="text-gray-700 text-sm sm:text-base">Automation & AI Bots for business workflows</p>
                   </div>
                   <div className="flex items-start gap-3">
                     <Globe className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 mt-1 flex-shrink-0" />
-                    <p className="text-gray-700 text-sm sm:text-base lg:text-lg">Custom scripts and bots that streamline processes</p>
+                    <p className="text-gray-700 text-sm sm:text-base">Custom scripts and bots that streamline processes</p>
                   </div>
                   <div className="flex items-start gap-3">
                     <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 mt-1 flex-shrink-0" />
-                    <p className="text-gray-700 text-sm sm:text-base lg:text-lg">Intelligent task automation and scheduling</p>
+                    <p className="text-gray-700 text-sm sm:text-base">Intelligent task automation and scheduling</p>
                   </div>
                 </div>
               </div>
               
               {/* Button as separate div */}
-              <div className="mt-28 sm:mt-36">
+              <div className="mt-4 sm:mt-16 md:mt-20 mb-0">
                 <button className="bg-white border border-gray-300 text-gray-900 font-bold px-3 py-2 rounded-sm shadow-sm hover:shadow-md transition-all flex items-center gap-1 text-xs sm:text-sm lg:text-sm w-fit min-h-[44px] lg:min-h-0">
                   Explore Automation →
                 </button>
@@ -347,21 +329,12 @@ export const Features = () => {
             </div>
 
             {/* Right side - Visual mockups - Mobile Optimized */}
-            <div className="bg-white p-6 sm:p-8 md:p-12 flex items-center justify-center">
-              <div className="grid grid-cols-2 gap-2 sm:gap-4 w-full max-w-lg">
-                {[1, 2, 3, 4].map((item) => (
-                  <div key={item} className="bg-white shadow-md p-2 sm:p-4 border border-gray-200 rounded-sm">
-                    <div className="bg-gradient-to-br from-purple-100 to-purple-200 h-20 sm:h-32 mb-2 sm:mb-3 flex items-center justify-center rounded">
-                      <Zap className="w-6 h-6 sm:w-8 sm:h-8 text-purple-600" />
-                    </div>
-                    <div className="space-y-1 sm:space-y-2">
-                      <div className="h-1 sm:h-2 bg-gray-200 w-3/4 rounded"></div>
-                      <div className="h-1 sm:h-2 bg-gray-200 w-full rounded"></div>
-                      <div className="h-1 sm:h-2 bg-gray-200 w-2/3 rounded"></div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <div className="bg-white flex items-center justify-end pl-4 pb-4 pr-0 pt-0 order-1 lg:order-2">
+              <img 
+                src="/stack3.png" 
+                alt="Automation System Stack" 
+                className="w-full md:w-[105%] h-auto object-cover"
+              />
             </div>
           </div>
         </div>
@@ -370,37 +343,28 @@ export const Features = () => {
         <div className="mt-12 sm:mt-16 md:mt-20 overflow-hidden shadow-lg bg-white border border-gray-200 rounded-2xl sm:rounded-none">
           <div className="grid grid-cols-1 lg:grid-cols-2">
             {/* Left side - Visual mockups - Mobile Optimized */}
-            <div className="bg-white p-6 sm:p-8 md:p-12 flex items-center justify-center lg:order-1">
-              <div className="grid grid-cols-2 gap-2 sm:gap-4 w-full max-w-lg">
-                {[1, 2, 3, 4].map((item) => (
-                  <div key={item} className="bg-white shadow-md p-2 sm:p-4 border border-gray-200 rounded-sm">
-                    <div className="bg-gradient-to-br from-purple-100 to-purple-200 h-20 sm:h-32 mb-2 sm:mb-3 flex items-center justify-center rounded">
-                      <Database className="w-6 h-6 sm:w-8 sm:h-8 text-purple-600" />
-                    </div>
-                    <div className="space-y-1 sm:space-y-2">
-                      <div className="h-1 sm:h-2 bg-gray-200 w-3/4 rounded"></div>
-                      <div className="h-1 sm:h-2 bg-gray-200 w-full rounded"></div>
-                      <div className="h-1 sm:h-2 bg-gray-200 w-2/3 rounded"></div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <div className="bg-white flex items-center justify-start lg:order-1 pr-4 pb-4 pl-0 pt-0 order-1 lg:order-1">
+              <img 
+                src="/stack4.png" 
+                alt="Data Scraping Stack" 
+                className="w-full md:w-[105%] h-auto object-cover"
+              />
             </div>
 
             {/* Right side - Text content */}
-            <div className="bg-white px-6 sm:px-8 md:px-12 py-0 flex flex-col border-r-0 lg:border-l border-gray-200 lg:order-2">
+            <div className="bg-white px-6 sm:px-8 md:px-12 py-0 flex flex-col lg:order-2 pb-4 sm:pb-8 order-2 lg:order-2">
               {/* Label at the top */}
-              <div className="inline-flex items-center gap-2 pt-8 sm:pt-10">
+              <div className="inline-flex items-center gap-2 pt-4 sm:pt-8 md:pt-10">
                 <Database className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
                 <span className="font-semibold text-purple-600 uppercase text-xs tracking-wide">DATA SCRAPING</span>
               </div>
               
               {/* Content positioned manually */}
-              <div className="flex flex-col mt-4 sm:mt-6">
-                <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">
+              <div className="flex flex-col mt-2 sm:mt-4 md:mt-6">
+                <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 md:mb-6">
                   Extract Data from Any Source
                 </h3>
-                <div className="space-y-4 sm:space-y-5 mb-0">
+                <div className="space-y-2 sm:space-y-4 md:space-y-5 mb-0">
                   <div className="flex items-start gap-3">
                     <Database className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 mt-1 flex-shrink-0" />
                     <p className="text-gray-700 text-sm sm:text-base lg:text-lg">Automated data collection using Python, Scrapy, and Selenium.</p>
@@ -417,7 +381,7 @@ export const Features = () => {
               </div>
               
               {/* Button as separate div */}
-              <div className="mt-28 sm:mt-36">
+              <div className="mt-4 sm:mt-40 md:mt-52 lg:mt-64">
                 <button className="bg-white border border-gray-300 text-gray-900 font-bold px-3 py-2 rounded-sm shadow-sm hover:shadow-md transition-all flex items-center gap-1 text-xs sm:text-sm lg:text-sm w-fit min-h-[44px] lg:min-h-0">
                   Learn More →
                 </button>
@@ -430,36 +394,36 @@ export const Features = () => {
         <div className="mt-12 sm:mt-16 md:mt-20 overflow-hidden shadow-lg bg-white border border-gray-200 rounded-2xl sm:rounded-none">
           <div className="grid grid-cols-1 lg:grid-cols-2">
             {/* Left side - Text content */}
-            <div className="bg-white px-6 sm:px-8 md:px-12 py-0 flex flex-col border-r-0 lg:border-r border-gray-200">
+            <div className="bg-white px-6 sm:px-8 md:px-11 py-0 flex flex-col pb-4 sm:pb-7 order-2 lg:order-1">
               {/* Label at the top */}
-              <div className="inline-flex items-center gap-2 pt-8 sm:pt-10">
+              <div className="inline-flex items-center gap-2 pt-4 sm:pt-7 md:pt-9">
                 <Code className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
                 <span className="font-semibold text-purple-600 uppercase text-xs tracking-wide">SAAS & MVP DEVELOPMENT</span>
               </div>
               
               {/* Content positioned manually */}
-              <div className="flex flex-col mt-4 sm:mt-6">
-                <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">
+              <div className="flex flex-col mt-2 sm:mt-4 md:mt-5">
+                <h3 className="text-2xl sm:text-2xl md:text-3xl lg:text-3xl font-bold text-gray-900 mb-3 sm:mb-4 md:mb-5">
                   Launch-Ready Products Built Fast
                 </h3>
-                <div className="space-y-4 sm:space-y-5 mb-0">
+                <div className="space-y-2 sm:space-y-4 mb-0">
                   <div className="flex items-start gap-3">
                     <Code className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 mt-1 flex-shrink-0" />
-                    <p className="text-gray-700 text-sm sm:text-base lg:text-lg">SaaS & MVP Development tailored to your business</p>
+                    <p className="text-gray-700 text-sm sm:text-base">SaaS & MVP Development tailored to your business</p>
                   </div>
                   <div className="flex items-start gap-3">
                     <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 mt-1 flex-shrink-0" />
-                    <p className="text-gray-700 text-sm sm:text-base lg:text-lg">Scalable and fast product development</p>
+                    <p className="text-gray-700 text-sm sm:text-base">Scalable and fast product development</p>
                   </div>
                   <div className="flex items-start gap-3">
                     <Target className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 mt-1 flex-shrink-0" />
-                    <p className="text-gray-700 text-sm sm:text-base lg:text-lg">Launch-ready products built efficiently</p>
+                    <p className="text-gray-700 text-sm sm:text-base">Launch-ready products built efficiently</p>
                   </div>
                 </div>
               </div>
               
               {/* Button as separate div */}
-              <div className="mt-28 sm:mt-36">
+              <div className="mt-4 sm:mt-20 md:mt-24 mb-0">
                 <button className="bg-white border border-gray-300 text-gray-900 font-bold px-3 py-2 rounded-sm shadow-sm hover:shadow-md transition-all flex items-center gap-1 text-xs sm:text-sm lg:text-sm w-fit min-h-[44px] lg:min-h-0">
                   View SaaS Solutions →
                 </button>
@@ -467,21 +431,12 @@ export const Features = () => {
             </div>
 
             {/* Right side - Visual mockups - Mobile Optimized */}
-            <div className="bg-white p-6 sm:p-8 md:p-12 flex items-center justify-center">
-              <div className="grid grid-cols-2 gap-2 sm:gap-4 w-full max-w-lg">
-                {[1, 2, 3, 4].map((item) => (
-                  <div key={item} className="bg-white shadow-md p-2 sm:p-4 border border-gray-200 rounded-sm">
-                    <div className="bg-gradient-to-br from-purple-100 to-purple-200 h-20 sm:h-32 mb-2 sm:mb-3 flex items-center justify-center rounded">
-                      <Code className="w-6 h-6 sm:w-8 sm:h-8 text-purple-600" />
-                    </div>
-                    <div className="space-y-1 sm:space-y-2">
-                      <div className="h-1 sm:h-2 bg-gray-200 w-3/4 rounded"></div>
-                      <div className="h-1 sm:h-2 bg-gray-200 w-full rounded"></div>
-                      <div className="h-1 sm:h-2 bg-gray-200 w-2/3 rounded"></div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <div className="bg-white flex items-center justify-end pl-4 pb-4 pr-0 pt-0 order-1 lg:order-2">
+              <img 
+                src="/stack5.png" 
+                alt="SaaS & MVP Development Stack" 
+                className="w-full md:w-[105%] h-auto object-cover"
+              />
             </div>
           </div>
         </div>
@@ -497,15 +452,20 @@ export const Features = () => {
           {/* Video Placeholder */}
           <div className="relative w-full max-w-5xl mx-auto">
             <div className="relative w-full aspect-video bg-gray-100 rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg border border-gray-200">
-              {/* Video placeholder content */}
-              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-purple-50 to-gray-100">
-                <div className="text-center p-8">
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 rounded-full bg-purple-600 flex items-center justify-center">
-                    <svg className="w-10 h-10 sm:w-12 sm:h-12 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M8 5v14l11-7z"/>
-                    </svg>
-                  </div>
-                  <p className="text-gray-600 text-sm sm:text-base font-medium">Video placeholder</p>
+              {/* Placeholder image */}
+              <div className="absolute inset-0">
+                <img 
+                  src="/placeholder.jpeg" 
+                  alt="How we work" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              {/* Play button overlay */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gray-900/50 backdrop-blur-sm flex items-center justify-center hover:bg-gray-900/60 transition-all cursor-pointer">
+                  <svg className="w-10 h-10 sm:w-12 sm:h-12 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
                 </div>
               </div>
             </div>

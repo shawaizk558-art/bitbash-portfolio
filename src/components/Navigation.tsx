@@ -386,16 +386,6 @@ export const Navigation = () => {
                   <span>Blog</span>
                 </a>
                 <a 
-                  href="/case-studies" 
-                  className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
-                  onClick={closeMobileMenu}
-                >
-                  <span>Case Studies</span>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </a>
-                <a 
                   href="/contact" 
                   className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
                   onClick={closeMobileMenu}
