@@ -17,18 +17,18 @@ const Pricing = () => {
       <Navigation />
       
       {/* Hero Section - match Blog hero sizes and structure */}
-      <section className="relative min-h-[50vh] sm:min-h-[50vh] flex items-center justify-center overflow-hidden pt-12 sm:pt-16 pb-6 sm:pb-8 lg:pb-12">
+      <section className="relative min-h-[30vh] sm:min-h-[40vh] flex items-center justify-center overflow-hidden pt-8 pb-0 sm:pt-10 sm:pb-6">
         <div className="absolute inset-0 bg-gradient-to-br from-gradient-start via-gradient-mid to-gradient-end animate-gradient opacity-60 pointer-events-none" />
         <div className="absolute top-20 left-4 sm:left-10 w-48 h-48 sm:w-72 sm:h-72 bg-primary/20 rounded-full blur-3xl animate-float pointer-events-none" />
         <div className="absolute bottom-20 right-4 sm:right-10 w-64 h-64 sm:w-96 sm:h-96 bg-accent/20 rounded-full blur-3xl animate-float pointer-events-none" style={{ animationDelay: '2s' }} />
         <div className="container-responsive relative z-20">
-          <div className="max-w-5xl mx-auto text-center flex flex-col items-center justify-center space-y-4 sm:space-responsive-lg">
-            <div className="mt-4 sm:mt-6 lg:mt-10">
-              <h1 className="text-3xl sm:text-responsive-3xl sm:text-responsive-4xl md:text-6xl font-bold text-gray-900">
-                Pricing
-              </h1>
-            </div>
-            <div className="hidden sm:block space-responsive-sm">
+          <div className="max-w-5xl mx-auto text-center flex flex-col items-center justify-center">
+            {/* Heading - Always visible, centered on mobile */}
+            <h1 className="text-3xl sm:text-responsive-3xl sm:text-responsive-4xl md:text-6xl font-bold text-gray-900 m-0">
+              Pricing
+            </h1>
+            {/* Subtitle Lines - Hidden on mobile, visible on larger screens */}
+            <div className="hidden sm:block mt-4 space-responsive-sm">
               <div className="space-y-1 sm:space-y-1.5">
                 <p className="text-base sm:text-lg md:text-xl lg:text-[21px] text-black font-semibold whitespace-nowrap">
                   Transparent, value‑based pricing tailored to your project scope and timeline
