@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Code, Smartphone, Palette, Zap, Database, Globe, Cloud, Github, Building2, ShoppingCart, Rocket, Bot, GitBranch, Shield, Menu, X } from "@/lib/icons";
-import { useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useIsMobile, useResponsive } from "@/hooks/use-mobile";
 import { Logo } from "@/components/Logo";
@@ -8,9 +8,18 @@ import { Logo } from "@/components/Logo";
 export const Navigation = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [shouldCollapse, setShouldCollapse] = useState(false);
   const isMobile = useIsMobile();
   const { isTablet } = useResponsive();
   const location = useLocation();
+
+  // Refs used to measure available space and decide when to collapse
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const centerLinksRef = useRef<HTMLDivElement | null>(null);
+  const rightCtaRef = useRef<HTMLDivElement | null>(null);
+  const logoRef = useRef<HTMLAnchorElement | null>(null);
+  const isTransitioningRef = useRef(false);
+  const lastMeasurementRef = useRef(0);
 
   // Function to check if a page is currently active (mobile only)
   const isActivePage = (path: string) => {
@@ -34,20 +43,132 @@ export const Navigation = () => {
     setOpenDropdown(null);
   };
 
+  // Detect overflow of nav items and force collapse if needed
+  useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout>;
+    let lastWidth = 0;
+
+    const measureAndSet = () => {
+      // Prevent measurement during transitions
+      if (isTransitioningRef.current) return;
+      
+      // Throttle measurements - don't measure more than once per 200ms
+      const now = Date.now();
+      if (now - lastMeasurementRef.current < 200) return;
+      lastMeasurementRef.current = now;
+
+      const container = containerRef.current;
+      const center = centerLinksRef.current;
+      const right = rightCtaRef.current;
+      const logo = logoRef.current;
+      
+      if (!container || !center || !right || !logo) return;
+
+      const containerWidth = container.clientWidth;
+      
+      // Skip if width hasn't changed significantly
+      if (Math.abs(containerWidth - lastWidth) < 10) {
+        return;
+      }
+      lastWidth = containerWidth;
+
+      // Temporarily show elements to measure accurately using inline styles
+      const centerOriginalStyle = center.style.cssText;
+      const rightOriginalStyle = right.style.cssText;
+      
+      // Force visibility for measurement (override any CSS classes)
+      center.style.setProperty('visibility', 'visible', 'important');
+      center.style.setProperty('opacity', '1', 'important');
+      center.style.setProperty('pointer-events', 'auto', 'important');
+      right.style.setProperty('visibility', 'visible', 'important');
+      right.style.setProperty('opacity', '1', 'important');
+      right.style.setProperty('pointer-events', 'auto', 'important');
+      
+      // Force reflow to ensure styles are applied
+      void container.offsetHeight;
+
+      const centerRect = center.getBoundingClientRect();
+      const rightRect = right.getBoundingClientRect();
+      const logoRect = logo.getBoundingClientRect();
+
+      // Restore original styles
+      center.style.cssText = centerOriginalStyle;
+      right.style.cssText = rightOriginalStyle;
+
+      const centerWidth = centerRect.width;
+      const rightWidth = rightRect.width;
+      const logoWidth = logoRect.width;
+      const spacing = 80; // Larger buffer to avoid any near-collisions
+
+      // Calculate total space needed
+      const totalNeeded = logoWidth + centerWidth + rightWidth + spacing;
+      
+      // Hysteresis: different thresholds for collapsing vs expanding
+      const collapseThreshold = containerWidth - 180; // Collapse much earlier
+      const expandThreshold = containerWidth - 260; // Require generous space to expand
+
+      let nextState: boolean;
+      
+      if (shouldCollapse) {
+        // Currently collapsed - only expand if there's clearly enough space
+        // If totalNeeded is less than expandThreshold, we have enough space to expand
+        nextState = totalNeeded >= expandThreshold; // true = stay collapsed, false = expand
+      } else {
+        // Currently expanded - collapse if not enough space
+        nextState = totalNeeded > collapseThreshold; // true = collapse, false = stay expanded
+      }
+
+      if (nextState !== shouldCollapse) {
+        isTransitioningRef.current = true;
+        setShouldCollapse(nextState);
+        // Allow measurements again after transition completes
+        setTimeout(() => {
+          isTransitioningRef.current = false;
+        }, 300);
+      }
+    };
+
+    const debouncedMeasure = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        requestAnimationFrame(measureAndSet);
+      }, 50);
+    };
+
+    // Initial measurement after mount
+    timeoutId = setTimeout(() => {
+      requestAnimationFrame(measureAndSet);
+    }, 300);
+
+    // Observe container size changes
+    const ro = new ResizeObserver(debouncedMeasure);
+    if (containerRef.current) {
+      ro.observe(containerRef.current);
+    }
+    
+    window.addEventListener('resize', debouncedMeasure, { passive: true });
+    
+    return () => {
+      clearTimeout(timeoutId);
+      ro.disconnect();
+      window.removeEventListener('resize', debouncedMeasure);
+    };
+  }, [shouldCollapse]);
+
   return (
     <>
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200">
-      <div className="container-responsive">
+      <div className="container-responsive" ref={containerRef}>
         <div className="flex items-center h-16">
           {/* Logo - Left Side */}
-          <a href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity lg:min-h-[44px] min-h-[44px]" onClick={closeMobileMenu}>
+          <a ref={logoRef} href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity lg:min-h-[44px] min-h-[44px]" onClick={closeMobileMenu}>
             <Logo size="lg" variant="default" />
           </a>
           
           {/* Mobile Menu Button - Sleek & Simple */}
           <button
             onClick={toggleMobileMenu}
-            className="lg:hidden flex items-center justify-center w-11 h-11 rounded-lg focus:outline-none ml-auto min-h-[44px] min-w-[44px]"
+            className={`${shouldCollapse ? 'flex' : 'lg:hidden'} flex items-center justify-center w-11 h-11 rounded-lg focus:outline-none ml-auto min-h-[44px] min-w-[44px]`}
             aria-label="Toggle mobile menu"
           >
             {!mobileMenuOpen && (
@@ -78,7 +199,10 @@ export const Navigation = () => {
           </button>
           
           {/* Desktop Navigation Links with Dropdowns - Centered */}
-          <div className="hidden lg:flex items-center space-x-1 xl:space-x-2 absolute left-1/2 transform -translate-x-1/2">
+          <div
+            ref={centerLinksRef}
+            className={`hidden lg:flex items-center space-x-1 xl:space-x-2 absolute left-1/2 transform -translate-x-1/2 ${shouldCollapse ? 'lg:invisible lg:pointer-events-none' : ''}`}
+          >
             {/* Automation Dropdown - PRIMARY */}
             <div className="relative">
               <div 
@@ -297,7 +421,10 @@ export const Navigation = () => {
           </div>
           
           {/* Desktop CTA Buttons - Right Side */}
-          <div className="hidden lg:flex items-center space-x-4 xl:space-x-6 ml-auto">
+          <div
+            ref={rightCtaRef}
+            className={`hidden lg:flex items-center space-x-4 xl:space-x-6 ml-auto ${shouldCollapse ? 'lg:absolute lg:right-0 lg:opacity-0 lg:pointer-events-none' : ''}`}
+          >
             <a href="/contact" className="text-purple-600 hover:text-purple-700 font-bold text-base transition-colors">
               Contact us
             </a>
@@ -320,7 +447,7 @@ export const Navigation = () => {
     
     {/* Mobile Menu - Sidebar Design - OUTSIDE NAV */}
     {mobileMenuOpen && (
-          <div className="lg:hidden fixed inset-0" style={{ 
+          <div className={`${shouldCollapse ? '' : 'lg:hidden'} fixed inset-0`} style={{ 
             zIndex: 9999
           }}>
             {/* Semi-transparent backdrop */}

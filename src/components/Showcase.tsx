@@ -1,19 +1,20 @@
 import { Play, Star } from "lucide-react";
+import { useState } from "react";
 
 const testimonials = [
   {
-    quote: "BitBash built a custom scraper that extracts 50,000+ products daily from our competitors. We now have real-time pricing intelligence. ROI in 3 weeks.",
-    name: "Sarah Mitchell",
-    role: "E-Commerce Director",
-    company: "@TechMart",
+    quote: "BitBash built Actuary List, a web application job board for actuaries that scrapes jobs and posts daily, all automated. Features login/signup, admin dashboards, and an email newsletter feature that sends personalized emails every week.",
+    name: "Actuary List",
+    role: "Full-Stack Web App",
+    company: "",
     rating: 5,
     videoPlaceholder: "purple"
   },
   {
-    quote: "Their mobile automation solution reduced our app testing time from 2 weeks to 2 hours. Game-changing for our release cycle.",
-    name: "James Rodriguez",
-    role: "CTO",
-    company: "@AppVentures",
+    quote: "BitBash built Scraper Glass, a luxury-grade Instagram data extraction tool with unmatched speed and security. Features include no-code scraping, advanced filtering, and enterprise-level data export capabilities.",
+    name: "Scraper Glass",
+    role: "Data Extraction Platform",
+    company: "",
     rating: 5,
     videoPlaceholder: "purple"
   },
@@ -61,6 +62,12 @@ const gradientClasses = {
 };
 
 export const Showcase = () => {
+  const [playingVideoIndex, setPlayingVideoIndex] = useState<number | null>(null);
+  const youtubeVideoIds: { [key: number]: string } = {
+    0: "c2HLeZPcbpE", // Actuary List
+    1: "YReNWoIQkeo"  // Scraper Glass
+  };
+
   return (
     <section className="py-12 sm:py-16 md:py-24 bg-white">
       <div className="container-responsive">
@@ -78,18 +85,63 @@ export const Showcase = () => {
           {testimonials.map((testimonial, index) => (
             <div
               key={index}
-              className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100 hover-mobile"
+              className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100"
             >
               {/* Video Thumbnail - Mobile Optimized */}
               <div className="relative aspect-video bg-gradient-to-br overflow-hidden group cursor-pointer">
-                <div className={`absolute inset-0 bg-gradient-to-br ${gradientClasses[testimonial.videoPlaceholder as keyof typeof gradientClasses]} opacity-80`}></div>
-                
-                {/* Play Button - Mobile Optimized */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg touch-target">
-                    <Play className="w-5 h-5 sm:w-7 sm:h-7 text-gray-900 ml-1" fill="currentColor" />
-                  </div>
-                </div>
+                {(index === 0 || index === 1) && youtubeVideoIds[index] ? (
+                  /* Cards with GIF/YouTube video (Actuary List & Scraper Glass) */
+                  <>
+                    {playingVideoIndex === index ? (
+                      /* YouTube video embed - shows YouTube's own play button */
+                      <div className="absolute inset-0 w-full h-full z-0">
+                        <iframe
+                          src={`https://www.youtube.com/embed/${youtubeVideoIds[index]}?rel=0`}
+                          className="w-full h-full"
+                          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                          title={index === 0 ? "Actuary List Video" : "Scraper Glass Video"}
+                        ></iframe>
+                      </div>
+                    ) : (
+                      /* GIF Display with play button overlay */
+                      <>
+                        <div className="absolute inset-0 w-full h-full z-0">
+                          <img 
+                            src={index === 0 ? "/actuarylist.gif" : "/scraperglass.gif"} 
+                            alt={index === 0 ? "Actuary List website preview" : "Scraper Glass website preview"} 
+                            className="w-full h-full object-cover"
+                            loading="eager"
+                            style={{ imageRendering: 'auto' }}
+                          />
+                        </div>
+                        {/* Play Button Overlay */}
+                        <div 
+                          className="absolute inset-0 flex items-center justify-center z-10 cursor-pointer"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setPlayingVideoIndex(index);
+                          }}
+                        >
+                          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg touch-target">
+                            <Play className="w-5 h-5 sm:w-7 sm:w-7 text-gray-900 ml-1" fill="currentColor" />
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <div className={`absolute inset-0 bg-gradient-to-br ${gradientClasses[testimonial.videoPlaceholder as keyof typeof gradientClasses]} opacity-80`}></div>
+                    
+                    {/* Play Button - Mobile Optimized */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg touch-target">
+                        <Play className="w-5 h-5 sm:w-7 sm:w-7 text-gray-900 ml-1" fill="currentColor" />
+                      </div>
+                    </div>
+                  </>
+                )}
 
               </div>
 
@@ -104,11 +156,29 @@ export const Showcase = () => {
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
                     {/* Avatar Placeholder */}
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center flex-shrink-0">
-                      <span className="text-white font-bold text-xs sm:text-sm">
-                        {testimonial.name.split(' ').map(n => n[0]).join('')}
-                      </span>
-                    </div>
+                    {index === 0 ? (
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden bg-white">
+                        <img 
+                          src="/actuarylist-logo.png" 
+                          alt="Actuary List Logo" 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    ) : index === 1 ? (
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden bg-white">
+                        <img 
+                          src="/scraperglass-logo.png" 
+                          alt="Scraper Glass Logo" 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center flex-shrink-0">
+                        <span className="text-white font-bold text-xs sm:text-sm">
+                          {testimonial.name.split(' ').map(n => n[0]).join('')}
+                        </span>
+                      </div>
+                    )}
                     
                     <div className="min-w-0 flex-1">
                       <p className="font-semibold text-gray-900 text-xs sm:text-sm lg:text-sm truncate">
@@ -116,9 +186,6 @@ export const Showcase = () => {
                       </p>
                       <p className="text-xs text-gray-500 truncate">
                         {testimonial.role}
-                      </p>
-                      <p className="text-xs text-gray-400 truncate">
-                        {testimonial.company}
                       </p>
                     </div>
                   </div>
