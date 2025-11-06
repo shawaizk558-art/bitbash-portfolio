@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml"
+  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+>
+  <url>
+    <loc>https://bitbash.dev/</loc>
+    <lastmod>2025-11-06T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.00</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://bitbash.dev/" />
+    <image:image>
+      <image:loc>https://bitbash.dev/splash.png</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://bitbash.dev/favicon.png</image:loc>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://bitbash.dev/automation-services</loc>
+    <lastmod>2025-11-06T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://bitbash.dev/automation-services" />
+    <image:image>
+      <image:loc>https://bitbash.dev/automation3.png</image:loc>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://bitbash.dev/development-services</loc>
+    <lastmod>2025-11-06T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://bitbash.dev/development-services" />
+    <image:image>
+      <image:loc>https://bitbash.dev/fullstack1.png</image:loc>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://bitbash.dev/pricing</loc>
+    <lastmod>2025-11-06T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://bitbash.dev/pricing" />
+  </url>
+
+  <url>
+    <loc>https://bitbash.dev/contact</loc>
+    <lastmod>2025-11-06T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://bitbash.dev/contact" />
+  </url>
+
+  <url>
+    <loc>https://bitbash.dev/blog</loc>
+    <lastmod>2025-11-06T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.70</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://bitbash.dev/blog" />
+    <image:image>
+      <image:loc>https://bitbash.dev/placeholder.jpeg</image:loc>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://bitbash.dev/projects</loc>
+    <lastmod>2025-11-06T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://bitbash.dev/projects" />
+    <image:image>
+      <image:loc>https://bitbash.dev/stack1.png</image:loc>
+    </image:image>
+  </url>
+</urlset>
+
+
