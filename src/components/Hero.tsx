@@ -3,7 +3,7 @@ import { SocialProof } from "@/components/SocialProof";
 
 export const Hero = () => {
   return (
-    <section className="relative min-h-[50vh] sm:min-h-[55vh] lg:min-h-[65vh] flex items-center justify-center overflow-hidden pt-16 pb-8 sm:pb-12 lg:pb-0">
+    <section className="relative min-h-[50vh] sm:min-h-[55vh] lg:min-h-[65vh] 2xl:min-h-[clamp(360px,64vh,560px)] flex items-center justify-center overflow-hidden pt-16 pb-8 sm:pb-12 lg:pb-0">
       {/* Animated gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-gradient-start via-gradient-mid to-gradient-end animate-gradient opacity-60 z-0" />
       
@@ -11,7 +11,7 @@ export const Hero = () => {
       <div className="absolute top-10 sm:top-16 lg:top-20 left-2 sm:left-6 lg:left-10 w-32 h-32 sm:w-48 sm:h-48 lg:w-72 lg:h-72 bg-primary/20 rounded-full blur-3xl animate-float z-0" />
       <div className="absolute bottom-10 sm:bottom-16 lg:bottom-20 right-2 sm:right-6 lg:right-10 w-40 h-40 sm:w-64 sm:h-64 lg:w-96 lg:h-96 bg-accent/20 rounded-full blur-3xl animate-float z-0" style={{ animationDelay: '2s' }} />
       
-      <div className="relative z-10 container-responsive text-center lg:-mt-10">
+      <div className="relative z-10 container-responsive text-center lg:-mt-10 2xl:-mt-4">
          <div className="max-w-4xl mx-auto space-responsive-lg animate-fade-in">
            <div className="space-responsive-sm mt-6 sm:mt-10 lg:mt-14">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[48px] font-bold leading-[1.1] tracking-tight font-sans px-2 sm:px-0">

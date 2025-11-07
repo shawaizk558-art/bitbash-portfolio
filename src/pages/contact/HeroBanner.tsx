@@ -1,12 +1,12 @@
 const HeroBanner = () => {
   return (
-    <section className="relative min-h-[50vh] sm:min-h-[50vh] flex items-center justify-center overflow-hidden pt-12 pb-3 sm:pb-4">
+    <section className="relative min-h-[50vh] sm:min-h-[55vh] lg:min-h-[65vh] 2xl:min-h-[clamp(280px,58vh,460px)] flex items-center justify-center overflow-hidden pt-12 pb-3 sm:pb-4">
       {/* Match homepage purple animated gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-gradient-start via-gradient-mid to-gradient-end animate-gradient opacity-60 pointer-events-none" />
       <div className="absolute top-20 left-4 sm:left-10 w-48 h-48 sm:w-72 sm:h-72 bg-primary/20 rounded-full blur-3xl animate-float pointer-events-none" />
       <div className="absolute bottom-20 right-4 sm:right-10 w-64 h-64 sm:w-96 sm:h-96 bg-accent/20 rounded-full blur-3xl animate-float pointer-events-none" style={{ animationDelay: '2s' }} />
       <div className="container-responsive relative z-20">
-        <div className="max-w-3xl mx-auto text-center flex flex-col items-center justify-center relative top-2 sm:top-3">
+        <div className="max-w-3xl mx-auto text-center flex flex-col items-center justify-center relative top-2 sm:top-3 lg:-mt-10 2xl:-mt-1">
           <h1 className="text-responsive-3xl sm:text-responsive-4xl md:text-6xl font-bold text-gray-900 mb-3 sm:mb-4">
             Contact <span className="text-purple-600">Us</span>
           </h1>

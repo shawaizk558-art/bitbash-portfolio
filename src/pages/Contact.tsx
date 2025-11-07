@@ -102,7 +102,7 @@ const Contact = () => {
       <Navigation />
       
       {/* Hero Section - Mobile Optimized */}
-      <section className="relative pt-2 pb-6 sm:pb-8 bg-gradient-to-br from-purple-50 to-blue-50">
+      <section className="relative min-h-[50vh] sm:min-h-[55vh] lg:min-h-[65vh] 2xl:min-h-[clamp(360px,64vh,560px)] pt-2 pb-6 sm:pb-8 bg-gradient-to-br from-purple-50 to-blue-50 flex items-center">
         <div className="container-responsive">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-responsive-3xl sm:text-responsive-4xl md:text-6xl font-bold text-gray-900 mb-4 sm:mb-6">
