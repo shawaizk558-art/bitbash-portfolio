@@ -3,9 +3,9 @@ import { useState } from "react";
 
 const testimonials = [
   {
-    quote: "BitBash built Actuary List, a web application job board for actuaries that scrapes jobs and posts daily, all automated. Features login/signup, admin dashboards, and an email newsletter feature that sends personalized emails every week.",
-    name: "Actuary List",
-    role: "Full-Stack Web App",
+    quote: "BitBash built Petla, a comprehensive platform for finding veterinarians in Germany. Features include location-based search, interactive maps, advanced filtering by specialty and services, and real-time availability tracking.",
+    name: "Petla",
+    role: "Veterinarian Discovery Platform",
     company: "",
     rating: 5,
     videoPlaceholder: "purple"
@@ -19,36 +19,60 @@ const testimonials = [
     videoPlaceholder: "purple"
   },
   {
-    quote: "We needed stealth web scraping for market research. BitBash delivered an undetectable solution that's been running 24/7 for 6 months without issues.",
-    name: "Emily Chen",
-    role: "Data Lead",
-    company: "@MarketInsights",
+    quote: "BitBash built Actuary List, a web application job board for actuaries that scrapes jobs and posts daily, all automated. Features login/signup, admin dashboards, and an email newsletter feature that sends personalized emails every week.",
+    name: "Actuary List",
+    role: "Full-Stack Web App",
+    company: "",
     rating: 5,
     videoPlaceholder: "purple"
   },
   {
-    quote: "The data extraction automation saves us 40 hours per week. We can now focus on analysis instead of manual data collection. Incredible ROI.",
-    name: "Michael Brown",
-    role: "Analytics Manager",
-    company: "@DataCorp",
+    quote: "BitBash built an Instagram automation bot that handles posting, engagement, and follower management. Features include scheduled posts, auto-likes, comments, DMs, and advanced analytics tracking.",
+    name: "Instagram Bot",
+    role: "Social Media Automation",
+    company: "",
     rating: 5,
     videoPlaceholder: "purple"
   },
   {
-    quote: "BitBash automated our entire lead generation process. We went from 50 leads per month to 500+ with the same team. Revenue doubled.",
-    name: "Lisa Anderson",
-    role: "Marketing Director",
-    company: "@GrowthAgency",
+    quote: "BitBash developed a Twitter automation bot for content scheduling, engagement, and growth. Features include tweet scheduling, auto-retweets, replies, follower management, and trend monitoring.",
+    name: "Twitter Bot",
+    role: "Social Media Automation",
+    company: "",
     rating: 5,
     videoPlaceholder: "purple"
   },
   {
-    quote: "Their workflow automation eliminated 90% of our manual tasks. Setup was seamless and the support team is incredible. Highly recommend.",
-    name: "David Kim",
-    role: "Operations Manager",
-    company: "@ProcessFlow",
+    quote: "BitBash created a Spotify automation bot for playlist management, music discovery, and analytics. Features include auto-playlist creation, track recommendations, listening statistics, and cross-platform integration.",
+    name: "Spotify Bot",
+    role: "Music Platform Automation",
+    company: "",
     rating: 5,
     videoPlaceholder: "purple"
+  },
+  {
+    quote: "BitBash built a powerful Facebook scraper for data extraction and market research. Features include profile data collection, post scraping, comment extraction, group member lists, and advanced filtering with stealth technology to ensure reliable data access.",
+    name: "Facebook Scraper",
+    role: "Data Extraction Platform",
+    company: "",
+    rating: 5,
+    videoPlaceholder: "blue"
+  },
+  {
+    quote: "Coming soon - A new project showcasing innovative automation solutions and cutting-edge technology.",
+    name: "Project 8",
+    role: "Automation Project",
+    company: "",
+    rating: 5,
+    videoPlaceholder: "green"
+  },
+  {
+    quote: "Coming soon - A new project showcasing innovative automation solutions and cutting-edge technology.",
+    name: "Project 9",
+    role: "Automation Project",
+    company: "",
+    rating: 5,
+    videoPlaceholder: "orange"
   }
 ];
 
@@ -64,8 +88,13 @@ const gradientClasses = {
 export const Showcase = () => {
   const [playingVideoIndex, setPlayingVideoIndex] = useState<number | null>(null);
   const youtubeVideoIds: { [key: number]: string } = {
-    0: "c2HLeZPcbpE", // Actuary List
-    1: "YReNWoIQkeo"  // Scraper Glass
+    0: "T--1C-VUY9g", // Petla
+    1: "YReNWoIQkeo", // Scraper Glass
+    2: "c2HLeZPcbpE", // Actuary List
+    3: "_g8e-Rme5mo", // Instagram Bot
+    4: "MKem1ZQ2SkE", // Twitter Bot
+    5: "PGcOVSEdLME", // Spotify Bot
+    6: "iJgDAiV6OuM"  // Facebook Scraper
   };
 
   return (
@@ -89,8 +118,8 @@ export const Showcase = () => {
             >
               {/* Video Thumbnail - Mobile Optimized */}
               <div className="relative aspect-video bg-gradient-to-br overflow-hidden group cursor-pointer">
-                {(index === 0 || index === 1) && youtubeVideoIds[index] ? (
-                  /* Cards with GIF/YouTube video (Actuary List & Scraper Glass) */
+                {(index === 0 || index === 1 || index === 2 || index === 3 || index === 4 || index === 5 || index === 6) && youtubeVideoIds[index] ? (
+                  /* Cards with GIF/YouTube video (Actuary List, Scraper Glass, Petla, Instagram Bot, Twitter Bot, Spotify Bot, Facebook Scraper) */
                   <>
                     {playingVideoIndex === index ? (
                       /* YouTube video embed - shows YouTube's own play button */
@@ -100,7 +129,15 @@ export const Showcase = () => {
                           className="w-full h-full"
                           allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                           allowFullScreen
-                          title={index === 0 ? "Actuary List Video" : "Scraper Glass Video"}
+                          title={
+                            index === 0 ? "Petla Video" : 
+                            index === 1 ? "Scraper Glass Video" : 
+                            index === 2 ? "Actuary List Video" :
+                            index === 3 ? "Instagram Bot Video" :
+                            index === 4 ? "Twitter Bot Video" :
+                            index === 5 ? "Spotify Bot Video" :
+                            "Facebook Scraper Video"
+                          }
                         ></iframe>
                       </div>
                     ) : (
@@ -108,8 +145,24 @@ export const Showcase = () => {
                       <>
                         <div className="absolute inset-0 w-full h-full z-0">
                           <img 
-                            src={index === 0 ? "/actuarylist.gif" : "/scraperglass.gif"} 
-                            alt={index === 0 ? "Actuary List website preview" : "Scraper Glass website preview"} 
+                            src={
+                              index === 0 ? "/petla.gif" : 
+                              index === 1 ? "/scraperglass.gif" : 
+                              index === 2 ? "/actuarylist.gif" :
+                              index === 3 ? "/instagram.gif" :
+                              index === 4 ? "/twitter.gif" :
+                              index === 5 ? "/spotify.gif" :
+                              "/facebook.gif"
+                            } 
+                            alt={
+                              index === 0 ? "Petla website preview" : 
+                              index === 1 ? "Scraper Glass website preview" : 
+                              index === 2 ? "Actuary List website preview" :
+                              index === 3 ? "Instagram Bot preview" :
+                              index === 4 ? "Twitter Bot preview" :
+                              index === 5 ? "Spotify Bot preview" :
+                              "Facebook Scraper preview"
+                            } 
                             className="w-full h-full object-cover"
                             loading="eager"
                             style={{ imageRendering: 'auto' }}
@@ -157,11 +210,11 @@ export const Showcase = () => {
                   <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
                     {/* Avatar Placeholder */}
                     {index === 0 ? (
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden bg-white">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden bg-white p-1">
                         <img 
-                          src="/actuarylist-logo.png" 
-                          alt="Actuary List Logo" 
-                          className="w-full h-full object-cover"
+                          src="/petla.svg" 
+                          alt="Petla Logo" 
+                          className="w-full h-full object-contain"
                         />
                       </div>
                     ) : index === 1 ? (
@@ -170,6 +223,46 @@ export const Showcase = () => {
                           src="/scraperglass-logo.png" 
                           alt="Scraper Glass Logo" 
                           className="w-full h-full object-cover"
+                        />
+                      </div>
+                    ) : index === 2 ? (
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden bg-white">
+                        <img 
+                          src="/actuarylist-logo.png" 
+                          alt="Actuary List Logo" 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    ) : index === 3 ? (
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden bg-white p-1.5">
+                        <img 
+                          src="https://cdn.simpleicons.org/instagram/E4405F" 
+                          alt="Instagram Logo" 
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                    ) : index === 4 ? (
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden bg-white p-1.5">
+                        <img 
+                          src="https://cdn.simpleicons.org/x/000000" 
+                          alt="Twitter/X Logo" 
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                    ) : index === 5 ? (
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden bg-white p-1.5">
+                        <img 
+                          src="https://cdn.simpleicons.org/spotify/1DB954" 
+                          alt="Spotify Logo" 
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                    ) : index === 6 ? (
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden bg-white p-1.5">
+                        <img 
+                          src="https://cdn.simpleicons.org/facebook/1877F2" 
+                          alt="Facebook Logo" 
+                          className="w-full h-full object-contain"
                         />
                       </div>
                     ) : (
