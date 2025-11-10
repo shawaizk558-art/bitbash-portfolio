@@ -89,7 +89,7 @@ export const Showcase = () => {
   const [playingVideoIndex, setPlayingVideoIndex] = useState<number | null>(null);
   const youtubeVideoIds: { [key: number]: string } = {
     0: "T--1C-VUY9g", // Petla
-    1: "YReNWoIQkeo", // Scraper Glass
+    1: "gDeo6V3VIbY", // Scraper Glass
     2: "c2HLeZPcbpE", // Actuary List
     3: "_g8e-Rme5mo", // Instagram Bot
     4: "MKem1ZQ2SkE", // Twitter Bot
