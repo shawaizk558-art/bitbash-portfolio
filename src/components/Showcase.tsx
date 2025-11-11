@@ -87,6 +87,9 @@ const gradientClasses = {
 
 export const Showcase = () => {
   const [playingVideoIndex, setPlayingVideoIndex] = useState<number | null>(null);
+  const [isSyedTestimonialPlaying, setIsSyedTestimonialPlaying] = useState<boolean>(false);
+  const [isOdetaTestimonialPlaying, setIsOdetaTestimonialPlaying] = useState<boolean>(false);
+  const [isHugoTestimonialPlaying, setIsHugoTestimonialPlaying] = useState<boolean>(false);
   const youtubeVideoIds: { [key: number]: string } = {
     0: "T--1C-VUY9g", // Petla
     1: "gDeo6V3VIbY", // Scraper Glass
@@ -312,10 +315,10 @@ export const Showcase = () => {
         {/* Featured Testimonial Card */}
         <div className="mt-0">
           <div className="bg-white rounded-3xl shadow-lg overflow-hidden min-h-[340px] sm:min-h-[400px] lg:h-[400px] border border-gray-200">
-            <div className="grid grid-cols-1 lg:grid-cols-[65%_35%] h-full">
+            <div className="flex flex-col lg:grid lg:grid-cols-[63%_37%] h-full">
               {/* Left side - Text content */}
-              <div className="p-8 sm:p-12 flex flex-col justify-center h-full">
-                <div className="max-w-[40rem] ml-8">
+              <div className="p-8 sm:p-12 flex flex-col justify-center h-full items-center lg:items-start">
+                <div className="max-w-[40rem] w-full lg:ml-8 text-center lg:text-left">
                   <blockquote className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 leading-tight mb-6">
                     "2,100+ Monthly Users in the Actuarial Niche"
                   </blockquote>
@@ -326,27 +329,65 @@ export const Showcase = () => {
               </div>
 
               {/* Right side - Video thumbnail */}
-              <div className="relative bg-gradient-to-br from-purple-100 to-purple-200 h-full rounded-r-3xl lg:rounded-l-3xl lg:rounded-r-none lg:rounded-br-3xl overflow-hidden">
-                {/* Video placeholder with play button */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                    <Play className="w-6 h-6 sm:w-8 sm:h-8 text-gray-900 ml-1" fill="currentColor" />
+              <div className="relative bg-gradient-to-br from-purple-100 to-purple-200 h-64 sm:h-72 lg:h-full rounded-3xl lg:rounded-l-3xl lg:rounded-r-none lg:rounded-br-3xl overflow-hidden mt-6 lg:mt-0 group">
+                {/* Toggle between GIF placeholder and embedded YouTube Shorts */}
+                {isSyedTestimonialPlaying ? (
+                  <div className="absolute inset-0 w-full h-full z-0">
+                    <iframe
+                      src={`https://www.youtube.com/embed/6AwB5omXrIM?rel=0&modestbranding=1&autoplay=1`}
+                      className="w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      title="Actuary List Testimonial - Syed"
+                    ></iframe>
                   </div>
-                </div>
+                ) : (
+                  <>
+                    {/* Video placeholder with play button */}
+                    <div className="absolute inset-0">
+                      <img
+                        src="/Syed_Actuary-list.gif"
+                        alt="Actuary List testimonial preview"
+                        className="w-full h-full object-cover object-[center_35%] transition-transform duration-500 ease-out group-hover:scale-[1.04] will-change-transform"
+                        loading="eager"
+                      />
+                    </div>
+                  </>
+                )}
 
                 {/* Author info overlay */}
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 sm:p-6">
-                  <div className="flex items-center gap-3">
-                    {/* Profile picture */}
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center flex-shrink-0">
-                      <span className="text-white font-bold text-sm sm:text-base">SA</span>
-                    </div>
-                    <div>
-                      <p className="text-white font-bold text-sm sm:text-base">Syed</p>
-                      <p className="text-white/80 text-xs sm:text-sm">Founder @ActuaryList</p>
+                {!isSyedTestimonialPlaying && (
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 sm:p-6">
+                    <div className="flex items-center justify-between gap-3">
+                      {/* Profile picture */}
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-white flex items-center justify-center flex-shrink-0">
+                          <img
+                            src="/syed-pfp.png"
+                            alt="Syed profile photo"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-white font-bold text-sm sm:text-base truncate">Syed</p>
+                          <p className="text-white/80 text-xs sm:text-sm truncate">Founder @ActuaryList</p>
+                        </div>
+                      </div>
+                      {/* Small play button on the right */}
+                      <button
+                        type="button"
+                        className="flex items-center justify-center rounded-full bg-white/90 group-hover:bg-red-600 backdrop-blur-sm shadow-lg w-9 h-9 sm:w-10 sm:h-10 hover:scale-105 transition-transform transition-colors duration-300 ease-out flex-shrink-0"
+                        aria-label="Play testimonial video"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsSyedTestimonialPlaying(true);
+                        }}
+                      >
+                        <Play className="w-4 h-4 sm:w-5 sm:h-5 text-black ml-0.5" fill="currentColor" />
+                      </button>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>
@@ -355,41 +396,76 @@ export const Showcase = () => {
         {/* Second Testimonial Card */}
         <div className="mt-16 sm:mt-20">
           <div className="bg-white rounded-3xl shadow-lg overflow-hidden min-h-[340px] sm:min-h-[400px] lg:h-[400px] border border-gray-200">
-            <div className="grid grid-cols-1 lg:grid-cols-[65%_35%] h-full">
+            <div className="flex flex-col lg:grid lg:grid-cols-[63%_37%] h-full">
               {/* Left side - Text content */}
-              <div className="p-8 sm:p-12 flex flex-col justify-center h-full">
-                <div className="max-w-[40rem] ml-8">
+              <div className="p-8 sm:p-12 flex flex-col justify-center h-full items-center lg:items-start">
+                <div className="max-w-[40rem] w-full lg:ml-8 text-center lg:text-left">
                   <blockquote className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 leading-tight mb-6">
-                    "10,000+ Instagram Tasks Automated Daily"
+                    "They made it simple — and got it done right"
                   </blockquote>
                   <p className="text-lg sm:text-xl lg:text-xl text-gray-600 leading-relaxed">
-                    Their innovative approach and technical expertise exceeded all our expectations.
+                    BitBash worked with us like a true partner. They took our ideas, kept
+                    everything clear and easy, moved fast, and delivered work we could count on.
                   </p>
                 </div>
               </div>
 
               {/* Right side - Video thumbnail */}
-              <div className="relative bg-gradient-to-br from-blue-100 to-blue-200 h-full rounded-r-3xl lg:rounded-l-3xl lg:rounded-r-none lg:rounded-br-3xl overflow-hidden">
-                {/* Video placeholder with play button */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                    <Play className="w-6 h-6 sm:w-8 sm:h-8 text-gray-900 ml-1" fill="currentColor" />
+              <div className="relative bg-gradient-to-br from-blue-100 to-blue-200 h-64 sm:h-72 lg:h-full rounded-3xl lg:rounded-l-3xl lg:rounded-r-none lg:rounded-br-3xl overflow-hidden mt-6 lg:mt-0 group">
+                {/* Toggle between GIF and embedded YouTube video */}
+                {isOdetaTestimonialPlaying ? (
+                  <div className="absolute inset-0 w-full h-full z-0">
+                    <iframe
+                      src={`https://www.youtube.com/embed/8-tw8Omw9qk?rel=0&modestbranding=1&autoplay=1`}
+                      className="w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      title="Odeta Testimonial"
+                    ></iframe>
                   </div>
-                </div>
-
-                {/* Author info overlay */}
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 sm:p-6">
-                  <div className="flex items-center gap-3">
-                    {/* Profile picture */}
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center flex-shrink-0">
-                      <span className="text-white font-bold text-sm sm:text-base">JK</span>
-                    </div>
-                    <div>
-                      <p className="text-white font-bold text-sm sm:text-base">Jackee</p>
-                      <p className="text-white/80 text-xs sm:text-sm">Founder @InstaAppilot</p>
+                ) : (
+                  <div className="absolute inset-0">
+                    <img
+                      src="/odeta.gif"
+                      alt="Odeta testimonial preview"
+                      className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04] will-change-transform"
+                      loading="eager"
+                    />
+                  </div>
+                )}
+                {/* Author info overlay with small play button on the right */}
+                {!isOdetaTestimonialPlaying && (
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 sm:p-6">
+                    <div className="flex items-center justify-between gap-3">
+                      {/* Profile + name */}
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-white flex items-center justify-center flex-shrink-0">
+                          <img
+                            src="/odeta-pfp.png"
+                            alt="Odeta profile photo"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-white font-bold text-sm sm:text-base truncate">Odeta</p>
+                          <p className="text-white/80 text-xs sm:text-sm truncate">Head of Media @WNP</p>
+                        </div>
+                      </div>
+                      {/* Small play button */}
+                      <button
+                        type="button"
+                        className="flex items-center justify-center rounded-full bg-white/90 group-hover:bg-red-600 backdrop-blur-sm shadow-lg w-9 h-9 sm:w-10 sm:h-10 hover:scale-105 transition-transform transition-colors duration-300 ease-out flex-shrink-0"
+                        aria-label="Play testimonial video"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsOdetaTestimonialPlaying(true);
+                        }}
+                      >
+                        <Play className="w-4 h-4 sm:w-5 sm:h-5 text-black ml-0.5" fill="currentColor" />
+                      </button>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>
@@ -398,41 +474,76 @@ export const Showcase = () => {
         {/* Third Testimonial Card */}
         <div className="mt-16 sm:mt-20">
           <div className="bg-white rounded-3xl shadow-lg overflow-hidden min-h-[340px] sm:min-h-[400px] lg:h-[400px] border border-gray-200">
-            <div className="grid grid-cols-1 lg:grid-cols-[65%_35%] h-full">
+            <div className="flex flex-col lg:grid lg:grid-cols-[63%_37%] h-full">
               {/* Left side - Text content */}
-              <div className="p-8 sm:p-12 flex flex-col justify-center h-full">
-                <div className="max-w-[40rem] ml-8">
+              <div className="p-8 sm:p-12 flex flex-col justify-center h-full items-center lg:items-start">
+                <div className="max-w-[40rem] w-full lg:ml-8 text-center lg:text-left">
                   <blockquote className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 leading-tight mb-6">
-                    "500+ Appointments Every Week"
+                    "We stopped thinking about fixing — and we started growing"
                   </blockquote>
                   <p className="text-lg sm:text-xl lg:text-xl text-gray-600 leading-relaxed">
-                    Professional, reliable, and always available when we needed support or updates.
+                    BitBash made growth feel simple. They cleared the noise, moved fast,
+                    and delivered results we’d been chasing for months.
                   </p>
                 </div>
               </div>
 
               {/* Right side - Video thumbnail */}
-              <div className="relative bg-gradient-to-br from-green-100 to-green-200 h-full rounded-r-3xl lg:rounded-l-3xl lg:rounded-r-none lg:rounded-br-3xl overflow-hidden">
-                {/* Video placeholder with play button */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                    <Play className="w-6 h-6 sm:w-8 sm:h-8 text-gray-900 ml-1" fill="currentColor" />
+              <div className="relative bg-gradient-to-br from-green-100 to-green-200 h-64 sm:h-72 lg:h-full rounded-3xl lg:rounded-l-3xl lg:rounded-r-none lg:rounded-br-3xl overflow-hidden mt-6 lg:mt-0 group">
+                {/* Toggle between GIF and embedded YouTube video */}
+                {isHugoTestimonialPlaying ? (
+                  <div className="absolute inset-0 w-full h-full z-0">
+                    <iframe
+                      src={`https://www.youtube.com/embed/MLkvGB8ZZIk?rel=0&modestbranding=1&autoplay=1`}
+                      className="w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      title="Hugo Saunder Testimonial"
+                    ></iframe>
                   </div>
-                </div>
-
-                {/* Author info overlay */}
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 sm:p-6">
-                  <div className="flex items-center gap-3">
-                    {/* Profile picture */}
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center flex-shrink-0">
-                      <span className="text-white font-bold text-sm sm:text-base">LC</span>
-                    </div>
-                    <div>
-                      <p className="text-white font-bold text-sm sm:text-base">Linda</p>
-                      <p className="text-white/80 text-xs sm:text-sm">CEO @Petla</p>
+                ) : (
+                  <div className="absolute inset-0">
+                    <img
+                      src="/hugo.gif"
+                      alt="Hugo Saunder testimonial preview"
+                      className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04] will-change-transform"
+                      loading="eager"
+                    />
+                  </div>
+                )}
+                {/* Author info overlay with small play button on the right */}
+                {!isHugoTestimonialPlaying && (
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 sm:p-6">
+                    <div className="flex items-center justify-between gap-3">
+                      {/* Profile + name */}
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-white flex items-center justify-center flex-shrink-0">
+                          <img
+                            src="/hugo-pfp.jpeg"
+                            alt="Hugo Saunder profile photo"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-white font-bold text-sm sm:text-base truncate">Hugo Saunder</p>
+                          <p className="text-white/80 text-xs sm:text-sm truncate">UI/UX Engineer @Cruva</p>
+                        </div>
+                      </div>
+                      {/* Small play button */}
+                      <button
+                        type="button"
+                        className="flex items-center justify-center rounded-full bg-white/90 group-hover:bg-red-600 backdrop-blur-sm shadow-lg w-9 h-9 sm:w-10 sm:h-10 hover:scale-105 transition-transform transition-colors duration-300 ease-out flex-shrink-0"
+                        aria-label="Play testimonial video"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsHugoTestimonialPlaying(true);
+                        }}
+                      >
+                        <Play className="w-4 h-4 sm:w-5 sm:h-5 text-black ml-0.5" fill="currentColor" />
+                      </button>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>

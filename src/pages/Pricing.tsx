@@ -1,5 +1,6 @@
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
+import { FAQ } from "@/components/FAQ";
 // No CTA buttons in hero to match blog hero styling
 import {
   Shield,
@@ -119,7 +120,8 @@ const Pricing = () => {
         </div>
       </section>
 
-      {/* Simplified per request: removed detailed pricing sections */}
+      {/* Pricing FAQ */}
+      <FAQ variant="pricing" />
 
       <Footer isHomepage={false} />
     </div>

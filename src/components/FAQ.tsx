@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 
-const faqs = [
+type FAQVariant = "default" | "pricing";
+
+const defaultFaqs = [
   {
     question: "How long does it take to build a project?",
     answer: "Most MVPs are delivered within 30 days. Larger or custom projects depend on scope and complexity, but we always share clear timelines before we start."
@@ -52,8 +54,54 @@ const faqs = [
   }
 ];
 
-export const FAQ = () => {
+const pricingFaqs = [
+  {
+    question: "How does Bitbash charge for projects?",
+    answer: "We offer both hourly and project-based pricing models. Hourly rates range from $20 – $30/hour, while project pricing depends entirely on the features, scope, and technical complexity of your automation."
+  },
+  {
+    question: "How is the final project cost determined?",
+    answer: "Each project is unique. After discussing your requirements, we evaluate the tasks, integrations, and complexity level before sharing a clear cost estimate. Larger, feature-heavy automations naturally require more development hours."
+  },
+  {
+    question: "What payment methods do you accept?",
+    answer: "We currently accept payments via Wise, Payoneer, Bank Transfer, and Crypto (USDT TRC-20)."
+  },
+  {
+    question: "Do you offer refunds?",
+    answer: "Yes — if we’re unable to meet the agreed-upon expectations or timelines, we provide a full or partial refund based on the project stage. Once the project meets the discussed scope, payments become non-refundable."
+  },
+  {
+    question: "What is included in post-delivery support?",
+    answer: "Every project includes 7–14 days of free support to ensure smooth operation. After that, clients can opt for monthly maintenance plans for continued improvements and technical assistance."
+  },
+  {
+    question: "How are timelines defined?",
+    answer: "Project timelines depend on the feature set, workflow complexity, and integrations involved. A clear delivery window is provided after reviewing your full requirement brief."
+  },
+  {
+    question: "Are there any setup or hidden fees?",
+    answer: "No. All costs are clearly shared before the project begins. There are no hidden charges — you pay only for the agreed development work and any optional post-delivery support."
+  },
+  {
+    question: "Can I start with a small project before scaling up?",
+    answer: "Absolutely. Many clients begin with a smaller MVP or test automation to validate results first. Once the workflow performs as expected, we can seamlessly expand the project into a larger, multi-platform system at your pace."
+  }
+];
+
+const faqDatasets: Record<FAQVariant, typeof defaultFaqs> = {
+  default: defaultFaqs,
+  pricing: pricingFaqs
+};
+
+interface FAQProps {
+  variant?: FAQVariant;
+}
+
+export const FAQ = ({ variant = "default" }: FAQProps) => {
   const [openCards, setOpenCards] = useState<Set<string>>(new Set());
+  const faqs = faqDatasets[variant] ?? defaultFaqs;
+  const sectionPadding = variant === "pricing" ? "py-12 sm:py-16 md:py-20 pb-16 sm:pb-20 md:pb-24" : "py-12 sm:py-16 md:py-24 pb-40 sm:pb-60 md:pb-80";
 
   const toggleFAQ = (cardKey: string) => {
     setOpenCards(prev => {
@@ -68,7 +116,7 @@ export const FAQ = () => {
   };
 
   return (
-    <section className="py-12 sm:py-16 md:py-24 pb-40 sm:pb-60 md:pb-80 bg-gray-50">
+    <section className={`${sectionPadding} bg-gray-50`}>
       <div className="container-responsive">
         {/* Header */}
         <div className="text-center mb-12 sm:mb-16">
@@ -83,7 +131,7 @@ export const FAQ = () => {
             {/* Left Column */}
             <div className="flex-1 space-y-6 sm:space-y-8">
               {faqs.filter((_, index) => index % 2 === 0).map((faq, columnIndex) => {
-                const leftStateKey = `left-${columnIndex}`;
+                const leftStateKey = `left-${variant}-${columnIndex}`;
                 return (
                   <div
                     key={`left-${columnIndex}`}
@@ -122,7 +170,7 @@ export const FAQ = () => {
             {/* Right Column */}
             <div className="flex-1 space-y-6 sm:space-y-8">
               {faqs.filter((_, index) => index % 2 === 1).map((faq, columnIndex) => {
-                const rightStateKey = `right-${columnIndex}`;
+                const rightStateKey = `right-${variant}-${columnIndex}`;
                 return (
                   <div
                     key={`right-${columnIndex}`}
