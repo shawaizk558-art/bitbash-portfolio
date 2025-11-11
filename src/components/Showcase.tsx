@@ -94,6 +94,7 @@ export const Showcase = () => {
     0: "T--1C-VUY9g", // Petla
     1: "gDeo6V3VIbY", // Scraper Glass
     2: "c2HLeZPcbpE", // Actuary List
+    3: "EtKwnFJ9sRU", // Threads Scraper
     4: "MKem1ZQ2SkE", // Twitter Bot
     5: "PGcOVSEdLME", // Spotify Bot
     6: "iJgDAiV6OuM"  // Facebook Scraper
