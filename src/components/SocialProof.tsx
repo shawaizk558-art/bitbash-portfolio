@@ -35,6 +35,7 @@ export const SocialProof = ({ className = "", textClassName = "", avatars }: Soc
             alt="Team member"
             className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover shadow-lg"
             loading="eager"
+            decoding="async"
             fetchPriority="high"
           />
         ))}

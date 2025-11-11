@@ -27,9 +27,9 @@ const testimonials = [
     videoPlaceholder: "purple"
   },
   {
-    quote: "BitBash built an Instagram automation bot that handles posting, engagement, and follower management. Features include scheduled posts, auto-likes, comments, DMs, and advanced analytics tracking.",
-    name: "Instagram Bot",
-    role: "Social Media Automation",
+    quote: "BitBash delivered a Threads blogger monitor that scrapes creators, tracks engagement, and schedules outreach in one dashboard.",
+    name: "Threads Scraper",
+    role: "Threads Automation Platform",
     company: "",
     rating: 5,
     videoPlaceholder: "purple"
@@ -94,7 +94,6 @@ export const Showcase = () => {
     0: "T--1C-VUY9g", // Petla
     1: "gDeo6V3VIbY", // Scraper Glass
     2: "c2HLeZPcbpE", // Actuary List
-    3: "_g8e-Rme5mo", // Instagram Bot
     4: "MKem1ZQ2SkE", // Twitter Bot
     5: "PGcOVSEdLME", // Spotify Bot
     6: "iJgDAiV6OuM"  // Facebook Scraper
@@ -152,7 +151,7 @@ export const Showcase = () => {
                               index === 0 ? "/petla.gif" : 
                               index === 1 ? "/scraperglass.gif" : 
                               index === 2 ? "/actuarylist.gif" :
-                              index === 3 ? "/instagram.gif" :
+                              index === 3 ? "/thread-scraper.gif" :
                               index === 4 ? "/twitter.gif" :
                               index === 5 ? "/spotify.gif" :
                               "/facebook.gif"
@@ -161,7 +160,7 @@ export const Showcase = () => {
                               index === 0 ? "Petla website preview" : 
                               index === 1 ? "Scraper Glass website preview" : 
                               index === 2 ? "Actuary List website preview" :
-                              index === 3 ? "Instagram Bot preview" :
+                              index === 3 ? "Threads Scraper preview" :
                               index === 4 ? "Twitter Bot preview" :
                               index === 5 ? "Spotify Bot preview" :
                               "Facebook Scraper preview"
@@ -186,6 +185,17 @@ export const Showcase = () => {
                       </>
                     )}
                   </>
+                ) : index === 3 ? (
+                  <div className="absolute inset-0 w-full h-full z-0">
+                    <img
+                      src="/thread-scraper.gif"
+                      alt="Threads Scraper preview"
+                      className="w-full h-full object-cover"
+                      loading="eager"
+                      decoding="async"
+                      fetchPriority="high"
+                    />
+                  </div>
                 ) : (
                   <>
                     <div className={`absolute inset-0 bg-gradient-to-br ${gradientClasses[testimonial.videoPlaceholder as keyof typeof gradientClasses]} opacity-80`}></div>
@@ -239,8 +249,8 @@ export const Showcase = () => {
                     ) : index === 3 ? (
                       <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden bg-white p-1.5">
                         <img 
-                          src="https://cdn.simpleicons.org/instagram/E4405F" 
-                          alt="Instagram Logo" 
+                          src="https://cdn.simpleicons.org/threads/000000" 
+                          alt="Threads Logo" 
                           className="w-full h-full object-contain"
                         />
                       </div>
@@ -332,9 +342,9 @@ export const Showcase = () => {
               <div className="relative bg-gradient-to-br from-purple-100 to-purple-200 h-64 sm:h-72 lg:h-full rounded-3xl lg:rounded-l-3xl lg:rounded-r-none lg:rounded-br-3xl overflow-hidden mt-6 lg:mt-0 group">
                 {/* Toggle between GIF placeholder and embedded YouTube Shorts */}
                 {isSyedTestimonialPlaying ? (
-                  <div className="absolute inset-0 w-full h-full z-0">
+                  <div className="absolute inset-0 w-full h-full z-0 bg-black">
                     <iframe
-                      src={`https://www.youtube.com/embed/6AwB5omXrIM?rel=0&modestbranding=1&autoplay=1`}
+                      src={`https://www.youtube.com/embed/6AwB5omXrIM?rel=0&modestbranding=1&autoplay=1&playsinline=1&mute=1`}
                       className="w-full h-full"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       allowFullScreen
@@ -343,23 +353,25 @@ export const Showcase = () => {
                   </div>
                 ) : (
                   <>
-                    {/* Video placeholder with play button */}
-                    <div className="absolute inset-0">
-                      <img
-                        src="/Syed_Actuary-list.gif"
-                        alt="Actuary List testimonial preview"
+                {/* Video placeholder with play button */}
+                <div className="absolute inset-0">
+                  <img
+                    src="/Syed_Actuary-list.gif"
+                    alt="Actuary List testimonial preview"
                         className="w-full h-full object-cover object-[center_35%] transition-transform duration-500 ease-out group-hover:scale-[1.04] will-change-transform"
-                        loading="eager"
-                      />
-                    </div>
+                    loading="eager"
+                        decoding="async"
+                        fetchPriority="high"
+                  />
+                </div>
                   </>
                 )}
 
                 {/* Author info overlay */}
                 {!isSyedTestimonialPlaying && (
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 sm:p-6">
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 sm:p-6">
                     <div className="flex items-center justify-between gap-3">
-                      {/* Profile picture */}
+                    {/* Profile picture */}
                       <div className="flex items-center gap-3 min-w-0">
                         <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-white flex items-center justify-center flex-shrink-0">
                           <img
@@ -372,7 +384,7 @@ export const Showcase = () => {
                           <p className="text-white font-bold text-sm sm:text-base truncate">Syed</p>
                           <p className="text-white/80 text-xs sm:text-sm truncate">Founder @ActuaryList</p>
                         </div>
-                      </div>
+                    </div>
                       {/* Small play button on the right */}
                       <button
                         type="button"
@@ -414,9 +426,9 @@ export const Showcase = () => {
               <div className="relative bg-gradient-to-br from-blue-100 to-blue-200 h-64 sm:h-72 lg:h-full rounded-3xl lg:rounded-l-3xl lg:rounded-r-none lg:rounded-br-3xl overflow-hidden mt-6 lg:mt-0 group">
                 {/* Toggle between GIF and embedded YouTube video */}
                 {isOdetaTestimonialPlaying ? (
-                  <div className="absolute inset-0 w-full h-full z-0">
+                  <div className="absolute inset-0 w-full h-full z-0 bg-black">
                     <iframe
-                      src={`https://www.youtube.com/embed/8-tw8Omw9qk?rel=0&modestbranding=1&autoplay=1`}
+                      src={`https://www.youtube.com/embed/8-tw8Omw9qk?rel=0&modestbranding=1&autoplay=1&playsinline=1&mute=1`}
                       className="w-full h-full"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       allowFullScreen
@@ -430,12 +442,14 @@ export const Showcase = () => {
                       alt="Odeta testimonial preview"
                       className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04] will-change-transform"
                       loading="eager"
+                      decoding="async"
+                      fetchPriority="high"
                     />
-                  </div>
+                </div>
                 )}
                 {/* Author info overlay with small play button on the right */}
                 {!isOdetaTestimonialPlaying && (
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 sm:p-6">
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 sm:p-6">
                     <div className="flex items-center justify-between gap-3">
                       {/* Profile + name */}
                       <div className="flex items-center gap-3 min-w-0">
@@ -450,7 +464,7 @@ export const Showcase = () => {
                           <p className="text-white font-bold text-sm sm:text-base truncate">Odeta</p>
                           <p className="text-white/80 text-xs sm:text-sm truncate">Head of Media @WNP</p>
                         </div>
-                      </div>
+                    </div>
                       {/* Small play button */}
                       <button
                         type="button"
@@ -492,9 +506,9 @@ export const Showcase = () => {
               <div className="relative bg-gradient-to-br from-green-100 to-green-200 h-64 sm:h-72 lg:h-full rounded-3xl lg:rounded-l-3xl lg:rounded-r-none lg:rounded-br-3xl overflow-hidden mt-6 lg:mt-0 group">
                 {/* Toggle between GIF and embedded YouTube video */}
                 {isHugoTestimonialPlaying ? (
-                  <div className="absolute inset-0 w-full h-full z-0">
+                  <div className="absolute inset-0 w-full h-full z-0 bg-black">
                     <iframe
-                      src={`https://www.youtube.com/embed/MLkvGB8ZZIk?rel=0&modestbranding=1&autoplay=1`}
+                      src={`https://www.youtube.com/embed/MLkvGB8ZZIk?rel=0&modestbranding=1&autoplay=1&playsinline=1&mute=1`}
                       className="w-full h-full"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       allowFullScreen
@@ -508,12 +522,14 @@ export const Showcase = () => {
                       alt="Hugo Saunder testimonial preview"
                       className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04] will-change-transform"
                       loading="eager"
+                      decoding="async"
+                      fetchPriority="high"
                     />
-                  </div>
+                </div>
                 )}
                 {/* Author info overlay with small play button on the right */}
                 {!isHugoTestimonialPlaying && (
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 sm:p-6">
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 sm:p-6">
                     <div className="flex items-center justify-between gap-3">
                       {/* Profile + name */}
                       <div className="flex items-center gap-3 min-w-0">
@@ -528,7 +544,7 @@ export const Showcase = () => {
                           <p className="text-white font-bold text-sm sm:text-base truncate">Hugo Saunder</p>
                           <p className="text-white/80 text-xs sm:text-sm truncate">UI/UX Engineer @Cruva</p>
                         </div>
-                      </div>
+                    </div>
                       {/* Small play button */}
                       <button
                         type="button"
