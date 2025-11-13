@@ -86,11 +86,11 @@ export const Features = () => {
   return (
     <section id="features" className="py-12 sm:py-16 md:py-24 bg-white overflow-x-hidden">
       <div className="container-responsive">
-        <div className="text-center max-w-7xl mx-auto mb-12 sm:mb-16 space-responsive-sm">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 leading-tight lg:whitespace-nowrap px-2 sm:px-0">
+        <div className="text-center max-w-7xl mx-auto mb-12 sm:mb-16 space-responsive-sm px-4 md:px-8 w-full box-border">
+          <h2 className="text-2xl sm:text-3xl md:text-2xl lg:text-4xl font-bold text-gray-900 leading-tight lg:whitespace-nowrap md:whitespace-normal px-2 sm:px-0 md:px-6 break-words overflow-wrap-anywhere">
             More Than Just Developers. Your Complete Product Engineering Team
           </h2>
-          <p className="text-base sm:text-lg lg:text-lg text-gray-600 px-4 sm:px-0">
+          <p className="text-base sm:text-lg lg:text-lg text-gray-600 px-4 sm:px-0 md:px-8">
             'Full-Stack Development', 'AI Solutions', 'Automation System', 'Data Scraping', 'Data Analysing'.
           </p>
         </div>

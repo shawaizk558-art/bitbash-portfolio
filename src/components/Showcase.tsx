@@ -1,80 +1,7 @@
 import { Play, Star } from "lucide-react";
 import { useState } from "react";
-
-const testimonials = [
-  {
-    quote: "BitBash built Petla, a comprehensive platform for finding veterinarians in Germany. Features include location-based search, interactive maps, advanced filtering by specialty and services, and real-time availability tracking.",
-    name: "Petla",
-    role: "Veterinarian Discovery Platform",
-    company: "",
-    rating: 5,
-    videoPlaceholder: "purple"
-  },
-  {
-    quote: "BitBash built Scraper Glass, a luxury-grade Instagram data extraction tool with unmatched speed and security. Features include no-code scraping, advanced filtering, and enterprise-level data export capabilities.",
-    name: "Scraper Glass",
-    role: "Data Extraction Platform",
-    company: "",
-    rating: 5,
-    videoPlaceholder: "purple"
-  },
-  {
-    quote: "BitBash built Actuary List, a web application job board for actuaries that scrapes jobs and posts daily, all automated. Features login/signup, admin dashboards, and an email newsletter feature that sends personalized emails every week.",
-    name: "Actuary List",
-    role: "Full-Stack Web App",
-    company: "",
-    rating: 5,
-    videoPlaceholder: "purple"
-  },
-  {
-    quote: "BitBash delivered a Threads blogger monitor that scrapes creators, tracks engagement, and schedules outreach in one dashboard.",
-    name: "Threads Scraper",
-    role: "Threads Automation Platform",
-    company: "",
-    rating: 5,
-    videoPlaceholder: "purple"
-  },
-  {
-    quote: "BitBash developed a Twitter automation bot for content scheduling, engagement, and growth. Features include tweet scheduling, auto-retweets, replies, follower management, and trend monitoring.",
-    name: "Twitter Bot",
-    role: "Social Media Automation",
-    company: "",
-    rating: 5,
-    videoPlaceholder: "purple"
-  },
-  {
-    quote: "BitBash created a Spotify automation bot for playlist management, music discovery, and analytics. Features include auto-playlist creation, track recommendations, listening statistics, and cross-platform integration.",
-    name: "Spotify Bot",
-    role: "Music Platform Automation",
-    company: "",
-    rating: 5,
-    videoPlaceholder: "purple"
-  },
-  {
-    quote: "BitBash built a powerful Facebook scraper for data extraction and market research. Features include profile data collection, post scraping, comment extraction, group member lists, and advanced filtering with stealth technology to ensure reliable data access.",
-    name: "Facebook Scraper",
-    role: "Data Extraction Platform",
-    company: "",
-    rating: 5,
-    videoPlaceholder: "blue"
-  },
-  {
-    quote: "Coming soon - A new project showcasing innovative automation solutions and cutting-edge technology.",
-    name: "Project 8",
-    role: "Automation Project",
-    company: "",
-    rating: 5,
-    videoPlaceholder: "green"
-  },
-  {
-    quote: "Coming soon - A new project showcasing innovative automation solutions and cutting-edge technology.",
-    name: "Project 9",
-    role: "Automation Project",
-    company: "",
-    rating: 5,
-    videoPlaceholder: "orange"
-  }
-];
+import { Link } from "react-router-dom";
+import { projects } from "@/data/projects";
 
 const gradientClasses = {
   purple: "from-purple-400 to-purple-600",
@@ -90,15 +17,6 @@ export const Showcase = () => {
   const [isSyedTestimonialPlaying, setIsSyedTestimonialPlaying] = useState<boolean>(false);
   const [isOdetaTestimonialPlaying, setIsOdetaTestimonialPlaying] = useState<boolean>(false);
   const [isHugoTestimonialPlaying, setIsHugoTestimonialPlaying] = useState<boolean>(false);
-  const youtubeVideoIds: { [key: number]: string } = {
-    0: "T--1C-VUY9g", // Petla
-    1: "gDeo6V3VIbY", // Scraper Glass
-    2: "c2HLeZPcbpE", // Actuary List
-    3: "EtKwnFJ9sRU", // Threads Scraper
-    4: "MKem1ZQ2SkE", // Twitter Bot
-    5: "PGcOVSEdLME", // Spotify Bot
-    6: "iJgDAiV6OuM"  // Facebook Scraper
-  };
 
   return (
     <section className="py-12 sm:py-16 md:py-24 bg-white">
@@ -114,33 +32,32 @@ export const Showcase = () => {
         </div>
         {/* Testimonial Grid - Mobile Optimized */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-2 sm:px-0">
-          {testimonials.map((testimonial, index) => (
+          {projects.map((project, index) => (
             <div
-              key={index}
-              className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100"
+              key={project.slug}
+              className="bg-white rounded-2xl shadow-lg hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden border border-gray-100"
             >
               {/* Video Thumbnail - Mobile Optimized */}
-              <div className="relative aspect-video bg-gradient-to-br overflow-hidden group cursor-pointer">
-                {(index === 0 || index === 1 || index === 2 || index === 3 || index === 4 || index === 5 || index === 6) && youtubeVideoIds[index] ? (
+              <div 
+                className="relative aspect-video bg-gradient-to-br overflow-hidden group cursor-pointer"
+                onClick={() => {
+                  if (project.youtubeVideoId) {
+                    setPlayingVideoIndex(playingVideoIndex === index ? null : index);
+                  }
+                }}
+              >
+                {project.youtubeVideoId ? (
                   /* Cards with GIF/YouTube video (Actuary List, Scraper Glass, Petla, Instagram Bot, Twitter Bot, Spotify Bot, Facebook Scraper) */
                   <>
                     {playingVideoIndex === index ? (
                       /* YouTube video embed - shows YouTube's own play button */
                       <div className="absolute inset-0 w-full h-full z-0">
                         <iframe
-                          src={`https://www.youtube.com/embed/${youtubeVideoIds[index]}?rel=0`}
+                          src={`https://www.youtube.com/embed/${project.youtubeVideoId}?rel=0`}
                           className="w-full h-full"
                           allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                           allowFullScreen
-                          title={
-                            index === 0 ? "Petla Video" : 
-                            index === 1 ? "Scraper Glass Video" : 
-                            index === 2 ? "Actuary List Video" :
-                            index === 3 ? "Instagram Bot Video" :
-                            index === 4 ? "Twitter Bot Video" :
-                            index === 5 ? "Spotify Bot Video" :
-                            "Facebook Scraper Video"
-                          }
+                          title={`${project.name} Video`}
                         ></iframe>
                       </div>
                     ) : (
@@ -174,8 +91,7 @@ export const Showcase = () => {
                         {/* Play Button Overlay */}
                         <div 
                           className="absolute inset-0 flex items-center justify-center z-10 cursor-pointer"
-                          onClick={(e) => {
-                            e.stopPropagation();
+                          onClick={() => {
                             setPlayingVideoIndex(index);
                           }}
                         >
@@ -199,7 +115,7 @@ export const Showcase = () => {
                   </div>
                 ) : (
                   <>
-                    <div className={`absolute inset-0 bg-gradient-to-br ${gradientClasses[testimonial.videoPlaceholder as keyof typeof gradientClasses]} opacity-80`}></div>
+                    <div className={`absolute inset-0 bg-gradient-to-br ${gradientClasses[project.videoPlaceholder]} opacity-80`}></div>
                     
                     {/* Play Button - Mobile Optimized */}
                     <div className="absolute inset-0 flex items-center justify-center">
@@ -212,11 +128,11 @@ export const Showcase = () => {
 
               </div>
 
-              {/* Card Content - Mobile Optimized */}
-              <div className="p-4 sm:p-6">
+              {/* Card Content - Mobile Optimized - Clickable to navigate */}
+              <Link to={`/project/${project.slug}`} className="block p-4 sm:p-6 hover:bg-gray-50 transition-colors">
                 {/* Quote */}
                 <p className="text-gray-700 text-xs sm:text-sm lg:text-sm leading-relaxed mb-4 line-clamp-3">
-                  "{testimonial.quote}"
+                  "{project.quote}"
                 </p>
 
                 {/* Author Info - Mobile Optimized */}
@@ -282,29 +198,29 @@ export const Showcase = () => {
                     ) : (
                       <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center flex-shrink-0">
                         <span className="text-white font-bold text-xs sm:text-sm">
-                          {testimonial.name.split(' ').map(n => n[0]).join('')}
+                          {project.name.split(' ').map(n => n[0]).join('')}
                         </span>
                       </div>
                     )}
                     
                     <div className="min-w-0 flex-1">
                       <p className="font-semibold text-gray-900 text-xs sm:text-sm lg:text-sm truncate">
-                        {testimonial.name}
+                        {project.name}
                       </p>
                       <p className="text-xs text-gray-500 truncate">
-                        {testimonial.role}
+                        {project.role}
                       </p>
                     </div>
                   </div>
 
                   {/* Rating - Mobile Optimized */}
                   <div className="flex gap-0.5 flex-shrink-0">
-                    {[...Array(testimonial.rating)].map((_, i) => (
+                    {[...Array(project.rating)].map((_, i) => (
                       <Star key={i} className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
                     ))}
                   </div>
                 </div>
-              </div>
+              </Link>
             </div>
           ))}
         </div>

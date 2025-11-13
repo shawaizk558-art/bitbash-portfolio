@@ -18,8 +18,13 @@ export const Navigation = () => {
   const centerLinksRef = useRef<HTMLDivElement | null>(null);
   const rightCtaRef = useRef<HTMLDivElement | null>(null);
   const logoRef = useRef<HTMLAnchorElement | null>(null);
+  const menuToggleRef = useRef<HTMLButtonElement | null>(null);
   const isTransitioningRef = useRef(false);
   const lastMeasurementRef = useRef(0);
+  const mobileMenuRef = useRef<HTMLDivElement | null>(null);
+  const automationRef = useRef<HTMLDivElement | null>(null);
+  const developmentRef = useRef<HTMLDivElement | null>(null);
+  const solutionsRef = useRef<HTMLDivElement | null>(null);
 
   // Function to check if a page is currently active (mobile only)
   const isActivePage = (path: string) => {
@@ -155,6 +160,59 @@ export const Navigation = () => {
     };
   }, [shouldCollapse]);
 
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      const panel = mobileMenuRef.current;
+      const toggle = menuToggleRef.current;
+      if (!panel) return;
+      const target = event.target as Node;
+      if (!panel.contains(target) && (!toggle || !toggle.contains(target))) {
+        closeMobileMenu();
+      }
+    };
+
+    const handlePointerMove = (event: PointerEvent) => {
+      if (event.pointerType !== "mouse") return;
+      const panel = mobileMenuRef.current;
+      if (!panel) return;
+      const target = event.target as Node;
+      if (!panel.contains(target)) {
+        closeMobileMenu();
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown, true);
+    document.addEventListener("pointermove", handlePointerMove);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown, true);
+      document.removeEventListener("pointermove", handlePointerMove);
+    };
+  }, [mobileMenuOpen]);
+
+  useEffect(() => {
+    if (!openDropdown) return;
+
+    const handleOutsidePointerDown = (event: PointerEvent) => {
+      const target = event.target as Node;
+      const refsMap: Record<string, React.RefObject<HTMLDivElement>> = {
+        automation: automationRef,
+        development: developmentRef,
+        solutions: solutionsRef,
+      };
+      const activeRef = refsMap[openDropdown];
+      if (activeRef?.current && !activeRef.current.contains(target)) {
+        setOpenDropdown(null);
+      }
+    };
+
+    document.addEventListener("pointerdown", handleOutsidePointerDown, true);
+    return () => {
+      document.removeEventListener("pointerdown", handleOutsidePointerDown, true);
+    };
+  }, [openDropdown]);
+
   return (
     <>
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200">
@@ -167,6 +225,7 @@ export const Navigation = () => {
           
           {/* Mobile Menu Button - Sleek & Simple */}
           <button
+            ref={menuToggleRef}
             onClick={toggleMobileMenu}
             className={`${shouldCollapse ? 'flex' : 'lg:hidden'} flex items-center justify-center w-11 h-11 rounded-lg focus:outline-none ml-auto min-h-[44px] min-w-[44px]`}
             aria-label="Toggle mobile menu"
@@ -204,7 +263,7 @@ export const Navigation = () => {
             className={`hidden lg:flex items-center space-x-1 xl:space-x-2 absolute left-1/2 transform -translate-x-1/2 ${shouldCollapse ? 'lg:invisible lg:pointer-events-none' : ''}`}
           >
             {/* Automation Dropdown - PRIMARY */}
-            <div className="relative">
+            <div className="relative" ref={automationRef}>
               <div 
                 onClick={() => toggleDropdown('automation')}
                 className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0"
@@ -286,7 +345,7 @@ export const Navigation = () => {
             </div>
 
             {/* Development Dropdown - SECONDARY */}
-            <div className="relative">
+            <div className="relative" ref={developmentRef}>
               <div 
                 onClick={() => toggleDropdown('development')}
                 className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0"
@@ -335,7 +394,7 @@ export const Navigation = () => {
 
 
             {/* Solutions Dropdown */}
-            <div className="relative">
+            <div className="relative" ref={solutionsRef}>
               <div 
                 onClick={() => toggleDropdown('solutions')}
                 className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0"
@@ -446,28 +505,35 @@ export const Navigation = () => {
     </nav>
     
     {/* Mobile Menu - Sidebar Design - OUTSIDE NAV */}
-    {mobileMenuOpen && (
-          <div className={`${shouldCollapse ? '' : 'lg:hidden'} fixed inset-0`} style={{ 
-            zIndex: 9999
-          }}>
+        {mobileMenuOpen && (
+          <div 
+            className={`${shouldCollapse ? '' : 'lg:hidden'} fixed inset-0`} 
+            style={{ zIndex: 9999 }} 
+          >
             {/* Semi-transparent backdrop */}
-            <div className="absolute inset-0" style={{ 
-              backgroundColor: 'rgba(0, 0, 0, 0.5)'
-            }} onClick={closeMobileMenu} />
+            <div
+              className="absolute inset-0"
+              style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
+              onClick={closeMobileMenu}
+            />
             
             {/* Menu Panel - Dark sidebar */}
-            <div className="absolute left-0 top-0 h-full w-[85vw] sm:w-80 max-w-sm z-10 flex flex-col" style={{ 
-              backgroundColor: 'oklch(21% 0.034 264.665)',
-              opacity: 1
-            }} onClick={(e) => e.stopPropagation()}>
-              <div className="p-6 sm:p-8 space-y-6 sm:space-y-8 flex-1">
-              {/* Logo Section */}
-              <div className="flex items-center space-x-3 pb-6">
-                <Logo size="md" variant="white" />
-              </div>
+            <div 
+              className="absolute left-0 top-0 h-full w-[85vw] sm:w-80 max-w-sm z-10 flex flex-col"
+              style={{ 
+                backgroundColor: 'oklch(21% 0.034 264.665)',
+                opacity: 1
+              }}
+              ref={mobileMenuRef}
+            >
+              <div className="p-6 sm:p-8 space-y-6 sm:space-y-8 flex-1 overflow-y-auto">
+                {/* Logo Section */}
+                <div className="flex items-center space-x-3 pb-6">
+                  <Logo size="md" variant="white" />
+                </div>
 
-              {/* Navigation Links */}
-              <div className="space-y-1">
+                {/* Navigation Links */}
+                <div className="space-y-1">
                 <a 
                   href="/" 
                   className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
@@ -522,7 +588,7 @@ export const Navigation = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </a>
-              </div>
+                </div>
               </div>
               
               {/* CTA Buttons - At Bottom */}

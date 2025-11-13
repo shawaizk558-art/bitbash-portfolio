@@ -3,7 +3,6 @@ import { Showcase } from "@/components/Showcase";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { 
   Globe, 
   Smartphone, 
@@ -62,7 +61,12 @@ const AutomationServices = () => {
   ];
 
   const technologies = [
-    "Selenium", "Puppeteer", "Appium", "Python", "Node.js", "Proxy Networks"
+    { alt: "Selenium", src: "https://cdn.simpleicons.org/selenium/000000" },
+    { alt: "Puppeteer", src: "https://cdn.simpleicons.org/puppeteer/000000" },
+    { alt: "Appium", src: "https://cdn.simpleicons.org/appium/000000" },
+    { alt: "Python", src: "https://cdn.simpleicons.org/python/000000" },
+    { alt: "Node.js", src: "https://cdn.simpleicons.org/nodedotjs/000000" },
+    { alt: "Proxy Networks", src: "https://cdn.simpleicons.org/cloudflare/000000" },
   ];
 
 
@@ -71,7 +75,7 @@ const AutomationServices = () => {
       <Navigation />
       
       {/* Hero Section - Mobile Optimized */}
-      <section className="relative min-h-[70vh] sm:min-h-[60vh] flex items-center justify-center overflow-hidden pt-16">
+      <section className="relative min-h-[clamp(220px,42vh,340px)] sm:min-h-[clamp(260px,46vh,380px)] md:min-h-[clamp(300px,50vh,420px)] lg:min-h-[clamp(280px,48vh,400px)] 2xl:min-h-[clamp(300px,46vh,420px)] flex items-center justify-center overflow-hidden pt-16">
         {/* Animated gradient background */}
         <div className="absolute inset-0 bg-gradient-to-br from-gradient-start via-gradient-mid to-gradient-end animate-gradient opacity-60" />
         
@@ -82,14 +86,12 @@ const AutomationServices = () => {
         <div className="relative z-10 container-responsive text-center">
           <div className="max-w-4xl mx-auto space-responsive-lg animate-fade-in">
             <div className="space-responsive-sm">
-              <h1 className="text-responsive-4xl sm:text-responsive-5xl font-bold leading-[1.1] tracking-tight font-sans">
+              <h1 className="text-responsive-3xl sm:text-responsive-4xl md:text-5xl lg:text-[54px] font-bold leading-[1.1] tracking-tight font-sans px-2 sm:px-0">
                 Complete <span className="text-primary">Automation</span> Solutions
               </h1>
               
-              <p className="text-responsive-base sm:text-responsive-lg text-muted-foreground mx-auto text-center max-w-[820px] leading-relaxed">
-                From web scraping to mobile automation, we provide comprehensive automation services
-                <br className="hidden sm:block" />
-                <span className="block sm:inline">that scale your business operations and eliminate repetitive tasks.</span>
+              <p className="text-base sm:text-lg md:text-xl lg:text-[21px] text-muted-foreground mx-auto text-center max-w-[820px] leading-relaxed px-4 sm:px-0">
+                From web scraping to mobile automation, we provide comprehensive automation services that scale your business operations and eliminate repetitive tasks.
               </p>
             </div>
           </div>
@@ -99,31 +101,22 @@ const AutomationServices = () => {
       {/* Services Grid - Mobile Optimized */}
       <section className="py-12 sm:py-16 md:py-20 bg-white">
         <div className="container-responsive">
-          <div className="text-center mb-12 sm:mb-16">
-            <h2 className="text-responsive-2xl sm:text-responsive-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Our Automation Services
-            </h2>
-            <p className="text-responsive-base sm:text-responsive-lg text-gray-600 max-w-3xl mx-auto">
-              Comprehensive automation solutions for every business need
-            </p>
-          </div>
-          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
             {services.map((service, index) => (
-              <Card key={index} className="p-6 sm:p-8 hover:shadow-lg transition-shadow hover-mobile">
-                <div className="flex items-start gap-3 sm:gap-4 mb-4 sm:mb-6">
-                  <service.icon className="w-10 h-10 sm:w-12 sm:h-12 text-purple-600 flex-shrink-0" />
-                  <div>
-                    <h3 className="text-responsive-lg sm:text-responsive-xl md:text-2xl font-bold text-gray-900 mb-2">{service.title}</h3>
-                    <p className="text-responsive-sm text-gray-600">{service.description}</p>
+              <Card key={index} className="p-6 sm:p-8 hover:shadow-lg transition-shadow hover-mobile text-center group">
+                <div className="flex flex-col items-center gap-4 sm:gap-5 mb-5">
+                  <service.icon className="w-12 h-12 sm:w-14 sm:h-14 text-purple-600 wiggle-on-hover" />
+                  <div className="space-y-1.5">
+                    <h3 className="text-responsive-lg sm:text-responsive-xl md:text-2xl font-bold text-gray-900">{service.title}</h3>
+                    <p className="text-responsive-sm text-gray-600 mx-auto max-w-md">{service.description}</p>
                   </div>
                 </div>
                 
-                <div>
-                  <h4 className="text-responsive-base sm:text-lg font-semibold text-gray-900 mb-3">Key Features</h4>
-                  <ul className="space-y-2">
+                <div className="space-y-3">
+                  <h4 className="text-responsive-base sm:text-lg font-semibold text-gray-900">Key Features</h4>
+                  <ul className="space-y-2 text-left mx-auto max-w-md flex flex-col items-center">
                     {service.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-center gap-2">
+                      <li key={featureIndex} className="flex items-center gap-2 justify-center md:justify-start w-full md:w-auto">
                         <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" />
                         <span className="text-responsive-sm text-gray-700">{feature}</span>
                       </li>
@@ -148,11 +141,15 @@ const AutomationServices = () => {
             </p>
           </div>
           
-          <div className="flex flex-wrap justify-center gap-2 sm:gap-4">
-            {technologies.map((tech, index) => (
-              <Badge key={index} variant="outline" className="px-3 sm:px-4 py-2 text-responsive-sm sm:text-lg touch-friendly">
-                {tech}
-              </Badge>
+          <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-center gap-x-10 gap-y-8 opacity-80 px-3 sm:px-0">
+            {technologies.map((tech) => (
+              <img
+                key={tech.alt}
+                src={tech.src}
+                alt={tech.alt}
+                className="h-10 sm:h-12 md:h-12 object-contain grayscale opacity-80 transition-transform motion-safe:hover:animate-logo-nudge will-change-transform"
+                loading="lazy"
+              />
             ))}
           </div>
         </div>

@@ -244,11 +244,24 @@ All colors MUST be HSL.
     }
   }
   
+@keyframes wiggle-subtle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
   /* Mobile-First Hover States */
   .hover-mobile {
-    @apply hover:scale-105 active:scale-95 transition-transform duration-200;
+    @apply transition-transform duration-200 hover:-translate-y-1 active:translate-y-0;
   }
   
+  .group:hover .wiggle-on-hover {
+    animation: wiggle-subtle 0.4s ease-in-out;
+  }
+
   /* Mobile-First Focus States */
   .focus-mobile {
     @apply focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2;
@@ -299,5 +312,56 @@ All colors MUST be HSL.
   /* Responsive image utilities */
   .img-responsive {
     @apply w-full h-auto max-w-full;
+  }
+  
+  /* Tablet-specific hero height (768px to 1023px) */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    section.hero-tablet-height {
+      min-height: clamp(480px, 70vh, 600px) !important;
+    }
+    
+    /* Fix text overflow on tablets in Features section */
+    #features .text-center h2,
+    #features h2.text-2xl,
+    #features h2 {
+      font-size: 1.5rem !important;
+      line-height: 1.4 !important;
+      padding-left: 1.5rem !important;
+      padding-right: 1.5rem !important;
+      word-wrap: break-word !important;
+      overflow-wrap: break-word !important;
+      white-space: normal !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+    }
+    
+    /* Hero h1 tablet optimization - smaller and two lines with proper alignment */
+    section.hero-tablet-height h1,
+    .hero-tablet-height h1 {
+      font-size: 2.25rem !important; /* slightly bigger for tablet */
+      line-height: 1.3 !important;
+      text-align: center !important;
+      margin-left: auto !important;
+      margin-right: auto !important;
+      max-width: 100% !important;
+      word-wrap: break-word !important;
+      overflow-wrap: break-word !important;
+      white-space: normal !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+    
+    /* Ensure container maintains proper alignment on tablets */
+    section.hero-tablet-height .container-responsive,
+    .hero-tablet-height .container-responsive {
+      text-align: center !important;
+    }
+    
+    section.hero-tablet-height .max-w-4xl,
+    .hero-tablet-height .max-w-4xl {
+      margin-left: auto !important;
+      margin-right: auto !important;
+      text-align: center !important;
+    }
   }
 }

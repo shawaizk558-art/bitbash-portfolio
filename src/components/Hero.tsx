@@ -3,7 +3,7 @@ import { SocialProof } from "@/components/SocialProof";
 
 export const Hero = () => {
   return (
-    <section className="relative min-h-[50vh] sm:min-h-[55vh] lg:min-h-[65vh] 2xl:min-h-[clamp(360px,64vh,560px)] flex items-center justify-center overflow-hidden pt-16 pb-8 sm:pb-12 lg:pb-0">
+    <section className="hero-tablet-height relative min-h-[clamp(300px,50vh,400px)] sm:min-h-[clamp(350px,55vh,450px)] md:min-h-[clamp(420px,65vh,540px)] lg:min-h-[clamp(360px,65vh,520px)] 2xl:min-h-[clamp(360px,64vh,560px)] flex items-center justify-center overflow-hidden pt-16 pb-8 sm:pb-12 lg:pb-0">
       {/* Animated gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-gradient-start via-gradient-mid to-gradient-end animate-gradient opacity-60 z-0" />
       
@@ -15,7 +15,7 @@ export const Hero = () => {
          <div className="max-w-4xl mx-auto space-responsive-lg animate-fade-in">
            <div className="space-responsive-sm mt-6 sm:mt-10 lg:mt-14">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[48px] font-bold leading-[1.1] tracking-tight font-sans px-2 sm:px-0">
-              <span className="block sm:inline">Your Software, Built <span className="text-purple-600">Right</span> — Delivered <span className="text-purple-600">Fast</span> by a Team You Can Count On.</span>
+              <span className="block sm:inline">Your Software, Built <span className="text-purple-600">Right</span> — Delivered<br className="md:block lg:hidden" /> <span className="text-purple-600">Fast</span> by a Team You Can Count On.</span>
             </h1>
              
             <p className="text-base sm:text-lg md:text-xl lg:text-[21px] text-black mx-auto max-w-none whitespace-normal overflow-visible break-words px-4 sm:px-0">
