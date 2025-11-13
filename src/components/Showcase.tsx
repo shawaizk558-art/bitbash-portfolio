@@ -1,5 +1,5 @@
 import { Play, Star } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 import { projects } from "@/data/projects";
 
@@ -9,30 +9,132 @@ const gradientClasses = {
   green: "from-green-400 to-green-600",
   orange: "from-orange-400 to-orange-600",
   pink: "from-pink-400 to-pink-600",
-  teal: "from-teal-400 to-teal-600"
+  teal: "from-teal-400 to-teal-600",
 };
 
-export const Showcase = () => {
+interface ShowcaseProps {
+  limit?: number;
+  showHeader?: boolean;
+  showViewAllLink?: boolean;
+  showTestimonials?: boolean;
+  paddingClass?: string;
+}
+
+export const Showcase = ({
+  limit,
+  showHeader = true,
+  showViewAllLink = true,
+  showTestimonials = true,
+  paddingClass,
+}: ShowcaseProps) => {
   const [playingVideoIndex, setPlayingVideoIndex] = useState<number | null>(null);
   const [isSyedTestimonialPlaying, setIsSyedTestimonialPlaying] = useState<boolean>(false);
   const [isOdetaTestimonialPlaying, setIsOdetaTestimonialPlaying] = useState<boolean>(false);
   const [isHugoTestimonialPlaying, setIsHugoTestimonialPlaying] = useState<boolean>(false);
 
+  const reorderedProjects = [...projects];
+  if (reorderedProjects.length > 2) {
+    [reorderedProjects[1], reorderedProjects[2]] = [reorderedProjects[2], reorderedProjects[1]];
+  }
+
+  const projectsToDisplay = limit ? reorderedProjects.slice(0, limit) : reorderedProjects;
+
+  const setHighPriority = useCallback((node: HTMLImageElement | null) => {
+    if (node) {
+      node.setAttribute("fetchpriority", "high");
+    }
+  }, []);
+
+  const getMediaAssets = (slug: string) => {
+    switch (slug) {
+      case "petla":
+        return {
+          gif: "/petla.gif",
+          alt: "Petla website preview",
+          avatarSrc: "/petla.svg",
+          avatarAlt: "Petla Logo",
+          avatarWrapperClass: "bg-white p-1"
+        };
+      case "actuary-list":
+        return {
+          gif: "/actuarylist.gif",
+          alt: "Actuary List website preview",
+          avatarSrc: "/actuarylist-logo.png",
+          avatarAlt: "Actuary List Logo",
+          avatarWrapperClass: "bg-white"
+        };
+      case "scraper-glass":
+        return {
+          gif: "/scraperglass.gif",
+          alt: "Scraper Glass website preview",
+          avatarSrc: "/scraperglass-logo.png",
+          avatarAlt: "Scraper Glass Logo",
+          avatarWrapperClass: "bg-white"
+        };
+      case "threads-scraper":
+        return {
+          gif: "/thread-scraper.gif",
+          alt: "Threads Scraper preview",
+          avatarSrc: "https://cdn.simpleicons.org/threads/000000",
+          avatarAlt: "Threads Logo",
+          avatarWrapperClass: "bg-white p-1.5"
+        };
+      case "twitter-bot":
+        return {
+          gif: "/twitter.gif",
+          alt: "Twitter Bot preview",
+          avatarSrc: "https://cdn.simpleicons.org/x/000000",
+          avatarAlt: "Twitter/X Logo",
+          avatarWrapperClass: "bg-white p-1.5"
+        };
+      case "spotify-bot":
+        return {
+          gif: "/spotify.gif",
+          alt: "Spotify Bot preview",
+          avatarSrc: "https://cdn.simpleicons.org/spotify/1DB954",
+          avatarAlt: "Spotify Logo",
+          avatarWrapperClass: "bg-white p-1.5"
+        };
+      case "facebook-scraper":
+        return {
+          gif: "/facebook.gif",
+          alt: "Facebook Scraper preview",
+          avatarSrc: "https://cdn.simpleicons.org/facebook/1877F2",
+          avatarAlt: "Facebook Logo",
+          avatarWrapperClass: "bg-white p-1.5"
+        };
+      default:
+        return {
+          gif: "",
+          alt: `${slug} preview`,
+          avatarSrc: "",
+          avatarAlt: `${slug} logo`,
+          avatarWrapperClass: "bg-gradient-to-br from-purple-400 to-purple-600"
+        };
+    }
+  };
+
   return (
-    <section className="py-12 sm:py-16 md:py-24 bg-white">
+    <section className={`${paddingClass ?? "py-12 sm:py-16 md:py-24"} bg-white`}>
       <div className="container-responsive">
         {/* Header */}
-        <div className="text-center mb-12 sm:mb-16">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 mb-4">
-            <span className="text-purple-600">500+</span> Completed Projects. Proven Engineering.
-          </h2>
-          <p className="text-base sm:text-lg lg:text-lg text-gray-600 max-w-3xl mx-auto px-4 sm:px-0">
-            Every system below was designed, built, and delivered by our in-house development team
-          </p>
-        </div>
+        {showHeader && (
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 mb-4">
+              <span className="text-purple-600">500+</span> Completed Projects. Proven Engineering.
+            </h2>
+            <p className="text-base sm:text-lg lg:text-lg text-gray-600 max-w-3xl mx-auto px-4 sm:px-0">
+              Every system below was designed, built, and delivered by our in-house development team
+            </p>
+          </div>
+        )}
         {/* Testimonial Grid - Mobile Optimized */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-2 sm:px-0">
-          {projects.map((project, index) => (
+          {projectsToDisplay.map((project, index) => {
+            const mediaAssets = getMediaAssets(project.slug);
+            const hasCustomGif = Boolean(mediaAssets.gif);
+
+            return (
             <div
               key={project.slug}
               className="bg-white rounded-2xl shadow-lg hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden border border-gray-100"
@@ -47,7 +149,7 @@ export const Showcase = () => {
                 }}
               >
                 {project.youtubeVideoId ? (
-                  /* Cards with GIF/YouTube video (Actuary List, Scraper Glass, Petla, Instagram Bot, Twitter Bot, Spotify Bot, Facebook Scraper) */
+                  /* Cards with GIF/YouTube video */
                   <>
                     {playingVideoIndex === index ? (
                       /* YouTube video embed - shows YouTube's own play button */
@@ -63,31 +165,17 @@ export const Showcase = () => {
                     ) : (
                       /* GIF Display with play button overlay */
                       <>
-                        <div className="absolute inset-0 w-full h-full z-0">
-                          <img 
-                            src={
-                              index === 0 ? "/petla.gif" : 
-                              index === 1 ? "/scraperglass.gif" : 
-                              index === 2 ? "/actuarylist.gif" :
-                              index === 3 ? "/thread-scraper.gif" :
-                              index === 4 ? "/twitter.gif" :
-                              index === 5 ? "/spotify.gif" :
-                              "/facebook.gif"
-                            } 
-                            alt={
-                              index === 0 ? "Petla website preview" : 
-                              index === 1 ? "Scraper Glass website preview" : 
-                              index === 2 ? "Actuary List website preview" :
-                              index === 3 ? "Threads Scraper preview" :
-                              index === 4 ? "Twitter Bot preview" :
-                              index === 5 ? "Spotify Bot preview" :
-                              "Facebook Scraper preview"
-                            } 
-                            className="w-full h-full object-cover"
-                            loading="eager"
-                            style={{ imageRendering: 'auto' }}
-                          />
-                        </div>
+                        {hasCustomGif && (
+                          <div className="absolute inset-0 w-full h-full z-0">
+                            <img
+                              src={mediaAssets.gif}
+                              alt={mediaAssets.alt}
+                              className="w-full h-full object-cover"
+                              loading="eager"
+                              style={{ imageRendering: "auto" }}
+                            />
+                          </div>
+                        )}
                         {/* Play Button Overlay */}
                         <div 
                           className="absolute inset-0 flex items-center justify-center z-10 cursor-pointer"
@@ -102,15 +190,15 @@ export const Showcase = () => {
                       </>
                     )}
                   </>
-                ) : index === 3 ? (
+                ) : hasCustomGif ? (
                   <div className="absolute inset-0 w-full h-full z-0">
                     <img
-                      src="/thread-scraper.gif"
-                      alt="Threads Scraper preview"
+                      ref={setHighPriority}
+                      src={mediaAssets.gif}
+                      alt={mediaAssets.alt}
                       className="w-full h-full object-cover"
                       loading="eager"
                       decoding="async"
-                      fetchPriority="high"
                     />
                   </div>
                 ) : (
@@ -139,59 +227,14 @@ export const Showcase = () => {
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
                     {/* Avatar Placeholder */}
-                    {index === 0 ? (
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden bg-white p-1">
-                        <img 
-                          src="/petla.svg" 
-                          alt="Petla Logo" 
-                          className="w-full h-full object-contain"
-                        />
-                      </div>
-                    ) : index === 1 ? (
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden bg-white">
-                        <img 
-                          src="/scraperglass-logo.png" 
-                          alt="Scraper Glass Logo" 
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    ) : index === 2 ? (
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden bg-white">
-                        <img 
-                          src="/actuarylist-logo.png" 
-                          alt="Actuary List Logo" 
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    ) : index === 3 ? (
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden bg-white p-1.5">
-                        <img 
-                          src="https://cdn.simpleicons.org/threads/000000" 
-                          alt="Threads Logo" 
-                          className="w-full h-full object-contain"
-                        />
-                      </div>
-                    ) : index === 4 ? (
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden bg-white p-1.5">
-                        <img 
-                          src="https://cdn.simpleicons.org/x/000000" 
-                          alt="Twitter/X Logo" 
-                          className="w-full h-full object-contain"
-                        />
-                      </div>
-                    ) : index === 5 ? (
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden bg-white p-1.5">
-                        <img 
-                          src="https://cdn.simpleicons.org/spotify/1DB954" 
-                          alt="Spotify Logo" 
-                          className="w-full h-full object-contain"
-                        />
-                      </div>
-                    ) : index === 6 ? (
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden bg-white p-1.5">
-                        <img 
-                          src="https://cdn.simpleicons.org/facebook/1877F2" 
-                          alt="Facebook Logo" 
+                    {mediaAssets.avatarSrc ? (
+                      <div
+                        className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden ${mediaAssets.avatarWrapperClass}`}
+                      >
+                        <img
+                          ref={setHighPriority}
+                          src={mediaAssets.avatarSrc}
+                          alt={mediaAssets.avatarAlt}
                           className="w-full h-full object-contain"
                         />
                       </div>
@@ -222,23 +265,30 @@ export const Showcase = () => {
                 </div>
               </Link>
             </div>
-          ))}
+          );
+          })}
         </div>
 
         {/* View All Projects - Button */}
-        <div className="mt-8 sm:mt-10 flex justify-center">
-          <a href="/projects" className="text-black hover:text-black font-bold">
-            View all projects →
-          </a>
-        </div>
+        {showViewAllLink && (
+          <div className="mt-8 sm:mt-10 flex justify-center">
+            <a href="/projects" className="text-black hover:text-black font-bold">
+              View all projects →
+            </a>
+          </div>
+        )}
 
         {/* Testimonials Section Heading */}
-        <div className="mt-32 sm:mt-40 mb-16 sm:mb-20">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 text-center">
-            Stories From the People We Build For
-          </h2>
-        </div>
+        {showTestimonials && (
+          <div className="mt-32 sm:mt-40 mb-16 sm:mb-20">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 text-center">
+              Stories From the People We Build For
+            </h2>
+          </div>
+        )}
 
+        {showTestimonials && (
+          <>
         {/* Featured Testimonial Card */}
         <div className="mt-0">
           <div className="bg-white rounded-3xl shadow-lg overflow-hidden min-h-[340px] sm:min-h-[400px] lg:h-[400px] border border-gray-200">
@@ -273,12 +323,12 @@ export const Showcase = () => {
                 {/* Video placeholder with play button */}
                 <div className="absolute inset-0">
                   <img
+                    ref={setHighPriority}
                     src="/Syed_Actuary-list.gif"
                     alt="Actuary List testimonial preview"
                         className="w-full h-full object-cover object-[center_35%] transition-transform duration-500 ease-out group-hover:scale-[1.04] will-change-transform"
                     loading="eager"
                         decoding="async"
-                        fetchPriority="high"
                   />
                 </div>
                   </>
@@ -355,12 +405,12 @@ export const Showcase = () => {
                 ) : (
                   <div className="absolute inset-0">
                     <img
+                      ref={setHighPriority}
                       src="/odeta.gif"
                       alt="Odeta testimonial preview"
                       className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04] will-change-transform"
                       loading="eager"
                       decoding="async"
-                      fetchPriority="high"
                     />
                 </div>
                 )}
@@ -435,12 +485,12 @@ export const Showcase = () => {
                 ) : (
                   <div className="absolute inset-0">
                     <img
+                      ref={setHighPriority}
                       src="/hugo.gif"
                       alt="Hugo Saunder testimonial preview"
                       className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04] will-change-transform"
                       loading="eager"
                       decoding="async"
-                      fetchPriority="high"
                     />
                 </div>
                 )}
@@ -481,6 +531,8 @@ export const Showcase = () => {
             </div>
           </div>
         </div>
+          </>
+        )}
       </div>
     </section>
   );

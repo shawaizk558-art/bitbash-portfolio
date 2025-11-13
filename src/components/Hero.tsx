@@ -39,7 +39,7 @@ export const Hero = () => {
                size="lg" 
                className="h-12 lg:h-12 py-4 px-6 text-base sm:text-lg lg:text-lg font-semibold rounded-xl w-full sm:w-auto hover:scale-100 shadow-sm hover:shadow-lg shadow-gray-400/20 hover:shadow-gray-400/35 transition-colors transition-shadow duration-300"
              >
-               Schedule a Call
+                  Book a Call
              </Button>
            </div>
             

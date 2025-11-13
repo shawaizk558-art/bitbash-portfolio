@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 export interface SocialProofProps {
   className?: string;
@@ -25,18 +25,24 @@ export const SocialProof = ({ className = "", textClassName = "", avatars }: Soc
     });
   }, [avatarUrls]);
 
+  const setHighPriority = useCallback((img: HTMLImageElement | null) => {
+    if (img) {
+      img.setAttribute("fetchpriority", "high");
+    }
+  }, []);
+
   return (
     <div className={`flex flex-col sm:flex-row items-center justify-center gap-3 ${className}`}> 
       <div className="flex -space-x-2">
         {avatarUrls.slice(0, 5).map((src, i) => (
           <img
             key={`${src}-${i}`}
+            ref={setHighPriority}
             src={src}
             alt="Team member"
             className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover shadow-lg"
             loading="eager"
             decoding="async"
-            fetchPriority="high"
           />
         ))}
       </div>

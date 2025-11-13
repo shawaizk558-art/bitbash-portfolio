@@ -199,7 +199,6 @@ export const Navigation = () => {
       const refsMap: Record<string, React.RefObject<HTMLDivElement>> = {
         automation: automationRef,
         development: developmentRef,
-        solutions: solutionsRef,
       };
       const activeRef = refsMap[openDropdown];
       if (activeRef?.current && !activeRef.current.contains(target)) {
@@ -393,109 +392,32 @@ export const Navigation = () => {
             </div>
 
 
-            {/* Solutions Dropdown */}
-            <div className="relative" ref={solutionsRef}>
-              <div 
-                onClick={() => toggleDropdown('solutions')}
-                className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0"
-              >
-                <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Solutions</span>
-                <ChevronDown className={`w-4 h-4 text-gray-900 transition-transform duration-200 ${openDropdown === 'solutions' ? 'rotate-180' : ''}`} />
-              </div>
-              
-              {openDropdown === 'solutions' && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[90vw] max-w-[600px] lg:w-[600px] bg-white rounded-2xl shadow-2xl border border-gray-200 p-4 sm:p-6 lg:p-8 opacity-0 animate-fadeIn">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-                    <div>
-                      <h3 className="text-sm font-bold text-gray-900 mb-3 sm:mb-4">By Industry</h3>
-                      <div className="space-y-2 sm:space-y-3">
-                        <a href="#" className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg hover:bg-gray-50 transition-colors group min-h-[44px]">
-                          <ShoppingCart className="w-5 h-5 text-purple-600 mt-0.5" />
-                          <div>
-                            <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">E-Commerce</div>
-                            <p className="text-xs text-gray-500 mt-0.5">Price monitoring, inventory tracking</p>
-                          </div>
-                        </a>
-                        <a href="#" className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group">
-                          <Building2 className="w-5 h-5 text-purple-600 mt-0.5" />
-                          <div>
-                            <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">Real Estate</div>
-                            <p className="text-xs text-gray-500 mt-0.5">Listing scraping, market analysis</p>
-                          </div>
-                        </a>
-                        <a href="#" className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group">
-                          <Database className="w-5 h-5 text-purple-600 mt-0.5" />
-                          <div>
-                            <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">Finance</div>
-                            <p className="text-xs text-gray-500 mt-0.5">Data aggregation, reporting</p>
-                          </div>
-                        </a>
-                      </div>
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-bold text-gray-900 mb-3 sm:mb-4">By Use Case</h3>
-                      <div className="space-y-2 sm:space-y-3">
-                        <a href="#" className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg hover:bg-gray-50 transition-colors group min-h-[44px]">
-                          <Zap className="w-5 h-5 text-purple-600 mt-0.5" />
-                          <div>
-                            <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">Marketing</div>
-                            <p className="text-xs text-gray-500 mt-0.5">Lead generation, social automation</p>
-                          </div>
-                        </a>
-                        <a href="#" className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group">
-                          <Building2 className="w-5 h-5 text-purple-600 mt-0.5" />
-                          <div>
-                            <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">Enterprise</div>
-                            <p className="text-xs text-gray-500 mt-0.5">Custom automation solutions</p>
-                          </div>
-                        </a>
-                        <a href="#" className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group">
-                          <Rocket className="w-5 h-5 text-purple-600 mt-0.5" />
-                          <div>
-                            <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">Startups</div>
-                            <p className="text-xs text-gray-500 mt-0.5">MVP automation and scaling</p>
-                          </div>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-6 pt-6 border-t border-gray-200">
-                    <a href="#" className="text-sm font-semibold text-purple-600 hover:text-purple-700 flex items-center gap-2">
-                      Explore all solutions
-                      <span>→</span>
-                    </a>
-                  </div>
-                </div>
-              )}
-            </div>
+            <a href="/projects" className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0">
+              <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Portfolio</span>
+            </a>
 
             <a href="/pricing" className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0">
               <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Pricing</span>
             </a>
 
-            {/* Blog Link */}
-            <a href="/blog" className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0">
-              <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Blog</span>
+            <a href="/how-we-work" className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0">
+              <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Our Work Model</span>
             </a>
           </div>
           
           {/* Desktop CTA Buttons - Right Side */}
           <div
             ref={rightCtaRef}
-            className={`hidden lg:flex items-center space-x-4 xl:space-x-6 ml-auto ${shouldCollapse ? 'lg:absolute lg:right-0 lg:opacity-0 lg:pointer-events-none' : ''}`}
+            className={`hidden lg:flex items-center ml-auto ${shouldCollapse ? 'lg:absolute lg:right-0 lg:opacity-0 lg:pointer-events-none' : ''}`}
           >
-            <a href="/contact" className="text-purple-600 hover:text-purple-700 font-bold text-base transition-colors">
-              Contact us
-            </a>
             <a href="/contact">
               <button 
-                className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold text-base px-4 rounded-md flex items-center justify-center"
+                className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold text-base px-5 py-2 rounded-md flex items-center justify-center"
                 style={{
-                  width: '158.38px', 
                   height: '38px'
                 }}
               >
-                Schedule a call
+                Contact us
               </button>
             </a>
           </div>
@@ -572,11 +494,11 @@ export const Navigation = () => {
                   <span>Pricing</span>
                 </a>
                 <a 
-                  href="/blog" 
+                  href="/how-we-work" 
                   className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
                   onClick={closeMobileMenu}
                 >
-                  <span>Blog</span>
+                  <span>Our Work Model</span>
                 </a>
                 <a 
                   href="/contact" 
