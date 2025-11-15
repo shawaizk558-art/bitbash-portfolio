@@ -1,0 +1,39 @@
+[
+  {
+    "name": "E-Commerce Automation Platform",
+    "slug": "ecommerce-automation-platform",
+    "role": "E-Commerce Automation Solution",
+    "quote": "BitBash built a comprehensive e-commerce automation platform that handles inventory management, order processing, and customer communication.",
+    "description": "Our E-Commerce Automation Platform is a powerful solution designed to streamline online retail operations. The platform integrates seamlessly with major e-commerce platforms including Shopify, WooCommerce, and Amazon, providing unified inventory management, automated order processing, and intelligent customer communication workflows.",
+    "technologies": ["React", "Node.js", "PostgreSQL", "Redis", "Docker", "AWS"],
+    "rating": 5,
+    "isFeatured": false,
+    "displayOrder": 1,
+    "targetAudience": ["E-commerce store owners", "Online retailers"],
+    "keyFeatures": ["Real-time inventory sync", "Automated order processing", "Multi-channel integration"],
+    "architectureHighlights": ["Microservices architecture", "Event-driven processing", "Cloud infrastructure"]
+  },
+  {
+    "name": "Social Media Analytics Dashboard",
+    "slug": "social-media-analytics-dashboard",
+    "role": "Analytics Platform",
+    "quote": "BitBash created a comprehensive social media analytics dashboard that tracks engagement, monitors trends, and provides actionable insights.",
+    "description": "A powerful analytics platform that aggregates data from multiple social media platforms, providing real-time insights, trend analysis, and performance metrics. The dashboard helps businesses make data-driven decisions about their social media strategy.",
+    "technologies": ["React", "TypeScript", "Python", "PostgreSQL", "Chart.js"],
+    "rating": 5,
+    "isFeatured": false,
+    "displayOrder": 2
+  },
+  {
+    "name": "Automated Content Scheduler",
+    "slug": "automated-content-scheduler",
+    "role": "Content Management System",
+    "quote": "BitBash developed an intelligent content scheduling system that optimizes posting times and maximizes engagement across platforms.",
+    "description": "An AI-powered content scheduling platform that analyzes audience behavior, determines optimal posting times, and automatically schedules content across multiple social media platforms. The system learns from engagement patterns to continuously improve scheduling recommendations.",
+    "technologies": ["Next.js", "Python", "Machine Learning", "MongoDB", "Redis"],
+    "rating": 5,
+    "isFeatured": false,
+    "displayOrder": 3
+  }
+]
+

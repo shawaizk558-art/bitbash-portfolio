@@ -2,8 +2,10 @@ import { useParams, Link } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { ArrowLeft, Play } from "lucide-react";
-import { getProjectBySlug, projects } from "@/data/projects";
-import { useState } from "react";
+import { getProjectBySlug as getHardcodedProject } from "@/data/projects";
+import { getProjectBySlug as getStrapiProject } from "@/lib/strapi";
+import { useState, useEffect } from "react";
+import type { Project } from "@/data/projects";
 
 const gradientClasses = {
   purple: "from-purple-400 to-purple-600",
@@ -16,11 +18,52 @@ const gradientClasses = {
 
 const ProjectDetail = () => {
   const { slug } = useParams<{ slug: string }>();
-  const project = slug ? getProjectBySlug(slug) : undefined;
+  const [project, setProject] = useState<Project | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
-  // Debug logging
-  console.log("ProjectDetail - slug:", slug, "project:", project);
+  useEffect(() => {
+    async function loadProject() {
+      if (!slug) {
+        setIsLoading(false);
+        return;
+      }
+
+      // First, check hardcoded projects (they take precedence)
+      const hardcodedProject = getHardcodedProject(slug);
+      if (hardcodedProject) {
+        setProject(hardcodedProject);
+        setIsLoading(false);
+        return;
+      }
+
+      // If not found in hardcoded, check Strapi
+      try {
+        const strapiProject = await getStrapiProject(slug);
+        setProject(strapiProject);
+      } catch (error) {
+        console.error('Error loading project from Strapi:', error);
+        setProject(null);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadProject();
+  }, [slug]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Navigation />
+        <div className="container-responsive py-20 text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto"></div>
+          <p className="text-gray-600 mt-4">Loading project...</p>
+        </div>
+        <Footer isHomepage={false} />
+      </div>
+    );
+  }
 
   if (!project) {
     return (
@@ -29,8 +72,8 @@ const ProjectDetail = () => {
         <div className="container-responsive py-20 text-center">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">Project Not Found</h1>
           <p className="text-gray-600 mb-8">The project you're looking for doesn't exist.</p>
-          <Link to="/" className="text-purple-600 hover:text-purple-700 font-semibold">
-            ← Back to Home
+          <Link to="/projects" className="text-purple-600 hover:text-purple-700 font-semibold">
+            ← Back to Projects
           </Link>
         </div>
         <Footer isHomepage={false} />

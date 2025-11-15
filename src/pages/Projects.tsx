@@ -1,9 +1,12 @@
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Showcase } from "@/components/Showcase";
-import { projects as projectData } from "@/data/projects";
+import { getProjects } from "@/lib/strapi";
 import { Play } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import type { Project } from "@/data/projects";
+import { projects as hardcodedProjects } from "@/data/projects";
 
 const gradient: Record<string, string> = {
   purple: "from-purple-400 to-purple-600",
@@ -14,6 +17,35 @@ const gradient: Record<string, string> = {
 };
 
 const Projects = () => {
+  const [dynamicProjects, setDynamicProjects] = useState<Project[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchDynamicProjects() {
+      try {
+        const strapiProjects = await getProjects({
+          sort: 'displayOrder:asc,publishedAt:desc'
+        });
+        
+        // Filter out any projects that have the same slug as hardcoded projects
+        // (hardcoded projects take precedence)
+        const hardcodedSlugs = new Set(hardcodedProjects.map(p => p.slug));
+        const filteredProjects = strapiProjects.filter(
+          project => !hardcodedSlugs.has(project.slug)
+        );
+        
+        setDynamicProjects(filteredProjects);
+      } catch (error) {
+        console.error('Error fetching dynamic projects:', error);
+        setDynamicProjects([]);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchDynamicProjects();
+  }, []);
+
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
@@ -55,40 +87,53 @@ const Projects = () => {
         />
       </section>
 
-      {/* All Projects */}
-      <section className="pb-12 sm:pb-16 md:pb-20">
-        <div className="container-responsive">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {projectData.map((project) => (
-              <Link
-                key={project.slug}
-                to={`/project/${project.slug}`}
-                className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100 group"
-              >
-                <div className="relative aspect-video bg-gradient-to-br overflow-hidden">
-                  <div className={`absolute inset-0 bg-gradient-to-br ${gradient[project.videoPlaceholder]} opacity-80`} />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
-                      <Play className="w-5 h-5 sm:w-7 sm:h-7 text-gray-900 ml-1" fill="currentColor" />
+      {/* All Projects - Show only dynamic projects (hardcoded top 9 already shown above) */}
+      {dynamicProjects.length > 0 && (
+        <section className="pb-12 sm:pb-16 md:pb-20">
+          <div className="container-responsive">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              {dynamicProjects.map((project) => (
+                <Link
+                  key={project.slug}
+                  to={`/project/${project.slug}`}
+                  className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100 group"
+                >
+                  <div className="relative aspect-video bg-gradient-to-br overflow-hidden">
+                    <div className={`absolute inset-0 bg-gradient-to-br ${gradient[project.videoPlaceholder]} opacity-80`} />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+                        <Play className="w-5 h-5 sm:w-7 sm:h-7 text-gray-900 ml-1" fill="currentColor" />
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="p-4 sm:p-6 space-y-2">
-                  <h3 className="font-bold text-gray-900 text-lg sm:text-xl">
-                    {project.name}
-                  </h3>
-                  <p className="text-sm sm:text-base text-purple-600 font-semibold">
-                    {project.role}
-                  </p>
-                  <p className="text-gray-600 text-sm sm:text-base line-clamp-3">
-                    {project.quote}
-                  </p>
-                </div>
-              </Link>
-            ))}
+                  <div className="p-4 sm:p-6 space-y-2">
+                    <h3 className="font-bold text-gray-900 text-lg sm:text-xl">
+                      {project.name}
+                    </h3>
+                    <p className="text-sm sm:text-base text-purple-600 font-semibold">
+                      {project.role}
+                    </p>
+                    <p className="text-gray-600 text-sm sm:text-base line-clamp-3">
+                      {project.quote}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
+
+      {/* Loading or Empty State */}
+      {isLoading && (
+        <section className="pb-12 sm:pb-16 md:pb-20">
+          <div className="container-responsive">
+            <div className="text-center text-gray-600">
+              Loading projects...
+            </div>
+          </div>
+        </section>
+      )}
 
       <Footer isHomepage={false} />
     </div>
