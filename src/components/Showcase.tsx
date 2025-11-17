@@ -87,6 +87,14 @@ export const Showcase = ({
           avatarAlt: "Twitter/X Logo",
           avatarWrapperClass: "bg-white p-1.5"
         };
+      case "ttinit":
+        return {
+          gif: "/ttinit.gif",
+          alt: "TTinit TikTok Shop Affiliate Outreach Bot preview",
+          avatarSrc: "/ttinit-logo.png",
+          avatarAlt: "TTinit Logo",
+          avatarWrapperClass: "bg-white"
+        };
       case "spotify-bot":
         return {
           gif: "/spotify.gif",
@@ -95,12 +103,28 @@ export const Showcase = ({
           avatarAlt: "Spotify Logo",
           avatarWrapperClass: "bg-white p-1.5"
         };
+      case "purepeak":
+        return {
+          gif: "/purepeak.gif",
+          alt: "PurePeak TikTok Shop scaling preview",
+          avatarSrc: "/purepeak_ltd_logo.jpeg",
+          avatarAlt: "PurePeak Logo",
+          avatarWrapperClass: "bg-white"
+        };
       case "facebook-scraper":
         return {
           gif: "/facebook.gif",
           alt: "Facebook Scraper preview",
           avatarSrc: "https://cdn.simpleicons.org/facebook/1877F2",
           avatarAlt: "Facebook Logo",
+          avatarWrapperClass: "bg-white p-1.5"
+        };
+      case "linkedin-automation":
+        return {
+          gif: "/linkedin_automation-system.gif",
+          alt: "LinkedIn Automation System preview",
+          avatarSrc: "https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png",
+          avatarAlt: "LinkedIn Logo",
           avatarWrapperClass: "bg-white p-1.5"
         };
       default:
@@ -137,7 +161,7 @@ export const Showcase = ({
             return (
             <div
               key={project.slug}
-              className="bg-white rounded-2xl shadow-lg hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden border border-gray-100"
+              className="bg-white rounded-2xl shadow-lg hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100"
             >
               {/* Video Thumbnail - Mobile Optimized */}
               <div 

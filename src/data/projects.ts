@@ -86,25 +86,25 @@ export const projects: Project[] = [
     rating: 5
   },
   {
-    slug: "twitter-bot",
-    name: "Twitter Bot",
-    role: "Social Media Automation",
-    quote: "BitBash developed a Twitter automation bot for content scheduling, engagement, and growth. Features include tweet scheduling, auto-retweets, replies, follower management, and trend monitoring.",
-    description: "An advanced Twitter automation solution that empowers businesses and content creators to manage their social media presence efficiently. The bot handles scheduling, engagement, and growth strategies automatically.",
-    technologies: ["Python", "Twitter API", "FastAPI", "React", "PostgreSQL", "Celery"],
+    slug: "ttinit",
+    name: "TTinit",
+    role: "TikTok Shop Affiliate Outreach Automation",
+    quote: "BitBash built TTinit, a powerful TikTok Shop outreach automation tool that connects to a database of 900k+ creators and automates messaging, filtering, and follow-ups. With smart targeting and campaign tracking, it boosts outreach speed by 10–15×, delivering fast, predictable affiliate growth for e-commerce teams.",
+    description: "TTinit is a powerful TikTok Shop outreach automation tool built to help brands and agencies recruit affiliates at scale. It connects to a database of 900k+ creators and automates messaging, filtering, and follow-ups. With smart targeting and campaign tracking, it boosts outreach speed by 10–15×. Designed and maintained by Bitbash, it delivers fast, predictable affiliate growth for e-commerce teams.",
+    technologies: ["Python", "TikTok API", "FastAPI", "React", "PostgreSQL", "Automation"],
     videoPlaceholder: "purple",
-    youtubeVideoId: "MKem1ZQ2SkE",
+    youtubeVideoId: "s5UtdtL8rRM",
     rating: 5
   },
   {
-    slug: "spotify-bot",
-    name: "Spotify Bot",
-    role: "Music Platform Automation",
-    quote: "BitBash created a Spotify automation bot for playlist management, music discovery, and analytics. Features include auto-playlist creation, track recommendations, listening statistics, and cross-platform integration.",
-    description: "A powerful Spotify automation platform that simplifies playlist management, provides intelligent music recommendations, and delivers comprehensive listening analytics for music enthusiasts and businesses.",
-    technologies: ["Python", "Spotify API", "FastAPI", "React", "MongoDB", "Machine Learning"],
+    slug: "purepeak",
+    name: "PurePeak",
+    role: "TikTok Shop E-Commerce Scaling",
+    quote: "BitBash scaled PurePeak's TikTok Shop from $1K to $900K in just 9 months using our in-house TTinit system. With automated affiliate outreach, creator sourcing, and daily pipeline management, we delivered consistent, high-volume growth.",
+    description: "PurePeak is a fitness and nutrition brand whose TikTok Shop we scaled using our in-house TTinit system, taking it from $1K to $900K in just 9 months. With automated affiliate outreach, creator sourcing, and daily pipeline management, Bitbash delivered consistent, high-volume growth. This project became one of our fastest scaling TikTok Shop case studies and a clear example of how Bitbash turns lean operations into major e-commerce revenue.",
+    technologies: ["TTinit System", "TikTok Shop", "Affiliate Automation", "E-Commerce", "Growth Marketing"],
     videoPlaceholder: "purple",
-    youtubeVideoId: "PGcOVSEdLME",
+    youtubeVideoId: "haP0_E4LnmY",
     rating: 5
   },
   {
@@ -119,13 +119,14 @@ export const projects: Project[] = [
     rating: 5
   },
   {
-    slug: "project-8",
-    name: "Project 8",
-    role: "Automation Project",
-    quote: "Coming soon - A new project showcasing innovative automation solutions and cutting-edge technology.",
-    description: "A new project showcasing innovative automation solutions and cutting-edge technology. More details coming soon.",
-    technologies: [],
-    videoPlaceholder: "green",
+    slug: "linkedin-automation",
+    name: "LinkedIn Automation System",
+    role: "Recruitment & Talent Acquisition Automation",
+    quote: "BitBash built a LinkedIn automation system that scrapes profiles of users actively looking for jobs, filters them by role or location, stores the data in a structured database, and automatically sends personalized email campaigns. This gives recruiters and agencies a continuous pipeline of high-intent candidates without manual effort.",
+    description: "We built a LinkedIn automation system that scrapes profiles of users actively looking for jobs, filters them by role or location, stores the data in a structured database, and automatically sends personalized email campaigns. This gives recruiters and agencies a continuous pipeline of high-intent candidates without manual effort. The system handles data collection, segmentation, and outreach end-to-end, making talent acquisition faster, scalable, and fully automated.",
+    technologies: ["Python", "LinkedIn API", "Web Scraping", "Email Automation", "Database Management", "FastAPI"],
+    videoPlaceholder: "blue",
+    youtubeVideoId: "YXatRFOTP1U",
     rating: 5
   },
   {
