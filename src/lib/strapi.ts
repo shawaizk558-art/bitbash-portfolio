@@ -10,12 +10,6 @@
 import type { Project } from '@/data/projects';
 
 // Environment detection
-const IS_DEV = import.meta.env.DEV;
-const IS_PROD = import.meta.env.PROD;
-
-// Strapi API configuration
-const STRAPI_API_URL = import.meta.env.VITE_STRAPI_API_URL || 'http://localhost:1337/api';
-
 // Cache for static data
 let staticDataCache: {
   projects: Project[] | null;
@@ -189,51 +183,6 @@ export async function getProjects(params: {
   sort?: string;
   pagination?: { page: number; pageSize: number };
 } = {}): Promise<Project[]> {
-  // Production: Always use static files
-  if (IS_PROD) {
-    const { projects } = await loadProjectsData();
-    return applyFiltersAndSort(projects, params);
-  }
-
-  // Development: Try API first, fallback to JSON
-  if (IS_DEV) {
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 1000);
-
-      const response = await fetch(
-        `${STRAPI_API_URL}/projects?populate=*&sort=${params.sort || 'displayOrder:asc,publishedAt:desc'}`,
-        {
-          signal: controller.signal,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      clearTimeout(timeoutId);
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.data && Array.isArray(data.data)) {
-          // Filter out featured projects
-          const nonFeatured = data.data.filter((project: any) => {
-            const isV4Format = project.attributes !== undefined;
-            const projectData = isV4Format ? project.attributes : project;
-            return !projectData.isFeatured;
-          });
-          
-          const projects = nonFeatured.map(transformStrapiProject);
-          return applyFiltersAndSort(projects, params);
-        }
-      }
-    } catch (error) {
-      // API failed, fallback to static files
-      console.log('Strapi API unavailable, using static files');
-    }
-  }
-
-  // Fallback to static files
   const { projects } = await loadProjectsData();
   return applyFiltersAndSort(projects, params);
 }
@@ -245,50 +194,6 @@ export async function getProjects(params: {
  * @returns Promise<Project | null>
  */
 export async function getProjectBySlug(slug: string): Promise<Project | null> {
-  // Production: Use static index
-  if (IS_PROD) {
-    const { projects } = await loadProjectsData();
-    return projects.find((p) => p.slug === slug) || null;
-  }
-
-  // Development: Try API first
-  if (IS_DEV) {
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 1000);
-
-      const response = await fetch(
-        `${STRAPI_API_URL}/projects?filters[slug][$eq]=${slug}&populate=*`,
-        {
-          signal: controller.signal,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      clearTimeout(timeoutId);
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.data && Array.isArray(data.data) && data.data.length > 0) {
-          const project = data.data[0];
-          // Check if featured (shouldn't be, but just in case)
-          const isV4Format = project.attributes !== undefined;
-          const projectData = isV4Format ? project.attributes : project;
-          if (projectData.isFeatured) {
-            return null; // Featured projects are hardcoded
-          }
-          return transformStrapiProject(project);
-        }
-      }
-    } catch (error) {
-      // API failed, fallback to static files
-      console.log('Strapi API unavailable, using static files');
-    }
-  }
-
-  // Fallback to static files
   const { projects } = await loadProjectsData();
   return projects.find((p) => p.slug === slug) || null;
 }
