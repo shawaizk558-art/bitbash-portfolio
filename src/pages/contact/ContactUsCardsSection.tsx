@@ -6,11 +6,11 @@ function ContactUsCardsSection() {
       <div className="container-responsive">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 max-w-[1100px] mx-auto lg:mx-0 lg:max-w-none lg:w-full 2xl:gap-6">
           <IconHpb 
-          icon={<img src="https://cdn.simpleicons.org/discord/5865F2" alt="discord logo" width={36} height={36} />} 
-          heading={"Discord Support Ticket"} 
-          desc={"Join the BitBash Discord and open a support ticket for fast, dedicated assistance."} 
-          btncontent="Join Discord" 
-          bluebtnlink="https://discord.gg/vBu9huKBvy" 
+          icon={<img src="https://cdn.simpleicons.org/gmail/EA4335" alt="mail logo" width={36} height={36} />} 
+          heading={"Email Support"} 
+          desc={"Need help fast? Email our support specialists for detailed, reliable answers."} 
+          btncontent="support@bitbash.dev" 
+          bluebtnlink="mailto:support@bitbash.dev" 
         />
 
           <IconHpb 
@@ -27,14 +27,6 @@ function ContactUsCardsSection() {
           desc={"Pick a time that suits you. We'll walk you through solutions and next steps."} 
           btncontent="Book a call" 
           bluebtnlink="https://cal.com/app-pilot-m8i8oo/30min" 
-        />
-
-          <IconHpb 
-          icon={<img src="https://cdn.simpleicons.org/youtube/ff0000" alt="youtube logo" width={36} height={36} />} 
-          heading={"Video Demos"} 
-          desc={"Watch concise product walkthroughs and how‑to videos to see BitBash in action."} 
-          btncontent="Visit Channel" 
-          bluebtnlink="https://www.youtube.com/@bitbash-demos" 
         />
 
           <IconHpb 
