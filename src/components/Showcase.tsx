@@ -1,7 +1,8 @@
 import { Play, Star } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { projects } from "@/data/projects";
+import { projects as fallbackProjects, type Project } from "@/data/projects";
+import { getProjects } from "@/lib/strapi";
 
 const gradientClasses = {
   purple: "from-purple-400 to-purple-600",
@@ -28,12 +29,37 @@ export const Showcase = ({
   paddingClass,
 }: ShowcaseProps) => {
   const [playingVideoIndex, setPlayingVideoIndex] = useState<number | null>(null);
+  const [projectList, setProjectList] = useState<Project[]>(fallbackProjects);
   const [isSyedTestimonialPlaying, setIsSyedTestimonialPlaying] = useState<boolean>(false);
   const [isOdetaTestimonialPlaying, setIsOdetaTestimonialPlaying] = useState<boolean>(false);
   const [isHugoTestimonialPlaying, setIsHugoTestimonialPlaying] = useState<boolean>(false);
   const [isKareemTestimonialPlaying, setIsKareemTestimonialPlaying] = useState<boolean>(false);
 
-  const reorderedProjects = [...projects];
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadProjects() {
+      try {
+        const strapiProjects = await getProjects({
+          sort: "displayOrder:asc,publishedAt:desc",
+        });
+
+        if (isMounted && strapiProjects.length > 0) {
+          setProjectList(strapiProjects);
+        }
+      } catch (error) {
+        console.error("Failed to load projects from Strapi/static JSON. Using fallback data.", error);
+      }
+    }
+
+    loadProjects();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const reorderedProjects = [...projectList];
   if (reorderedProjects.length > 2) {
     [reorderedProjects[1], reorderedProjects[2]] = [reorderedProjects[2], reorderedProjects[1]];
   }
