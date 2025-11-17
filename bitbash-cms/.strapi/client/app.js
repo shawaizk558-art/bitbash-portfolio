@@ -4,11 +4,17 @@
  */
 import strapiCloud from "@strapi/plugin-cloud/strapi-admin";
 import usersPermissions from "@strapi/plugin-users-permissions/strapi-admin";
+import exportImportKkm from "export-import-kkm/strapi-admin";
+import strapiCsvImportExport from "strapi-csv-import-export/strapi-admin";
+import strapiImportExport from "strapi-import-export/strapi-admin";
 import { renderAdmin } from "@strapi/strapi/admin";
 
 renderAdmin(document.getElementById("strapi"), {
   plugins: {
     "strapi-cloud": strapiCloud,
     "users-permissions": usersPermissions,
+    "export-import-kkm": exportImportKkm,
+    "strapi-csv-import-export": strapiCsvImportExport,
+    "strapi-import-export": strapiImportExport,
   },
 });
