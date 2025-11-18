@@ -21,12 +21,33 @@ let staticDataCache: {
 
 /**
  * Load static JSON data from public/data/
+ * 
+ * Handles 304 (Not Modified) responses gracefully. A 304 status means the cached
+ * version is still valid, but the response body is empty. We handle this by
+ * retrying with cache-busting when needed.
  */
 async function loadStaticData(filename: string): Promise<any> {
-  const response = await fetch(`/data/${filename}`);
+  // First attempt: try normal fetch (allows browser/CDN caching)
+  let response = await fetch(`/data/${filename}`);
   
+  // If we get 304, the response body is empty, so we need to force a fresh fetch
+  // This is more common in production (Vercel CDN) than local dev
+  if (response.status === 304) {
+    // Retry with cache-busting parameter to get the actual data
+    // This ensures we always get the JSON body, not just a 304 status
+    response = await fetch(`/data/${filename}?v=${Date.now()}`, {
+      cache: 'no-store',
+    });
+    
+    // If we still get 304 (shouldn't happen with cache-busting, but be safe)
+    if (response.status === 304) {
+      throw new Error(`Received 304 Not Modified for ${filename} even with cache-busting. This should not happen.`);
+    }
+  }
+  
+  // Handle other non-ok responses
   if (!response.ok) {
-    throw new Error(`Failed to load ${filename}: ${response.statusText}`);
+    throw new Error(`Failed to load ${filename}: ${response.status} ${response.statusText}`);
   }
   
   const contentType = response.headers.get('content-type');
