@@ -30,8 +30,6 @@ let staticDataCache: {
  * in-memory caching (staticDataCache) to avoid repeated fetches.
  */
 async function loadStaticData(filename: string): Promise<any> {
-  console.log(`[loadStaticData] Starting to load: ${filename}`);
-  
   // Always use cache-busting to prevent 304 responses with empty bodies
   // Use a timestamp to ensure we get fresh data, but the query param
   // changes on each page load, preventing 304 responses
@@ -39,32 +37,16 @@ async function loadStaticData(filename: string): Promise<any> {
   const cacheBuster = `?v=${Date.now()}&_=${Math.random().toString(36).substring(7)}`;
   const url = `/data/${filename}${cacheBuster}`;
   
-  console.log(`[loadStaticData] Fetching URL: ${url}`);
-  console.log(`[loadStaticData] Cache-buster: ${cacheBuster}`);
-  
   // Fetch with reload to bypass cache and ensure we get actual data
   // This prevents 304 responses which have empty bodies
-  const fetchStartTime = performance.now();
   const response = await fetch(url, {
     cache: 'reload', // Bypass cache and reload from server
-  });
-  const fetchEndTime = performance.now();
-  
-  console.log(`[loadStaticData] Response received for ${filename}:`, {
-    status: response.status,
-    statusText: response.statusText,
-    ok: response.ok,
-    contentType: response.headers.get('content-type'),
-    fetchTime: `${(fetchEndTime - fetchStartTime).toFixed(2)}ms`,
   });
   
   // 304 should not happen with cache-busting, but handle it just in case
   if (response.status === 304) {
-    console.warn(`[loadStaticData] ⚠️ Received 304 for ${filename} despite cache-busting! Attempting bypass...`);
-    
     // If we still get 304 (shouldn't happen), force a complete bypass
     const bypassUrl = `/data/${filename}?nocache=${Date.now()}-${Math.random()}`;
-    console.log(`[loadStaticData] Bypass URL: ${bypassUrl}`);
     
     const bypassResponse = await fetch(bypassUrl, {
       cache: 'no-store', // Completely bypass cache
@@ -74,74 +56,39 @@ async function loadStaticData(filename: string): Promise<any> {
       },
     });
     
-    console.log(`[loadStaticData] Bypass response for ${filename}:`, {
-      status: bypassResponse.status,
-      statusText: bypassResponse.statusText,
-      ok: bypassResponse.ok,
-    });
-    
     if (!bypassResponse.ok) {
-      console.error(`[loadStaticData] ❌ Bypass failed for ${filename}: ${bypassResponse.status} ${bypassResponse.statusText}`);
       throw new Error(`Failed to load ${filename}: ${bypassResponse.status} ${bypassResponse.statusText}`);
     }
     
     const text = await bypassResponse.text();
-    console.log(`[loadStaticData] Bypass response body length: ${text?.length || 0} characters`);
     
     if (!text || text.trim().length === 0) {
-      console.error(`[loadStaticData] ❌ Empty response body after bypass for ${filename}`);
       throw new Error(`Failed to load ${filename}: Response body is empty after bypass`);
     }
     
     try {
-      const parsed = JSON.parse(text);
-      console.log(`[loadStaticData] ✅ Successfully parsed ${filename} (via bypass), items: ${Array.isArray(parsed) ? parsed.length : 'object'}`);
-      return parsed;
+      return JSON.parse(text);
     } catch (parseError) {
-      console.error(`[loadStaticData] ❌ JSON parse error for ${filename}:`, parseError);
       throw new Error(`Failed to parse JSON from ${filename}: ${parseError}`);
     }
   }
   
   // Handle other non-ok responses
   if (!response.ok) {
-    console.error(`[loadStaticData] ❌ Non-OK response for ${filename}: ${response.status} ${response.statusText}`);
     throw new Error(`Failed to load ${filename}: ${response.status} ${response.statusText}`);
   }
   
   // Read and verify response body
-  console.log(`[loadStaticData] Reading response body for ${filename}...`);
-  const textStartTime = performance.now();
   const text = await response.text();
-  const textEndTime = performance.now();
-  
-  console.log(`[loadStaticData] Response body read for ${filename}:`, {
-    length: text?.length || 0,
-    isEmpty: !text || text.trim().length === 0,
-    readTime: `${(textEndTime - textStartTime).toFixed(2)}ms`,
-  });
   
   if (!text || text.trim().length === 0) {
-    console.error(`[loadStaticData] ❌ Empty response body for ${filename}`);
     throw new Error(`Failed to load ${filename}: Response body is empty`);
   }
   
   // Parse JSON
-  console.log(`[loadStaticData] Parsing JSON for ${filename}...`);
-  const parseStartTime = performance.now();
   try {
-    const parsed = JSON.parse(text);
-    const parseEndTime = performance.now();
-    console.log(`[loadStaticData] ✅ Successfully loaded and parsed ${filename}:`, {
-      type: Array.isArray(parsed) ? 'array' : typeof parsed,
-      items: Array.isArray(parsed) ? parsed.length : 'N/A',
-      parseTime: `${(parseEndTime - parseStartTime).toFixed(2)}ms`,
-      totalTime: `${(parseEndTime - fetchStartTime).toFixed(2)}ms`,
-    });
-    return parsed;
+    return JSON.parse(text);
   } catch (parseError) {
-    console.error(`[loadStaticData] ❌ JSON parse error for ${filename}:`, parseError);
-    console.error(`[loadStaticData] First 200 chars of response:`, text.substring(0, 200));
     throw new Error(`Failed to parse JSON from ${filename}: ${parseError}`);
   }
 }
@@ -153,50 +100,22 @@ async function loadStaticData(filename: string): Promise<any> {
 async function loadProjectsData(): Promise<{
   projects: Project[];
 }> {
-  console.log('[loadProjectsData] Starting to load projects data...');
-  
   // Check if we have cached data
   if (staticDataCache.projects) {
-    console.log('[loadProjectsData] ✅ Using cached data:', {
-      projectsCount: staticDataCache.projects.length,
-    });
     return {
       projects: staticDataCache.projects,
     };
   }
 
-  console.log('[loadProjectsData] Cache miss - fetching from projects.json...');
-  const loadStartTime = performance.now();
-
   try {
-    console.log('[loadProjectsData] Fetching projects.json...');
     const projects = await loadStaticData('projects.json');
-
-    const loadEndTime = performance.now();
-    
-    console.log('[loadProjectsData] File loaded, processing data...', {
-      projectsType: Array.isArray(projects) ? 'array' : typeof projects,
-      projectsLength: Array.isArray(projects) ? projects.length : 'N/A',
-      loadTime: `${(loadEndTime - loadStartTime).toFixed(2)}ms`,
-    });
-
     staticDataCache.projects = Array.isArray(projects) ? projects : [];
-
-    console.log('[loadProjectsData] ✅ Successfully loaded and cached projects data:', {
-      cachedProjectsCount: staticDataCache.projects.length,
-    });
 
     return {
       projects: staticDataCache.projects,
     };
   } catch (error) {
-    const loadEndTime = performance.now();
-    console.error('[loadProjectsData] ❌ Error loading static projects data:', error);
-    console.error('[loadProjectsData] Error details:', {
-      message: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-      loadTime: `${(loadEndTime - loadStartTime).toFixed(2)}ms`,
-    });
+    console.error('Error loading static projects data:', error);
     return { projects: [] };
   }
 }
@@ -314,27 +233,8 @@ export async function getProjects(params: {
   sort?: string;
   pagination?: { page: number; pageSize: number };
 } = {}): Promise<Project[]> {
-  console.log('[getProjects] Called with params:', params);
-  const startTime = performance.now();
-  
   const { projects } = await loadProjectsData();
-  console.log('[getProjects] Loaded projects data, applying filters/sort...', {
-    totalProjects: projects.length,
-  });
-  
-  const filtered = applyFiltersAndSort(projects, params);
-  const endTime = performance.now();
-  
-  console.log('[getProjects] ✅ Returning projects:', {
-    totalProjects: projects.length,
-    filteredCount: filtered.length,
-    hasFilters: !!params.filters,
-    hasSort: !!params.sort,
-    hasPagination: !!params.pagination,
-    executionTime: `${(endTime - startTime).toFixed(2)}ms`,
-  });
-  
-  return filtered;
+  return applyFiltersAndSort(projects, params);
 }
 
 /**
@@ -344,31 +244,7 @@ export async function getProjects(params: {
  * @returns Promise<Project | null>
  */
 export async function getProjectBySlug(slug: string): Promise<Project | null> {
-  console.log(`[getProjectBySlug] Called with slug: ${slug}`);
-  const startTime = performance.now();
-  
   const { projects } = await loadProjectsData();
-  console.log(`[getProjectBySlug] Loaded projects data, searching for slug: ${slug}`, {
-    totalProjects: projects.length,
-  });
-  
-  const project = projects.find((p) => p.slug === slug) || null;
-  const endTime = performance.now();
-  
-  if (project) {
-    console.log(`[getProjectBySlug] ✅ Found project:`, {
-      slug: project.slug,
-      name: project.name,
-      executionTime: `${(endTime - startTime).toFixed(2)}ms`,
-    });
-  } else {
-    console.warn(`[getProjectBySlug] ⚠️ Project not found for slug: ${slug}`, {
-      availableSlugs: projects.slice(0, 5).map(p => p.slug),
-      totalProjects: projects.length,
-      executionTime: `${(endTime - startTime).toFixed(2)}ms`,
-    });
-  }
-  
-  return project;
+  return projects.find((p) => p.slug === slug) || null;
 }
 
