@@ -223,12 +223,47 @@ async function exportProjects() {
 }
 
 /**
- * Write JSON file
+ * Read existing JSON file if it exists
  */
-function writeJSONFile(filename, data) {
+function readExistingJSONFile(filename) {
   const filePath = path.join(DATA_DIR, filename);
+  if (fs.existsSync(filePath)) {
+    try {
+      const content = fs.readFileSync(filePath, 'utf8');
+      return JSON.parse(content);
+    } catch (error) {
+      console.warn(`⚠️  Could not read existing ${filename}:`, error.message);
+      return null;
+    }
+  }
+  return null;
+}
+
+/**
+ * Write JSON file (only if we have data, or if file doesn't exist)
+ */
+function writeJSONFile(filename, data, preserveExisting = true) {
+  const filePath = path.join(DATA_DIR, filename);
+  
+  // If we should preserve existing files and the new data is empty
+  if (preserveExisting) {
+    const isEmpty = Array.isArray(data) ? data.length === 0 : Object.keys(data || {}).length === 0;
+    
+    if (isEmpty) {
+      const existing = readExistingJSONFile(filename);
+      if (existing) {
+        const existingIsEmpty = Array.isArray(existing) ? existing.length === 0 : Object.keys(existing).length === 0;
+        if (!existingIsEmpty) {
+          console.log(`⚠️  Skipping write for ${filename} - new data is empty, preserving existing file with data`);
+          return;
+        }
+      }
+    }
+  }
+  
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
-  console.log(`✓ Written ${filename}`);
+  const dataInfo = Array.isArray(data) ? `${data.length} items` : `${Object.keys(data || {}).length} keys`;
+  console.log(`✓ Written ${filename} (${dataInfo})`);
 }
 
 /**
@@ -239,26 +274,79 @@ async function exportData() {
   console.log(`Strapi API URL: ${STRAPI_API_URL}`);
   console.log(`Output directory: ${DATA_DIR}\n`);
   
+  // Check if projects.json already exists and has data
+  const projectsJsonPath = path.join(DATA_DIR, 'projects.json');
+  const existingProjects = readExistingJSONFile('projects.json');
+  const hasExistingData = existingProjects && 
+    (Array.isArray(existingProjects) ? existingProjects.length > 0 : Object.keys(existingProjects).length > 0);
+  
+  if (hasExistingData) {
+    console.log(`✓ Found existing projects.json with ${Array.isArray(existingProjects) ? existingProjects.length : 'data'} projects`);
+  }
+  
   // Check if Strapi is available
+  let strapiAvailable = false;
   try {
-    await fetch(`${STRAPI_API_URL.replace('/api', '')}/api`);
-  } catch {
+    const healthCheck = await fetch(`${STRAPI_API_URL.replace('/api', '')}/api`, {
+      signal: AbortSignal.timeout(5000), // 5 second timeout
+    });
+    if (healthCheck.ok) {
+      strapiAvailable = true;
+      console.log('✓ Strapi API is available');
+    }
+  } catch (error) {
     console.warn('⚠️  Warning: Could not connect to Strapi API.');
-    console.warn('   Make sure Strapi is running on localhost:1337');
-    console.warn('   Existing JSON files will be kept if they exist.\n');
+    console.warn(`   Error: ${error.message}`);
+    console.warn('   This is normal in production builds if Strapi is not deployed.\n');
+  }
+  
+  // If Strapi is not available AND we have existing data, skip export entirely
+  if (!strapiAvailable && hasExistingData) {
+    console.log('\n✅ Skipping export - Strapi unavailable but existing data found.');
+    console.log('   Using existing projects.json file.');
+    console.log('   To update: Run export locally with Strapi running, then commit and push.\n');
+    return;
   }
   
   // Export projects
   const { projects, index: projectsIndex } = await exportProjects();
-  // Always write files, even if empty (so frontend doesn't error)
-  writeJSONFile('projects.json', projects);
-  writeJSONFile('projects-index.json', projectsIndex);
-  if (projects.length === 0) {
-    console.warn('⚠️  No projects exported. Check if Strapi is running and has content.');
+  
+  // CRITICAL: Only write if we have actual data
+  // Never overwrite existing files with empty data
+  const hasProjects = Array.isArray(projects) && projects.length > 0;
+  const hasIndex = projectsIndex && Object.keys(projectsIndex || {}).length > 0;
+  
+  if (hasProjects) {
+    // We have data from Strapi - write it
+    writeJSONFile('projects.json', projects, false); // Don't preserve when we have new data
+    console.log(`✓ Updated projects.json with ${projects.length} projects from Strapi`);
+  } else if (hasExistingData) {
+    // No data from Strapi but we have existing data - preserve it
+    console.log('⚠️  No projects from Strapi, preserving existing projects.json');
+  } else {
+    // No data and no existing file - write empty array (so frontend doesn't error)
+    writeJSONFile('projects.json', projects, false);
+    console.warn('⚠️  Wrote empty projects.json - no data available and no existing file');
   }
   
-  console.log('\n✅ Export complete!');
-  console.log(`   Files written to: ${DATA_DIR}`);
+  // Only write index if we have data (we don't use it anymore, but keep for compatibility)
+  if (hasIndex) {
+    writeJSONFile('projects-index.json', projectsIndex, false);
+  }
+  
+  if (projects.length === 0 && !strapiAvailable && !hasExistingData) {
+    console.warn('\n⚠️  WARNING: No projects exported and no existing data found!');
+    console.warn('   The projects.json file will be empty.');
+    console.warn('   To fix: Run export locally with Strapi running, then commit and push.');
+  } else if (projects.length === 0 && !strapiAvailable && hasExistingData) {
+    console.log('\n✅ Export complete - using existing data');
+  } else if (projects.length === 0) {
+    console.warn('⚠️  No projects exported. Check if Strapi is running and has content.');
+  } else {
+    console.log(`\n✅ Export complete! Exported ${projects.length} projects.`);
+  }
+  
+  console.log(`   Files location: ${DATA_DIR}`);
   console.log('   Remember to commit these files to Git before deploying.');
 }
 
