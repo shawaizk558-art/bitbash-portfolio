@@ -13,10 +13,8 @@ import type { Project } from '@/data/projects';
 // Cache for static data
 let staticDataCache: {
   projects: Project[] | null;
-  projectsIndex: Record<string, string | number> | null;
 } = {
   projects: null,
-  projectsIndex: null,
 };
 
 /**
@@ -150,56 +148,46 @@ async function loadStaticData(filename: string): Promise<any> {
 
 /**
  * Load projects data (cached)
+ * Only loads from projects.json - no index file needed
  */
 async function loadProjectsData(): Promise<{
   projects: Project[];
-  projectsIndex: Record<string, string | number>;
 }> {
   console.log('[loadProjectsData] Starting to load projects data...');
   
   // Check if we have cached data
-  if (staticDataCache.projects && staticDataCache.projectsIndex) {
+  if (staticDataCache.projects) {
     console.log('[loadProjectsData] ✅ Using cached data:', {
       projectsCount: staticDataCache.projects.length,
-      indexKeys: Object.keys(staticDataCache.projectsIndex).length,
     });
     return {
       projects: staticDataCache.projects,
-      projectsIndex: staticDataCache.projectsIndex,
     };
   }
 
-  console.log('[loadProjectsData] Cache miss - fetching from files...');
+  console.log('[loadProjectsData] Cache miss - fetching from projects.json...');
   const loadStartTime = performance.now();
 
   try {
-    console.log('[loadProjectsData] Fetching projects.json and projects-index.json in parallel...');
-    const [projects, projectsIndex] = await Promise.all([
-      loadStaticData('projects.json'),
-      loadStaticData('projects-index.json'),
-    ]);
+    console.log('[loadProjectsData] Fetching projects.json...');
+    const projects = await loadStaticData('projects.json');
 
     const loadEndTime = performance.now();
     
-    console.log('[loadProjectsData] Files loaded, processing data...', {
+    console.log('[loadProjectsData] File loaded, processing data...', {
       projectsType: Array.isArray(projects) ? 'array' : typeof projects,
       projectsLength: Array.isArray(projects) ? projects.length : 'N/A',
-      indexType: typeof projectsIndex,
-      indexKeys: projectsIndex ? Object.keys(projectsIndex).length : 0,
       loadTime: `${(loadEndTime - loadStartTime).toFixed(2)}ms`,
     });
 
     staticDataCache.projects = Array.isArray(projects) ? projects : [];
-    staticDataCache.projectsIndex = projectsIndex || {};
 
     console.log('[loadProjectsData] ✅ Successfully loaded and cached projects data:', {
       cachedProjectsCount: staticDataCache.projects.length,
-      cachedIndexKeys: Object.keys(staticDataCache.projectsIndex).length,
     });
 
     return {
       projects: staticDataCache.projects,
-      projectsIndex: staticDataCache.projectsIndex,
     };
   } catch (error) {
     const loadEndTime = performance.now();
@@ -209,7 +197,7 @@ async function loadProjectsData(): Promise<{
       stack: error instanceof Error ? error.stack : undefined,
       loadTime: `${(loadEndTime - loadStartTime).toFixed(2)}ms`,
     });
-    return { projects: [], projectsIndex: {} };
+    return { projects: [] };
   }
 }
 
