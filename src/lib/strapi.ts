@@ -34,14 +34,34 @@ async function loadStaticData(filename: string): Promise<any> {
   // This is more common in production (Vercel CDN) than local dev
   if (response.status === 304) {
     // Retry with cache-busting parameter to get the actual data
-    // This ensures we always get the JSON body, not just a 304 status
-    response = await fetch(`/data/${filename}?v=${Date.now()}`, {
+    // Use both query param and headers to ensure we bypass all caches
+    const cacheBuster = `?v=${Date.now()}&_=${Math.random()}`;
+    response = await fetch(`/data/${filename}${cacheBuster}`, {
       cache: 'no-store',
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+      },
     });
     
     // If we still get 304 (shouldn't happen with cache-busting, but be safe)
     if (response.status === 304) {
-      throw new Error(`Received 304 Not Modified for ${filename} even with cache-busting. This should not happen.`);
+      // Last resort: try with a completely different approach
+      // Use a unique path that won't be cached
+      const finalUrl = `/data/${filename}?nocache=${Date.now()}-${Math.random().toString(36).substring(7)}`;
+      response = await fetch(finalUrl, {
+        method: 'GET',
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+        },
+      });
+      
+      if (response.status === 304 || !response.ok) {
+        throw new Error(`Failed to load ${filename}: Received ${response.status} ${response.statusText} even after cache-busting attempts`);
+      }
     }
   }
   
@@ -50,12 +70,40 @@ async function loadStaticData(filename: string): Promise<any> {
     throw new Error(`Failed to load ${filename}: ${response.status} ${response.statusText}`);
   }
   
-  const contentType = response.headers.get('content-type');
-  if (!contentType || !contentType.includes('application/json')) {
-    throw new Error(`Invalid content type for ${filename}`);
+  // Verify we have a response body before parsing
+  const text = await response.text();
+  if (!text || text.trim().length === 0) {
+    // If body is empty, retry with cache-busting
+    const retryUrl = `/data/${filename}?retry=${Date.now()}`;
+    const retryResponse = await fetch(retryUrl, {
+      cache: 'no-store',
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+      },
+    });
+    
+    if (!retryResponse.ok) {
+      throw new Error(`Failed to load ${filename}: Empty response body and retry failed with ${retryResponse.status}`);
+    }
+    
+    const retryText = await retryResponse.text();
+    if (!retryText || retryText.trim().length === 0) {
+      throw new Error(`Failed to load ${filename}: Response body is empty`);
+    }
+    
+    try {
+      return JSON.parse(retryText);
+    } catch (parseError) {
+      throw new Error(`Failed to parse JSON from ${filename}: ${parseError}`);
+    }
   }
   
-  return await response.json();
+  // Parse the JSON
+  try {
+    return JSON.parse(text);
+  } catch (parseError) {
+    throw new Error(`Failed to parse JSON from ${filename}: ${parseError}`);
+  }
 }
 
 /**
