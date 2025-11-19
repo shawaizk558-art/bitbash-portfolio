@@ -3,14 +3,15 @@ import { Showcase } from "@/components/Showcase";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { 
-  Globe, 
-  Smartphone, 
-  Code, 
-  Database, 
-  ArrowRight, 
+import {
+  Globe,
+  Smartphone,
+  Code,
+  Database,
+  ArrowRight,
   CheckCircle
 } from "@/lib/icons";
+import { HeroBackground } from "@/components/HeroBackground";
 
 const DevelopmentServices = () => {
   const services = [
@@ -74,23 +75,19 @@ const DevelopmentServices = () => {
   return (
     <div className="min-h-screen">
       <Navigation />
-      
+
       {/* Hero Section - Mobile Optimized */}
       <section className="relative min-h-[clamp(220px,42vh,340px)] sm:min-h-[clamp(260px,46vh,380px)] md:min-h-[clamp(300px,50vh,420px)] lg:min-h-[clamp(280px,48vh,400px)] 2xl:min-h-[clamp(300px,46vh,420px)] flex items-center justify-center overflow-hidden pt-16">
         {/* Animated gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-gradient-start via-gradient-mid to-gradient-end animate-gradient opacity-60" />
-        
-        {/* Floating gradient blobs - Mobile Optimized */}
-        <div className="absolute top-20 left-4 sm:left-10 w-48 h-48 sm:w-72 sm:h-72 bg-primary/20 rounded-full blur-3xl animate-float" />
-        <div className="absolute bottom-20 right-4 sm:right-10 w-64 h-64 sm:w-96 sm:h-96 bg-accent/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
-        
+        <HeroBackground />
+
         <div className="relative z-10 container-responsive text-center">
           <div className="max-w-4xl mx-auto space-responsive-lg animate-fade-in">
             <div className="space-responsive-sm">
               <h1 className="text-responsive-3xl sm:text-responsive-4xl md:text-5xl lg:text-[54px] font-bold leading-[1.1] tracking-tight font-sans px-2 sm:px-0">
                 Custom Development <span className="text-primary">Solutions</span>
               </h1>
-              
+
               <p className="text-base sm:text-lg md:text-xl lg:text-[21px] text-muted-foreground max-w-2xl mx-auto px-4 sm:px-0 leading-relaxed">
                 From web applications to mobile apps, we build custom software solutions that scale your business and enhance user experience.
               </p>
@@ -112,7 +109,7 @@ const DevelopmentServices = () => {
                     <p className="text-responsive-sm text-gray-600 mx-auto max-w-md">{service.description}</p>
                   </div>
                 </div>
-                
+
                 <div className="space-y-3">
                   <h4 className="text-responsive-base sm:text-lg font-semibold text-gray-900">Key Features</h4>
                   <ul className="space-y-2 text-left mx-auto max-w-md flex flex-col items-center">
@@ -141,7 +138,7 @@ const DevelopmentServices = () => {
               We use the latest frameworks and tools to build scalable applications
             </p>
           </div>
-          
+
           <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-center gap-x-10 gap-y-8 opacity-80 px-3 sm:px-0">
             {technologies.map((tech) => (
               <img

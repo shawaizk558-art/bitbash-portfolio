@@ -1,48 +1,19 @@
 
 import { Globe, Smartphone, Database, Zap, Shield, Code, Cloud, Bot, Target, BarChart3, TrendingUp } from "@/lib/icons";
+import { coreServices } from "@/data/services";
 import { useState, useEffect } from "react";
 
 export const Features = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
-  const tabs = [
-    { 
-      icon: Code, 
-      title: "Full-Stack Development", 
-      label: "Web & Mobile Apps",
-      image: "/fullstack1.png",
-      description: "Full stack development covers both front-end and back-end technologies. We build complete web & mobile applications and deliver scalable solutions."
-    },
-    { 
-      icon: Bot, 
-      title: "AI Solutions", 
-      label: "Machine Learning",
-      image: "/aisolutions2.png",
-      description: "Custom AI models and machine learning solutions for your business. We develop intelligent systems using predictive analytics to help you make data-driven decisions."
-    },
-    { 
-      icon: Zap, 
-      title: "Automation System", 
-      label: "Process Automation",
-      image: "/automation3.png",
-      description: "Intelligent automation systems that streamline your workflows. We build custom bots and scripts using browser automation, task scheduling, and intelligent process automation to eliminate repetitive tasks and save 70-90% of your time."
-    },
-    { 
-      icon: Database, 
-      title: "Data Scraping", 
-      label: "Data Extraction",
-      image: "/webscraping4.png",
-      description: "Automated data collection from any source. We use Python, Scrapy, and Selenium with stealth technology to bypass detection. Extract structured data from websites, APIs, and deliver it in any format (CSV, JSON, API) for your business needs."
-    },
-    { 
-      icon: BarChart3, 
-      title: "Data Analysing", 
-      label: "Analytics & Insights",
-      image: "/dataanalytics5.png",
-      description: "Transform raw data into actionable insights. Our analytics solutions include data visualization, predictive modeling, and custom dashboards."
-    }
-  ];
+  const tabs = coreServices.map((service) => ({
+    icon: service.icon,
+    title: service.name,
+    label: service.label,
+    image: service.image,
+    description: service.summary
+  }));
 
   // Preload all images on component mount
   useEffect(() => {

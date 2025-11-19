@@ -403,6 +403,7 @@ export const Navigation = () => {
             <a href="/how-we-work" className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0">
               <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Our Work Model</span>
             </a>
+
           </div>
           
           {/* Desktop CTA Buttons - Right Side */}

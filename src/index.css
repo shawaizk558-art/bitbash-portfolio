@@ -44,7 +44,7 @@ All colors MUST be HSL.
     --gradient-start: 250 100% 95%;
     --gradient-mid: 263 100% 95%;
     --gradient-end: 280 100% 95%;
-    
+
     /* Shadow with purple tint */
     --shadow-color: 263 70% 58%;
   }
@@ -77,11 +77,11 @@ All colors MUST be HSL.
     --border: 260 15% 20%;
     --input: 260 15% 20%;
     --ring: 263 70% 58%;
-    
+
     --gradient-start: 260 70% 15%;
     --gradient-mid: 263 60% 18%;
     --gradient-end: 280 70% 15%;
-    
+
     --shadow-color: 263 70% 35%;
   }
 }
@@ -95,7 +95,7 @@ All colors MUST be HSL.
     @apply bg-background text-foreground antialiased;
     overflow-x: hidden;
   }
-  
+
   /* Ensure images are responsive by default */
   img {
     @apply max-w-full h-auto;
@@ -103,161 +103,221 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
+
   /* Mobile-First Container */
   .container-responsive {
     @apply container mx-auto px-4 sm:px-6 md:px-8 lg:px-12;
   }
-  
+
   /* Responsive Text Sizes - Only the ones actually used */
   .text-responsive-xs {
     @apply text-xs sm:text-sm md:text-base;
   }
-  
+
   .text-responsive-sm {
     @apply text-sm sm:text-base md:text-lg;
   }
-  
+
   .text-responsive-base {
     @apply text-base sm:text-lg md:text-xl;
   }
-  
+
   .text-responsive-lg {
     @apply text-lg sm:text-xl md:text-2xl;
   }
-  
+
   .text-responsive-3xl {
     @apply text-3xl sm:text-4xl md:text-5xl;
   }
-  
+
   .text-responsive-4xl {
     @apply text-4xl sm:text-5xl md:text-6xl;
   }
-  
+
   .text-responsive-5xl {
     @apply text-5xl sm:text-6xl md:text-7xl;
   }
-  
+
   /* Responsive Spacing - Only the ones actually used */
   .space-responsive-sm {
     @apply space-y-3 sm:space-y-4 md:space-y-6;
   }
-  
+
   .space-responsive-lg {
     @apply space-y-6 sm:space-y-8 md:space-y-12;
   }
-  
+
   /* Touch-Friendly Interactions */
   .touch-target {
     @apply min-h-[44px] min-w-[44px];
   }
-  
+
   .touch-friendly {
     @apply touch-target p-2 sm:p-3 md:p-4;
   }
-  
+
   /* Mobile-Specific Utilities */
   .mobile-only {
     @apply block sm:hidden;
   }
-  
+
   .mobile-hidden {
     @apply hidden sm:block;
   }
-  
+
   .tablet-only {
     @apply hidden sm:block md:hidden;
   }
-  
+
   .desktop-only {
     @apply hidden md:block;
   }
-  
+
   /* Mobile-First Animations */
   .animate-fadeIn {
     animation: fadeIn 200ms ease-out forwards;
   }
-  
+
   .animate-fade-in {
     animation: fadeIn 200ms ease-out forwards;
   }
-  
+
   .animate-gradient {
     background-size: 200% 200%;
     animation: gradient 8s ease infinite;
   }
-  
+
   .animate-float {
     animation: float 6s ease-in-out infinite;
   }
-  
+
   .animate-expand {
     animation: expand 1200ms ease-out forwards;
     transform-origin: left center;
   }
-  
+
   .animate-pulse-dot {
     animation: pulseDot 2s ease-in-out infinite;
   }
-  
+
   @keyframes fadeIn {
     0% {
       opacity: 0;
     }
+
     100% {
       opacity: 1;
     }
   }
-  
+
   @keyframes gradient {
-    0%, 100% {
+
+    0%,
+    100% {
       background-position: 0% 50%;
     }
+
     50% {
       background-position: 100% 50%;
     }
   }
-  
+
   @keyframes float {
-    0%, 100% {
+
+    0%,
+    100% {
       transform: translateY(0px);
     }
+
     50% {
       transform: translateY(-20px);
     }
   }
-  
+
   @keyframes expand {
     0% {
       transform: scaleX(0);
     }
+
     100% {
       transform: scaleX(1);
     }
   }
-  
+
   @keyframes pulseDot {
-    0%, 100% {
+
+    0%,
+    100% {
       opacity: 1;
     }
+
     50% {
       opacity: 0;
     }
   }
-  
-@keyframes wiggle-subtle {
-  0%, 100% {
-    transform: translateY(0);
+
+  @keyframes wiggle-subtle {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-3px);
+    }
+
+    50% {
+      transform: translateY(-3px);
+    }
   }
-  50% {
-    transform: translateY(-3px);
+
+  @keyframes flow {
+    0% {
+      background-position: 0 0;
+    }
+
+    100% {
+      background-position: 40px 40px;
+    }
   }
-}
+
+  @keyframes mesh {
+    0% {
+      transform: translate(0, 0) scale(1);
+    }
+
+    33% {
+      transform: translate(30px, -50px) scale(1.1);
+    }
+
+    66% {
+      transform: translate(-20px, 20px) scale(0.9);
+    }
+
+    100% {
+      transform: translate(0, 0) scale(1);
+    }
+  }
+
+  .bg-dot-pattern {
+    background-image: radial-gradient(circle, #8b5cf6 1.5px, transparent 1.5px);
+    background-size: 40px 40px;
+  }
+
+  .animate-flow {
+    animation: flow 4s linear infinite;
+  }
+
+  .animate-mesh {
+    animation: mesh 20s ease-in-out infinite;
+  }
 
   /* Mobile-First Hover States */
   .hover-mobile {
     @apply transition-transform duration-200 hover:-translate-y-1 active:translate-y-0;
   }
-  
+
   .group:hover .wiggle-on-hover {
     animation: wiggle-subtle 0.4s ease-in-out;
   }
@@ -266,60 +326,60 @@ All colors MUST be HSL.
   .focus-mobile {
     @apply focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2;
   }
-  
+
   /* Sleek Hamburger Animation */
   .hamburger-line {
     @apply block w-5 h-0.5 bg-gray-700 transition-all duration-300 ease-in-out;
     transform-origin: center;
   }
-  
+
   .hamburger-line-1-open {
     transform: rotate(45deg) translateY(1px);
   }
-  
+
   .hamburger-line-2-open {
     transform: scale(0);
     opacity: 0;
   }
-  
+
   .hamburger-line-3-open {
     transform: rotate(-45deg) translateY(-1px);
   }
-  
+
   /* Minimal Mobile Button */
   .mobile-hamburger-btn {
     @apply w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 active:bg-gray-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2;
   }
-  
+
   /* Mobile Menu Item Animation */
   .mobile-menu-item {
     @apply transform transition-all duration-300 ease-in-out;
   }
-  
+
   .mobile-menu-item-enter {
     @apply translate-x-4 opacity-0;
   }
-  
+
   .mobile-menu-item-enter-active {
     @apply translate-x-0 opacity-100;
   }
-  
+
   /* Prevent horizontal scroll on mobile */
   .overflow-x-hidden {
     overflow-x: hidden;
   }
-  
+
   /* Responsive image utilities */
   .img-responsive {
     @apply w-full h-auto max-w-full;
   }
-  
+
   /* Tablet-specific hero height (768px to 1023px) */
   @media (min-width: 768px) and (max-width: 1023px) {
     section.hero-tablet-height {
       min-height: clamp(480px, 70vh, 600px) !important;
     }
-    
+
     /* Fix text overflow on tablets in Features section */
     #features .text-center h2,
     #features h2.text-2xl,
@@ -334,11 +394,12 @@ All colors MUST be HSL.
       max-width: 100% !important;
       box-sizing: border-box !important;
     }
-    
+
     /* Hero h1 tablet optimization - smaller and two lines with proper alignment */
     section.hero-tablet-height h1,
     .hero-tablet-height h1 {
-      font-size: 2.25rem !important; /* slightly bigger for tablet */
+      font-size: 2.25rem !important;
+      /* slightly bigger for tablet */
       line-height: 1.3 !important;
       text-align: center !important;
       margin-left: auto !important;
@@ -350,13 +411,13 @@ All colors MUST be HSL.
       padding-left: 0 !important;
       padding-right: 0 !important;
     }
-    
+
     /* Ensure container maintains proper alignment on tablets */
     section.hero-tablet-height .container-responsive,
     .hero-tablet-height .container-responsive {
       text-align: center !important;
     }
-    
+
     section.hero-tablet-height .max-w-4xl,
     .hero-tablet-height .max-w-4xl {
       margin-left: auto !important;

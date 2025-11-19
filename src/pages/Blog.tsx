@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Search, Calendar, User, ArrowRight, X } from "@/lib/icons";
+import { HeroBackground } from "@/components/HeroBackground";
 
 interface BlogPost {
   id: number;
@@ -164,7 +165,7 @@ const Blog = () => {
   // Filter posts based on category and search query
   const filteredPosts = blogPosts.filter(post => {
     const matchesCategory = selectedCategory === "All posts" || post.category === selectedCategory;
-    const matchesSearch = searchQuery === "" || 
+    const matchesSearch = searchQuery === "" ||
       post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       post.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
@@ -182,13 +183,11 @@ const Blog = () => {
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
-      
+
       {/* Blog Hero Section */}
       <section className="relative min-h-[clamp(320px,52vh,420px)] sm:min-h-[clamp(370px,57vh,470px)] md:min-h-[clamp(440px,67vh,560px)] lg:min-h-[clamp(380px,67vh,540px)] 2xl:min-h-[clamp(380px,66vh,580px)] flex items-center justify-center overflow-hidden pt-12 sm:pt-16 pb-6 sm:pb-8 lg:pb-12">
         {/* Match homepage purple animated gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-gradient-start via-gradient-mid to-gradient-end animate-gradient opacity-60 pointer-events-none" />
-        <div className="absolute top-20 left-4 sm:left-10 w-48 h-48 sm:w-72 sm:h-72 bg-primary/20 rounded-full blur-3xl animate-float pointer-events-none" />
-        <div className="absolute bottom-20 right-4 sm:right-10 w-64 h-64 sm:w-96 sm:h-96 bg-accent/20 rounded-full blur-3xl animate-float pointer-events-none" style={{ animationDelay: '2s' }} />
+        <HeroBackground />
         <div className="container-responsive relative z-20">
           <div className="max-w-5xl mx-auto text-center flex flex-col items-center justify-center lg:-mt-8 2xl:-mt-4">
             {/* Heading - Always visible */}
@@ -197,7 +196,7 @@ const Blog = () => {
                 BitBash <span className="text-purple-600">Blog</span>
               </h1>
             </div>
-            
+
             {/* Subtitle Lines - Hidden on mobile, visible on larger screens */}
             <div className="hidden sm:block space-responsive-sm mb-4 sm:mb-5 md:mb-6 lg:mb-8 px-4 md:px-6 lg:px-0">
               <div className="space-y-1 sm:space-y-1.5">
@@ -209,7 +208,7 @@ const Blog = () => {
                 </p>
               </div>
             </div>
-            
+
             {/* Search Bar - Smaller size */}
             <div className="max-w-xl mx-auto w-full px-4 sm:px-6 md:px-0 mb-3 sm:mb-4 md:mb-5 lg:mb-6">
               <div className="relative">
@@ -223,7 +222,7 @@ const Blog = () => {
                 />
               </div>
             </div>
-            
+
             {/* Category Filters - Show 6 options + "..." button */}
             <div className="w-full px-4 sm:px-6 md:px-0 max-w-5xl mx-auto">
               {showAllCategories ? (
@@ -235,11 +234,10 @@ const Blog = () => {
                         setSelectedCategory(category);
                         setDisplayCount(12);
                       }}
-                      className={`px-2.5 sm:px-3 md:px-4 lg:px-6 py-1.5 sm:py-2 md:py-2.5 rounded-full text-xs sm:text-xs md:text-sm lg:text-base font-medium transition-colors whitespace-nowrap flex-shrink-0 min-h-[32px] sm:min-h-[36px] md:min-h-0 ${
-                        selectedCategory === category
-                          ? "bg-purple-600 text-white hover:bg-purple-700"
-                          : "bg-white/90 backdrop-blur-sm text-gray-700 hover:bg-white border border-gray-200"
-                      }`}
+                      className={`px-2.5 sm:px-3 md:px-4 lg:px-6 py-1.5 sm:py-2 md:py-2.5 rounded-full text-xs sm:text-xs md:text-sm lg:text-base font-medium transition-colors whitespace-nowrap flex-shrink-0 min-h-[32px] sm:min-h-[36px] md:min-h-0 ${selectedCategory === category
+                        ? "bg-purple-600 text-white hover:bg-purple-700"
+                        : "bg-white/90 backdrop-blur-sm text-gray-700 hover:bg-white border border-gray-200"
+                        }`}
                     >
                       {category}
                     </button>
@@ -262,11 +260,10 @@ const Blog = () => {
                           setSelectedCategory(category);
                           setDisplayCount(12);
                         }}
-                        className={`px-2.5 sm:px-3 md:px-4 lg:px-6 py-1.5 sm:py-2 md:py-2.5 rounded-full text-xs sm:text-xs md:text-sm lg:text-base font-medium transition-colors whitespace-nowrap flex-shrink-0 min-h-[32px] sm:min-h-[36px] md:min-h-0 ${
-                          selectedCategory === category
-                            ? "bg-purple-600 text-white hover:bg-purple-700"
-                            : "bg-white/90 backdrop-blur-sm text-gray-700 hover:bg-white border border-gray-200"
-                        }`}
+                        className={`px-2.5 sm:px-3 md:px-4 lg:px-6 py-1.5 sm:py-2 md:py-2.5 rounded-full text-xs sm:text-xs md:text-sm lg:text-base font-medium transition-colors whitespace-nowrap flex-shrink-0 min-h-[32px] sm:min-h-[36px] md:min-h-0 ${selectedCategory === category
+                          ? "bg-purple-600 text-white hover:bg-purple-700"
+                          : "bg-white/90 backdrop-blur-sm text-gray-700 hover:bg-white border border-gray-200"
+                          }`}
                       >
                         {category}
                       </button>
@@ -288,7 +285,7 @@ const Blog = () => {
         {/* Subtle divider at bottom to separate sections */}
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-200/60 to-transparent" />
       </section>
-      
+
       {/* Blog Posts Grid */}
       <section className="py-8 sm:py-12 bg-white">
         <div className="container-responsive">
@@ -321,7 +318,7 @@ const Blog = () => {
                         <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 group-hover:text-purple-600 transition-colors line-clamp-2">
                           {post.title}
                         </h2>
-                        
+
                         <p className="text-gray-600 mb-5 line-clamp-3 text-base sm:text-lg">
                           {post.excerpt}
                         </p>
@@ -379,7 +376,7 @@ const Blog = () => {
                         <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 group-hover:text-purple-600 transition-colors line-clamp-2">
                           {post.title}
                         </h2>
-                        
+
                         <p className="text-gray-600 mb-4 line-clamp-3 text-sm sm:text-base">
                           {post.excerpt}
                         </p>

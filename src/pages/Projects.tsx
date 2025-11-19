@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState, useCallback } from "react";
 import type { Project } from "@/data/projects";
 import { projects as hardcodedProjects } from "@/data/projects";
+import { HeroBackground } from "@/components/HeroBackground";
 
 const Projects = () => {
   const [dynamicProjects, setDynamicProjects] = useState<Project[]>([]);
@@ -18,14 +19,14 @@ const Projects = () => {
         const strapiProjects = await getProjects({
           sort: 'displayOrder:asc,publishedAt:desc'
         });
-        
+
         // Filter out any projects that have the same slug as hardcoded projects
         // (hardcoded projects take precedence)
         const hardcodedSlugs = new Set(hardcodedProjects.map(p => p.slug));
         const filteredProjects = strapiProjects.filter(
           project => !hardcodedSlugs.has(project.slug)
         );
-        
+
         setDynamicProjects(filteredProjects);
       } catch (error) {
         console.error('Error fetching dynamic projects:', error);
@@ -161,9 +162,7 @@ const Projects = () => {
 
       {/* Projects Hero Section - match Blog hero hierarchy/sizes */}
       <section className="relative min-h-[clamp(220px,42vh,340px)] sm:min-h-[clamp(260px,46vh,380px)] md:min-h-[clamp(300px,50vh,420px)] lg:min-h-[clamp(280px,48vh,400px)] 2xl:min-h-[clamp(300px,46vh,420px)] flex items-center justify-center overflow-hidden pt-12 sm:pt-16 pb-6 sm:pb-8 lg:pb-12">
-        <div className="absolute inset-0 bg-gradient-to-br from-gradient-start via-gradient-mid to-gradient-end animate-gradient opacity-60 pointer-events-none" />
-        <div className="absolute top-20 left-4 sm:left-10 w-48 h-48 sm:w-72 sm:h-72 bg-primary/20 rounded-full blur-3xl animate-float pointer-events-none" />
-        <div className="absolute bottom-20 right-4 sm:right-10 w-64 h-64 sm:w-96 sm:h-96 bg-accent/20 rounded-full blur-3xl animate-float pointer-events-none" style={{ animationDelay: '2s' }} />
+        <HeroBackground />
         <div className="container-responsive relative z-20">
           <div className="max-w-5xl mx-auto text-center flex flex-col items-center justify-center space-y-4 sm:space-responsive-lg">
             <div className="mt-4 sm:mt-6 lg:mt-10">
@@ -199,7 +198,7 @@ const Projects = () => {
                   className="bg-white rounded-2xl shadow-lg hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100"
                 >
                   {/* Video Thumbnail - Mobile Optimized */}
-                  <div 
+                  <div
                     className="relative aspect-video bg-gradient-to-br overflow-hidden group cursor-pointer"
                     onClick={() => {
                       if (project.youtubeVideoId) {
@@ -236,7 +235,7 @@ const Projects = () => {
                               </div>
                             )}
                             {/* Play Button Overlay */}
-                            <div 
+                            <div
                               className="absolute inset-0 flex items-center justify-center z-10 cursor-pointer"
                               onClick={() => {
                                 setPlayingVideoIndex(index);
@@ -263,7 +262,7 @@ const Projects = () => {
                     ) : (
                       <>
                         <div className={`absolute inset-0 bg-gradient-to-br ${gradientClasses[project.videoPlaceholder]} opacity-80`}></div>
-                        
+
                         {/* Play Button - Mobile Optimized */}
                         <div className="absolute inset-0 flex items-center justify-center">
                           <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg touch-target">
@@ -303,7 +302,7 @@ const Projects = () => {
                             </span>
                           </div>
                         )}
-                        
+
                         <div className="min-w-0 flex-1">
                           <p className="font-semibold text-gray-900 text-xs sm:text-sm lg:text-sm truncate">
                             {project.name}

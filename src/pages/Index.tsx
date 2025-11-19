@@ -5,10 +5,12 @@ import { Showcase } from "@/components/Showcase";
 import { FAQ } from "@/components/FAQ";
 import { CTA } from "@/components/CTA";
 import { Footer } from "@/components/Footer";
+import { HomepageSchema } from "@/components/HomepageSchema";
 
 const Index = () => {
   return (
     <div className="min-h-screen">
+      <HomepageSchema />
       <Navigation />
       <Hero />
       <Features />

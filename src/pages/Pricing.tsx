@@ -8,6 +8,7 @@ import {
   DollarSign,
   Code
 } from "lucide-react";
+import { HeroBackground } from "@/components/HeroBackground";
 
 const Pricing = () => {
   // Removed detailed pricing datasets to simplify the page per request
@@ -16,12 +17,10 @@ const Pricing = () => {
   return (
     <div className="min-h-screen">
       <Navigation />
-      
+
       {/* Hero Section - match Blog hero sizes and structure */}
       <section className="relative min-h-[30vh] sm:min-h-[40vh] flex items-center justify-center overflow-hidden pt-8 pb-0 sm:pt-10 sm:pb-6">
-        <div className="absolute inset-0 bg-gradient-to-br from-gradient-start via-gradient-mid to-gradient-end animate-gradient opacity-60 pointer-events-none" />
-        <div className="absolute top-20 left-4 sm:left-10 w-48 h-48 sm:w-72 sm:h-72 bg-primary/20 rounded-full blur-3xl animate-float pointer-events-none" />
-        <div className="absolute bottom-20 right-4 sm:right-10 w-64 h-64 sm:w-96 sm:h-96 bg-accent/20 rounded-full blur-3xl animate-float pointer-events-none" style={{ animationDelay: '2s' }} />
+        <HeroBackground />
         <div className="container-responsive relative z-20">
           <div className="max-w-5xl mx-auto text-center flex flex-col items-center justify-center">
             {/* Heading - Always visible, centered on mobile */}
