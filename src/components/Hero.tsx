@@ -7,8 +7,6 @@ export const Hero = () => {
     <section className="hero-tablet-height relative min-h-[clamp(300px,50vh,400px)] sm:min-h-[clamp(350px,55vh,450px)] md:min-h-[clamp(420px,65vh,540px)] lg:min-h-[clamp(360px,65vh,520px)] 2xl:min-h-[clamp(360px,64vh,560px)] flex items-center justify-center overflow-hidden pt-16 pb-8 sm:pb-12 lg:pb-0">
       <HeroBackground />
 
-      <div className="absolute top-10 sm:top-16 lg:top-20 left-2 sm:left-6 lg:left-10 w-32 h-32 sm:w-48 sm:h-48 lg:w-72 lg:h-72 bg-primary/30 rounded-full blur-3xl animate-float z-0" />
-      <div className="absolute bottom-10 sm:bottom-16 lg:bottom-20 right-2 sm:right-6 lg:right-10 w-40 h-40 sm:w-64 sm:h-64 lg:w-96 lg:h-96 bg-accent/30 rounded-full blur-3xl animate-float z-0" style={{ animationDelay: '2s' }} />
 
       <div className="relative z-10 container-responsive text-center lg:-mt-10 2xl:-mt-4">
         <div className="max-w-4xl mx-auto space-responsive-lg animate-fade-in">
@@ -34,9 +32,9 @@ export const Hero = () => {
                 <a href="/contact">Contact Us</a>
               </Button>
               <Button
-                variant="hero"
+                variant="default"
                 size="lg"
-                className="h-12 lg:h-12 py-4 px-6 text-base sm:text-lg lg:text-lg font-semibold rounded-xl w-full sm:w-auto hover:scale-100 shadow-sm hover:shadow-lg shadow-gray-400/20 hover:shadow-gray-400/35 transition-colors transition-shadow duration-300"
+                className="h-12 lg:h-12 py-4 px-6 text-base sm:text-lg lg:text-lg font-semibold rounded-xl w-full sm:w-auto hover:scale-100 transition-all duration-300"
               >
                 Book a Call
               </Button>

@@ -313,6 +313,24 @@ All colors MUST be HSL.
     animation: mesh 20s ease-in-out infinite;
   }
 
+  @keyframes beam {
+
+    0%,
+    100% {
+      opacity: 0.4;
+      transform: scale(1) rotate(0deg);
+    }
+
+    50% {
+      opacity: 0.6;
+      transform: scale(1.1) rotate(2deg);
+    }
+  }
+
+  .animate-beam {
+    animation: beam 8s ease-in-out infinite;
+  }
+
   /* Mobile-First Hover States */
   .hover-mobile {
     @apply transition-transform duration-200 hover:-translate-y-1 active:translate-y-0;
