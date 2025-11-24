@@ -25,6 +25,7 @@ export const Navigation = () => {
   const automationRef = useRef<HTMLDivElement | null>(null);
   const developmentRef = useRef<HTMLDivElement | null>(null);
   const solutionsRef = useRef<HTMLDivElement | null>(null);
+  const ourWorkModelRef = useRef<HTMLSpanElement | null>(null);
 
   // Function to check if a page is currently active (mobile only)
   const isActivePage = (path: string) => {
@@ -66,6 +67,7 @@ export const Navigation = () => {
       const center = centerLinksRef.current;
       const right = rightCtaRef.current;
       const logo = logoRef.current;
+      const ourWorkModel = ourWorkModelRef.current;
       
       if (!container || !center || !right || !logo) return;
 
@@ -95,6 +97,34 @@ export const Navigation = () => {
       const centerRect = center.getBoundingClientRect();
       const rightRect = right.getBoundingClientRect();
       const logoRect = logo.getBoundingClientRect();
+      
+      // Check if "Our Work Model" would wrap by temporarily removing whitespace-nowrap
+      let wouldWrap = false;
+      if (ourWorkModel) {
+        const ourWorkModelOriginalStyle = ourWorkModel.style.cssText;
+        const parentLink = ourWorkModel.parentElement as HTMLElement;
+        
+        // Get the natural single-line width first (with whitespace-nowrap)
+        const naturalWidth = ourWorkModel.getBoundingClientRect().width;
+        
+        // Temporarily remove whitespace-nowrap to check if it would wrap
+        ourWorkModel.style.setProperty('white-space', 'normal', 'important');
+        // Force reflow
+        void ourWorkModel.offsetHeight;
+        
+        // Check if text wraps by comparing scrollHeight to a single line height
+        const computedStyle = getComputedStyle(ourWorkModel);
+        const lineHeight = parseFloat(computedStyle.lineHeight) || parseFloat(computedStyle.fontSize) * 1.2;
+        const scrollHeight = ourWorkModel.scrollHeight;
+        const currentWidth = ourWorkModel.getBoundingClientRect().width;
+        
+        // If scrollHeight is significantly more than one line, it's wrapping
+        // Also check if width decreased significantly (indicating wrapping)
+        wouldWrap = scrollHeight > lineHeight * 1.3 || currentWidth < naturalWidth * 0.9;
+        
+        // Restore original styles
+        ourWorkModel.style.cssText = ourWorkModelOriginalStyle;
+      }
 
       // Restore original styles
       center.style.cssText = centerOriginalStyle;
@@ -117,10 +147,11 @@ export const Navigation = () => {
       if (shouldCollapse) {
         // Currently collapsed - only expand if there's clearly enough space
         // If totalNeeded is less than expandThreshold, we have enough space to expand
-        nextState = totalNeeded >= expandThreshold; // true = stay collapsed, false = expand
+        // Also check that "Our Work Model" wouldn't wrap
+        nextState = totalNeeded >= expandThreshold || wouldWrap; // true = stay collapsed, false = expand
       } else {
-        // Currently expanded - collapse if not enough space
-        nextState = totalNeeded > collapseThreshold; // true = collapse, false = stay expanded
+        // Currently expanded - collapse if not enough space OR if "Our Work Model" would wrap
+        nextState = totalNeeded > collapseThreshold || wouldWrap; // true = collapse, false = stay expanded
       }
 
       if (nextState !== shouldCollapse) {
@@ -401,7 +432,7 @@ export const Navigation = () => {
             </a>
 
             <a href="/how-we-work" className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0">
-              <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Our Work Model</span>
+              <span ref={ourWorkModelRef} className="font-normal text-black text-base lg:text-[17px] whitespace-nowrap" style={{ fontSize: '17px' }}>Our Work Model</span>
             </a>
 
           </div>

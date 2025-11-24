@@ -314,8 +314,84 @@ export const Showcase = ({
 
         {showTestimonials && (
           <>
-        {/* Featured Testimonial Card */}
+        {/* Kareem Testimonial Card */}
         <div className="mt-0">
+          <div className="bg-white rounded-3xl shadow-lg overflow-hidden min-h-[340px] sm:min-h-[400px] lg:h-[400px] border border-gray-200">
+            <div className="flex flex-col lg:grid lg:grid-cols-[63%_37%] h-full">
+              {/* Left side - Text content */}
+              <div className="p-8 sm:p-12 flex flex-col justify-center h-full items-center lg:items-start">
+                <div className="max-w-[40rem] w-full lg:ml-8 text-center lg:text-left">
+                  <blockquote className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 leading-tight mb-6">
+                    "Need a custom solution? This is the only team I'd trust without blinking."
+                  </blockquote>
+                  <p className="text-lg sm:text-xl lg:text-xl text-gray-600 leading-relaxed">
+                    "Every workflow, integration, and hand-off was engineered from scratch around how we operate. If you need a custom solution, this is the crew that actually builds it."
+                  </p>
+                </div>
+              </div>
+
+              {/* Right side - Video thumbnail */}
+              <div className="relative bg-gradient-to-br from-orange-100 to-pink-100 h-64 sm:h-72 lg:h-full rounded-3xl lg:rounded-l-3xl lg:rounded-r-none lg:rounded-br-3xl overflow-hidden mt-6 lg:mt-0 group">
+                {isKareemTestimonialPlaying ? (
+                  <div className="absolute inset-0 w-full h-full z-0 bg-black">
+                    <iframe
+                      src={`https://www.youtube.com/embed/m-dRE1dj5-k?rel=0&modestbranding=1&autoplay=1&playsinline=1&mute=1`}
+                      className="w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      title="Kareem Testimonial"
+                    ></iframe>
+                  </div>
+                ) : (
+                  <div className="absolute inset-0">
+                    <img
+                      ref={setHighPriority}
+                      src="/kareem.gif"
+                      alt="Kareem testimonial preview"
+                      className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04] will-change-transform"
+                      loading="eager"
+                      decoding="async"
+                    />
+                  </div>
+                )}
+
+                {!isKareemTestimonialPlaying && (
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 sm:p-6">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-white flex items-center justify-center flex-shrink-0">
+                          <img
+                            src="/kareem.jpg"
+                            alt="Kareem profile photo"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-white font-bold text-sm sm:text-base truncate">Kareem</p>
+                          <p className="text-white/80 text-xs sm:text-sm truncate">CTO @TechNova</p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        className="flex items-center justify-center rounded-full bg-white/90 group-hover:bg-red-600 backdrop-blur-sm shadow-lg w-9 h-9 sm:w-10 sm:h-10 hover:scale-105 transition-transform transition-colors duration-300 ease-out flex-shrink-0"
+                        aria-label="Play testimonial video"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsKareemTestimonialPlaying(true);
+                        }}
+                      >
+                        <Play className="w-4 h-4 sm:w-5 sm:h-5 text-black ml-0.5" fill="currentColor" />
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Featured Testimonial Card */}
+        <div className="mt-16 sm:mt-20">
           <div className="bg-white rounded-3xl shadow-lg overflow-hidden min-h-[340px] sm:min-h-[400px] lg:h-[400px] border border-gray-200">
             <div className="flex flex-col lg:grid lg:grid-cols-[63%_37%] h-full">
               {/* Left side - Text content */}
@@ -557,81 +633,6 @@ export const Showcase = ({
           </div>
         </div>
 
-        {/* Fourth Testimonial Card */}
-        <div className="mt-16 sm:mt-20">
-          <div className="bg-white rounded-3xl shadow-lg overflow-hidden min-h-[340px] sm:min-h-[400px] lg:h-[400px] border border-gray-200">
-            <div className="flex flex-col lg:grid lg:grid-cols-[63%_37%] h-full">
-              {/* Left side - Text content */}
-              <div className="p-8 sm:p-12 flex flex-col justify-center h-full items-center lg:items-start">
-                <div className="max-w-[40rem] w-full lg:ml-8 text-center lg:text-left">
-                  <blockquote className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 leading-tight mb-6">
-                    "Need a custom solution? This is the only team I'd trust without blinking."
-                  </blockquote>
-                  <p className="text-lg sm:text-xl lg:text-xl text-gray-600 leading-relaxed">
-                    "Every workflow, integration, and hand-off was engineered from scratch around how we operate. If you need a custom solution, this is the crew that actually builds it."
-                  </p>
-                </div>
-              </div>
-
-              {/* Right side - Video thumbnail */}
-              <div className="relative bg-gradient-to-br from-orange-100 to-pink-100 h-64 sm:h-72 lg:h-full rounded-3xl lg:rounded-l-3xl lg:rounded-r-none lg:rounded-br-3xl overflow-hidden mt-6 lg:mt-0 group">
-                {isKareemTestimonialPlaying ? (
-                  <div className="absolute inset-0 w-full h-full z-0 bg-black">
-                    <iframe
-                      src={`https://www.youtube.com/embed/m-dRE1dj5-k?rel=0&modestbranding=1&autoplay=1&playsinline=1&mute=1`}
-                      className="w-full h-full"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      allowFullScreen
-                      title="Kareem Testimonial"
-                    ></iframe>
-                  </div>
-                ) : (
-                  <div className="absolute inset-0">
-                    <img
-                      ref={setHighPriority}
-                      src="/kareem.gif"
-                      alt="Kareem testimonial preview"
-                      className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04] will-change-transform"
-                      loading="eager"
-                      decoding="async"
-                    />
-                  </div>
-                )}
-
-                {!isKareemTestimonialPlaying && (
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 sm:p-6">
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-white flex items-center justify-center flex-shrink-0">
-                          <img
-                            src="/kareem.jpg"
-                            alt="Kareem profile photo"
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <div className="min-w-0">
-                          <p className="text-white font-bold text-sm sm:text-base truncate">Kareem</p>
-                          <p className="text-white/80 text-xs sm:text-sm truncate">CTO @TechNova</p>
-                        </div>
-                      </div>
-                      <button
-                        type="button"
-                        className="flex items-center justify-center rounded-full bg-white/90 group-hover:bg-red-600 backdrop-blur-sm shadow-lg w-9 h-9 sm:w-10 sm:h-10 hover:scale-105 transition-transform transition-colors duration-300 ease-out flex-shrink-0"
-                        aria-label="Play testimonial video"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setIsKareemTestimonialPlaying(true);
-                        }}
-                      >
-                        <Play className="w-4 h-4 sm:w-5 sm:h-5 text-black ml-0.5" fill="currentColor" />
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
           </>
         )}
       </div>
