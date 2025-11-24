@@ -79,60 +79,18 @@ export const Navigation = () => {
       }
       lastWidth = containerWidth;
 
-      // Temporarily show elements to measure accurately using inline styles
-      const centerOriginalStyle = center.style.cssText;
-      const rightOriginalStyle = right.style.cssText;
+      const centerWidth = center.offsetWidth;
+      const rightWidth = right.offsetWidth;
+      const logoWidth = logo.offsetWidth;
       
-      // Force visibility for measurement (override any CSS classes)
-      center.style.setProperty('visibility', 'visible', 'important');
-      center.style.setProperty('opacity', '1', 'important');
-      center.style.setProperty('pointer-events', 'auto', 'important');
-      right.style.setProperty('visibility', 'visible', 'important');
-      right.style.setProperty('opacity', '1', 'important');
-      right.style.setProperty('pointer-events', 'auto', 'important');
-      
-      // Force reflow to ensure styles are applied
-      void container.offsetHeight;
-
-      const centerRect = center.getBoundingClientRect();
-      const rightRect = right.getBoundingClientRect();
-      const logoRect = logo.getBoundingClientRect();
-      
-      // Check if "Our Work Model" would wrap by temporarily removing whitespace-nowrap
+      // Check if "Our Work Model" would wrap by using scroll height
       let wouldWrap = false;
       if (ourWorkModel) {
-        const ourWorkModelOriginalStyle = ourWorkModel.style.cssText;
-        const parentLink = ourWorkModel.parentElement as HTMLElement;
-        
-        // Get the natural single-line width first (with whitespace-nowrap)
-        const naturalWidth = ourWorkModel.getBoundingClientRect().width;
-        
-        // Temporarily remove whitespace-nowrap to check if it would wrap
-        ourWorkModel.style.setProperty('white-space', 'normal', 'important');
-        // Force reflow
-        void ourWorkModel.offsetHeight;
-        
-        // Check if text wraps by comparing scrollHeight to a single line height
         const computedStyle = getComputedStyle(ourWorkModel);
         const lineHeight = parseFloat(computedStyle.lineHeight) || parseFloat(computedStyle.fontSize) * 1.2;
         const scrollHeight = ourWorkModel.scrollHeight;
-        const currentWidth = ourWorkModel.getBoundingClientRect().width;
-        
-        // If scrollHeight is significantly more than one line, it's wrapping
-        // Also check if width decreased significantly (indicating wrapping)
-        wouldWrap = scrollHeight > lineHeight * 1.3 || currentWidth < naturalWidth * 0.9;
-        
-        // Restore original styles
-        ourWorkModel.style.cssText = ourWorkModelOriginalStyle;
+        wouldWrap = scrollHeight > lineHeight * 1.3;
       }
-
-      // Restore original styles
-      center.style.cssText = centerOriginalStyle;
-      right.style.cssText = rightOriginalStyle;
-
-      const centerWidth = centerRect.width;
-      const rightWidth = rightRect.width;
-      const logoWidth = logoRect.width;
       const spacing = 80; // Larger buffer to avoid any near-collisions
 
       // Calculate total space needed
