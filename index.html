@@ -54,6 +54,12 @@
     <link rel="preload" as="image" href="/hassan-arslan.png" fetchpriority="high" />
     <link rel="preload" as="image" href="/mughees.jpg" fetchpriority="high" />
     <link rel="preload" as="image" href="/fras.png" fetchpriority="high" />
+    <!-- Preconnect & async load Google Fonts to reduce render blocking -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&display=swap" /></noscript>
 
     <!-- JSON-LD: Organization -->
     <script type="application/ld+json">
