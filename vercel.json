@@ -1,17 +1,5 @@
 {
-  "redirects": [
-    {
-      "source": "/(.*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.bitbash.dev"
-        }
-      ],
-      "destination": "https://bitbash.dev/$1",
-      "permanent": true
-    }
-  ],
+  "redirects": [],
   "rewrites": [
     {
       "source": "/(.*)",
