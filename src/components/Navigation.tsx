@@ -431,7 +431,7 @@ export const Navigation = () => {
             
             {/* Menu Panel - Dark sidebar */}
             <div 
-              className="absolute left-0 top-0 h-full w-[85vw] sm:w-80 max-w-sm z-10 flex flex-col"
+              className="absolute left-0 top-0 h-full w-[75vw] sm:w-80 max-w-sm z-10 flex flex-col"
               style={{ 
                 backgroundColor: 'oklch(21% 0.034 264.665)',
                 opacity: 1
@@ -452,9 +452,6 @@ export const Navigation = () => {
                   onClick={closeMobileMenu}
                 >
                   <span>Home</span>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
                 </a>
                 <a 
                   href="/automation-services" 
@@ -462,9 +459,6 @@ export const Navigation = () => {
                   onClick={closeMobileMenu}
                 >
                   <span>Automation</span>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
                 </a>
                 <a 
                   href="/development-services" 
@@ -472,9 +466,13 @@ export const Navigation = () => {
                   onClick={closeMobileMenu}
                 >
                   <span>Development</span>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
+                </a>
+                <a 
+                  href="/projects" 
+                  className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
+                  onClick={closeMobileMenu}
+                >
+                  <span>Projects</span>
                 </a>
                 <a 
                   href="/pricing" 
@@ -496,9 +494,6 @@ export const Navigation = () => {
                   onClick={closeMobileMenu}
                 >
                   <span>Contact</span>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
                 </a>
                 </div>
               </div>

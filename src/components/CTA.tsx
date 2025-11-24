@@ -126,7 +126,7 @@ export const CTA = () => {
             </div>
             
             {/* Content - Mobile Optimized */}
-            <div className="relative z-10 px-4 sm:px-8 md:px-16 pt-16 sm:pt-20 md:pt-24 pb-40 sm:pb-56 md:pb-72">
+            <div className="relative z-10 px-4 sm:px-8 md:px-16 pt-8 sm:pt-20 md:pt-24 pb-12 sm:pb-56 md:pb-72">
               <div className="text-center space-y-2 sm:space-y-3 md:space-y-4">
                 <h2 className="text-responsive-3xl sm:text-responsive-4xl md:text-5xl font-bold text-gray-900 leading-tight mt-4">
                   Let's Build Something That Works.
@@ -148,9 +148,9 @@ export const CTA = () => {
                       <a href="/contact">Contact Us</a>
                     </Button>
                     <Button 
-                      variant="hero" 
+                      variant="default" 
                       size="lg" 
-                      className="h-12 py-4 px-6 text-lg font-semibold rounded-xl w-full sm:w-auto hover:scale-100 shadow-sm hover:shadow-lg shadow-gray-400/20 hover:shadow-gray-400/35 transition-colors transition-shadow duration-300"
+                      className="h-12 py-4 px-6 text-lg font-semibold rounded-xl w-full sm:w-auto"
                       style={{ height: '48px' }}
                     >
                       Book a Call

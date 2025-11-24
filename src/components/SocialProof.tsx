@@ -46,8 +46,9 @@ export const SocialProof = ({ className = "", textClassName = "", avatars }: Soc
           />
         ))}
       </div>
-      <p className={`text-sm sm:text-base text-gray-700 text-center sm:text-left ${textClassName}`}>
-        <span className="font-semibold text-gray-900">25+ Expert Developers</span>, One Mission — Build Better Software
+      <p className={`text-sm sm:text-base text-gray-700 text-center sm:text-left leading-tight ${textClassName}`}>
+        <span className="font-semibold text-gray-900 block sm:inline">25+ Expert Developers</span>
+        <span className="block sm:inline mt-1 sm:mt-0">One Mission — Build Better Software</span>
       </p>
     </div>
   );
