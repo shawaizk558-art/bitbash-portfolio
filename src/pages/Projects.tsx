@@ -191,7 +191,6 @@ const Projects = () => {
             {allProjects.map((project, index) => {
               const mediaAssets = getMediaAssets(project.slug);
               const hasCustomGif = Boolean(mediaAssets.gif);
-              const shouldEagerLoad = index === 0;
 
               return (
                 <div
@@ -230,7 +229,7 @@ const Projects = () => {
                                   src={mediaAssets.gif}
                                   alt={mediaAssets.alt}
                                   className="w-full h-full object-cover"
-                                  loading={shouldEagerLoad ? "eager" : "lazy"}
+                                  loading="eager"
                                   decoding="async"
                                   style={{ imageRendering: "auto" }}
                                 />
@@ -253,11 +252,11 @@ const Projects = () => {
                     ) : hasCustomGif ? (
                       <div className="absolute inset-0 w-full h-full z-0">
                         <img
-                          ref={shouldEagerLoad ? setHighPriority : null}
+                          ref={setHighPriority}
                           src={mediaAssets.gif}
                           alt={mediaAssets.alt}
                           className="w-full h-full object-cover"
-                          loading={shouldEagerLoad ? "eager" : "lazy"}
+                          loading="eager"
                           decoding="async"
                         />
                       </div>
