@@ -1,12 +1,19 @@
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { getProjects } from "@/lib/strapi";
-import { Play, Star } from "lucide-react";
+import { Play, Star, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState, useCallback } from "react";
 import type { Project } from "@/data/projects";
 import { projects as hardcodedProjects } from "@/data/projects";
 import { HeroBackground } from "@/components/HeroBackground";
+import { AutoPlayVideo } from "@/components/AutoPlayVideo";
+import { LiteYouTubeEmbed } from "@/components/LiteYouTubeEmbed";
+import {
+  getMediaAssets,
+  getPosterPath,
+  getVideoSources,
+} from "@/lib/mediaAssets";
 
 const Projects = () => {
   const [dynamicProjects, setDynamicProjects] = useState<Project[]>([]);
@@ -54,99 +61,6 @@ const Projects = () => {
     }
   }, []);
 
-  const getMediaAssets = (slug: string) => {
-    switch (slug) {
-      case "petla":
-        return {
-          gif: "/petla.gif",
-          alt: "Petla website preview",
-          avatarSrc: "/petla.svg",
-          avatarAlt: "Petla Logo",
-          avatarWrapperClass: "bg-white p-1"
-        };
-      case "actuary-list":
-        return {
-          gif: "/actuarylist.gif",
-          alt: "Actuary List website preview",
-          avatarSrc: "/actuarylist-logo.png",
-          avatarAlt: "Actuary List Logo",
-          avatarWrapperClass: "bg-white"
-        };
-      case "scraper-glass":
-        return {
-          gif: "/scraperglass.gif",
-          alt: "Scraper Glass website preview",
-          avatarSrc: "/scraperglass-logo.png",
-          avatarAlt: "Scraper Glass Logo",
-          avatarWrapperClass: "bg-white"
-        };
-      case "threads-scraper":
-        return {
-          gif: "/thread-scraper.gif",
-          alt: "Threads Scraper preview",
-          avatarSrc: "https://cdn.simpleicons.org/threads/000000",
-          avatarAlt: "Threads Logo",
-          avatarWrapperClass: "bg-white p-1.5"
-        };
-      case "twitter-bot":
-        return {
-          gif: "/twitter.gif",
-          alt: "Twitter Bot preview",
-          avatarSrc: "https://cdn.simpleicons.org/x/000000",
-          avatarAlt: "Twitter/X Logo",
-          avatarWrapperClass: "bg-white p-1.5"
-        };
-      case "ttinit":
-        return {
-          gif: "/ttinit.gif",
-          alt: "TTinit TikTok Shop Affiliate Outreach Bot preview",
-          avatarSrc: "/ttinit-logo.png",
-          avatarAlt: "TTinit Logo",
-          avatarWrapperClass: "bg-white"
-        };
-      case "spotify-bot":
-        return {
-          gif: "/spotify.gif",
-          alt: "Spotify Bot preview",
-          avatarSrc: "https://cdn.simpleicons.org/spotify/1DB954",
-          avatarAlt: "Spotify Logo",
-          avatarWrapperClass: "bg-white p-1.5"
-        };
-      case "purepeak":
-        return {
-          gif: "/purepeak.gif",
-          alt: "PurePeak TikTok Shop scaling preview",
-          avatarSrc: "/purepeak_ltd_logo.jpeg",
-          avatarAlt: "PurePeak Logo",
-          avatarWrapperClass: "bg-white"
-        };
-      case "facebook-scraper":
-        return {
-          gif: "/facebook.gif",
-          alt: "Facebook Scraper preview",
-          avatarSrc: "https://cdn.simpleicons.org/facebook/1877F2",
-          avatarAlt: "Facebook Logo",
-          avatarWrapperClass: "bg-white p-1.5"
-        };
-      case "linkedin-automation":
-        return {
-          gif: "/linkedin_automation-system.gif",
-          alt: "LinkedIn Automation System preview",
-          avatarSrc: "https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png",
-          avatarAlt: "LinkedIn Logo",
-          avatarWrapperClass: "bg-white p-1.5"
-        };
-      default:
-        return {
-          gif: "",
-          alt: `${slug} preview`,
-          avatarSrc: "",
-          avatarAlt: `${slug} logo`,
-          avatarWrapperClass: "bg-gradient-to-br from-purple-400 to-purple-600"
-        };
-    }
-  };
-
   const gradientClasses = {
     purple: "from-purple-400 to-purple-600",
     blue: "from-blue-400 to-blue-600",
@@ -190,7 +104,7 @@ const Projects = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-2 sm:px-0">
             {allProjects.map((project, index) => {
               const mediaAssets = getMediaAssets(project.slug);
-              const hasCustomGif = Boolean(mediaAssets.gif);
+              const hasVideo = Boolean(mediaAssets.videoKey);
 
               return (
                 <div
@@ -199,65 +113,54 @@ const Projects = () => {
                 >
                   {/* Video Thumbnail - Mobile Optimized */}
                   <div
-                    className="relative aspect-video bg-gradient-to-br overflow-hidden group cursor-pointer"
-                    onClick={() => {
-                      if (project.youtubeVideoId) {
-                        setPlayingVideoIndex(playingVideoIndex === index ? null : index);
-                      }
-                    }}
+                    className="relative aspect-video bg-gradient-to-br overflow-hidden group"
                   >
                     {project.youtubeVideoId ? (
-                      /* Cards with GIF/YouTube video */
-                      <>
-                        {playingVideoIndex === index ? (
-                          /* YouTube video embed - shows YouTube's own play button */
-                          <div className="absolute inset-0 w-full h-full z-0">
-                            <iframe
-                              src={`https://www.youtube.com/embed/${project.youtubeVideoId}?rel=0`}
-                              className="w-full h-full"
-                              allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                              allowFullScreen
-                              title={`${project.name} Video`}
-                            ></iframe>
-                          </div>
-                        ) : (
-                          /* GIF Display with play button overlay */
+                      <div className="absolute inset-0 w-full h-full z-0">
+                        <LiteYouTubeEmbed
+                          videoId={project.youtubeVideoId}
+                          title={`${project.name} Video`}
+                          isPlaying={playingVideoIndex === index}
+                          onPlay={() => setPlayingVideoIndex(index)}
+                          className="w-full h-full"
+                          placeholderClassName="relative block w-full h-full text-left"
+                        >
                           <>
-                            {hasCustomGif && (
-                              <div className="absolute inset-0 w-full h-full z-0">
-                                <img
-                                  src={mediaAssets.gif}
-                                  alt={mediaAssets.alt}
-                                  className="w-full h-full object-cover"
-                                  loading="eager"
-                                  decoding="async"
-                                  style={{ imageRendering: "auto" }}
-                                />
-                              </div>
+                            {hasVideo ? (
+                              <AutoPlayVideo
+                                sources={getVideoSources(mediaAssets.videoKey!)}
+                                poster={getPosterPath(mediaAssets.videoKey!)}
+                                alt={mediaAssets.alt}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className={`absolute inset-0 bg-gradient-to-br ${gradientClasses[project.videoPlaceholder]} opacity-80`} />
                             )}
-                            {/* Play Button Overlay */}
-                            <div
-                              className="absolute inset-0 flex items-center justify-center z-10 cursor-pointer"
-                              onClick={() => {
-                                setPlayingVideoIndex(index);
-                              }}
-                            >
+                            <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
                               <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg touch-target">
-                                <Play className="w-5 h-5 sm:w-7 sm:w-7 text-gray-900 ml-1" fill="currentColor" />
+                                <Play className="w-5 h-5 sm:w-7 text-gray-900 ml-1" fill="currentColor" />
                               </div>
                             </div>
                           </>
+                        </LiteYouTubeEmbed>
+                        {playingVideoIndex === index && (
+                          <button
+                            type="button"
+                            className="absolute top-3 right-3 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-gray-900 shadow-md"
+                            aria-label="Close video"
+                            onClick={() => setPlayingVideoIndex(null)}
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
                         )}
-                      </>
-                    ) : hasCustomGif ? (
+                      </div>
+                    ) : hasVideo ? (
                       <div className="absolute inset-0 w-full h-full z-0">
-                        <img
-                          ref={setHighPriority}
-                          src={mediaAssets.gif}
+                        <AutoPlayVideo
+                          sources={getVideoSources(mediaAssets.videoKey!)}
+                          poster={getPosterPath(mediaAssets.videoKey!)}
                           alt={mediaAssets.alt}
                           className="w-full h-full object-cover"
-                          loading="eager"
-                          decoding="async"
                         />
                       </div>
                     ) : (

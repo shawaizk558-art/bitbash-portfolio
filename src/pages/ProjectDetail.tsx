@@ -1,11 +1,18 @@
 import { useParams, Link } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
-import { ArrowLeft, Play } from "lucide-react";
+import { ArrowLeft, Play, X } from "lucide-react";
 import { getProjectBySlug as getHardcodedProject } from "@/data/projects";
 import { getProjectBySlug as getStrapiProject } from "@/lib/strapi";
 import { useState, useEffect } from "react";
 import type { Project } from "@/data/projects";
+import { AutoPlayVideo } from "@/components/AutoPlayVideo";
+import { LiteYouTubeEmbed } from "@/components/LiteYouTubeEmbed";
+import {
+  getMediaAssets,
+  getPosterPath,
+  getVideoSources,
+} from "@/lib/mediaAssets";
 
 const gradientClasses = {
   purple: "from-purple-400 to-purple-600",
@@ -81,6 +88,9 @@ const ProjectDetail = () => {
     );
   }
 
+  const mediaAssets = getMediaAssets(project.slug);
+  const hasPreviewVideo = Boolean(mediaAssets.videoKey);
+
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
@@ -112,61 +122,54 @@ const ProjectDetail = () => {
       <section className="container-responsive pb-8 sm:pb-12 lg:pb-16">
         <div className="max-w-4xl lg:max-w-5xl xl:max-w-6xl mx-auto">
           <div 
-            className="relative aspect-video bg-gradient-to-br overflow-hidden rounded-2xl shadow-2xl cursor-pointer group"
-            onClick={() => {
-              if (project.youtubeVideoId) {
-                setIsVideoPlaying(true);
-              }
-            }}
+            className="relative aspect-video bg-gradient-to-br overflow-hidden rounded-2xl shadow-2xl group"
           >
             {project.youtubeVideoId ? (
-              <>
-                {!isVideoPlaying ? (
+              <div className="absolute inset-0 w-full h-full z-0">
+                <LiteYouTubeEmbed
+                  videoId={project.youtubeVideoId}
+                  title={project.name}
+                  isPlaying={isVideoPlaying}
+                  onPlay={() => setIsVideoPlaying(true)}
+                  className="w-full h-full"
+                  placeholderClassName="relative block w-full h-full text-left"
+                >
                   <>
-                    {/* GIF/Thumbnail Display */}
-                    <div className="absolute inset-0 w-full h-full">
-                      {project.slug === "petla" && (
-                        <img src="/petla.gif" alt={`${project.name} preview`} className="w-full h-full object-cover" loading="eager" decoding="async" />
-                      )}
-                      {project.slug === "scraper-glass" && (
-                        <img src="/scraperglass.gif" alt={`${project.name} preview`} className="w-full h-full object-cover" loading="eager" decoding="async" />
-                      )}
-                      {project.slug === "actuary-list" && (
-                        <img src="/actuarylist.gif" alt={`${project.name} preview`} className="w-full h-full object-cover" loading="eager" decoding="async" />
-                      )}
-                      {project.slug === "threads-scraper" && (
-                        <img src="/thread-scraper.gif" alt={`${project.name} preview`} className="w-full h-full object-cover" loading="eager" decoding="async" />
-                      )}
-                      {project.slug === "twitter-bot" && (
-                        <img src="/twitter.gif" alt={`${project.name} preview`} className="w-full h-full object-cover" loading="eager" decoding="async" />
-                      )}
-                      {project.slug === "spotify-bot" && (
-                        <img src="/spotify.gif" alt={`${project.name} preview`} className="w-full h-full object-cover" loading="eager" decoding="async" />
-                      )}
-                      {project.slug === "facebook-scraper" && (
-                        <img src="/facebook.gif" alt={`${project.name} preview`} className="w-full h-full object-cover" loading="eager" decoding="async" />
-                      )}
-                      {!["petla", "scraper-glass", "actuary-list", "threads-scraper", "twitter-bot", "spotify-bot", "facebook-scraper"].includes(project.slug) && (
-                        <div className={`absolute inset-0 bg-gradient-to-br ${gradientClasses[project.videoPlaceholder]} opacity-90`} />
-                      )}
-                    </div>
-                    {/* Play Button Overlay */}
-                    <div className="absolute inset-0 flex items-center justify-center z-10">
+                    {hasPreviewVideo ? (
+                      <AutoPlayVideo
+                        sources={getVideoSources(mediaAssets.videoKey!)}
+                        poster={getPosterPath(mediaAssets.videoKey!)}
+                        alt={mediaAssets.alt}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className={`absolute inset-0 bg-gradient-to-br ${gradientClasses[project.videoPlaceholder]} opacity-90`} />
+                    )}
+                    <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
                       <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl group-hover:bg-white transition-all group-hover:scale-110">
                         <Play className="w-10 h-10 sm:w-12 sm:h-12 text-gray-900 ml-1" fill="currentColor" />
                       </div>
                     </div>
                   </>
-                ) : (
-                  <iframe
-                    className="absolute inset-0 w-full h-full z-10"
-                    src={`https://www.youtube.com/embed/${project.youtubeVideoId}?autoplay=1`}
-                    title={project.name}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
+                </LiteYouTubeEmbed>
+                {isVideoPlaying && (
+                  <button
+                    type="button"
+                    className="absolute top-4 right-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-gray-900 shadow-lg"
+                    aria-label="Close video"
+                    onClick={() => setIsVideoPlaying(false)}
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
                 )}
-              </>
+              </div>
+            ) : hasPreviewVideo ? (
+              <AutoPlayVideo
+                sources={getVideoSources(mediaAssets.videoKey!)}
+                poster={getPosterPath(mediaAssets.videoKey!)}
+                alt={mediaAssets.alt}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
             ) : (
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className={`absolute inset-0 bg-gradient-to-br ${gradientClasses[project.videoPlaceholder]} opacity-90`} />

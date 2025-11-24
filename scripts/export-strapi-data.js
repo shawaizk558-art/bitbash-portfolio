@@ -21,6 +21,9 @@ const __dirname = path.dirname(__filename);
 const STRAPI_API_URL = process.env.VITE_STRAPI_API_URL || 'http://localhost:1337/api';
 const STRAPI_URL = process.env.VITE_STRAPI_URL || 'http://localhost:1337';
 const DATA_DIR = path.join(__dirname, '..', 'public', 'data');
+const SRC_DATA_DIR = path.join(__dirname, '..', 'src', 'data');
+const SRC_PROJECTS_FILENAME = 'strapi-projects.json';
+const SRC_PROJECTS_PATH = path.join(SRC_DATA_DIR, SRC_PROJECTS_FILENAME);
 
 // Ensure data directory exists
 if (!fs.existsSync(DATA_DIR)) {
@@ -266,6 +269,16 @@ function writeJSONFile(filename, data, preserveExisting = true) {
   console.log(`✓ Written ${filename} (${dataInfo})`);
 }
 
+function mirrorProjectsToSrc(data) {
+  try {
+    fs.mkdirSync(SRC_DATA_DIR, { recursive: true });
+    fs.writeFileSync(SRC_PROJECTS_PATH, JSON.stringify(data, null, 2), 'utf8');
+    console.log(`✓ Mirrored projects to src/data/${SRC_PROJECTS_FILENAME}`);
+  } catch (error) {
+    console.warn(`⚠️  Could not mirror projects to src/data: ${error.message}`);
+  }
+}
+
 /**
  * Main export function
  */
@@ -305,6 +318,7 @@ async function exportData() {
     console.log('\n✅ Skipping export - Strapi unavailable but existing data found.');
     console.log('   Using existing projects.json file.');
     console.log('   To update: Run export locally with Strapi running, then commit and push.\n');
+    mirrorProjectsToSrc(existingProjects || []);
     return;
   }
   
@@ -333,6 +347,12 @@ async function exportData() {
   if (hasIndex) {
     writeJSONFile('projects-index.json', projectsIndex, false);
   }
+
+  const projectsForSrc = hasProjects
+    ? projects
+    : (readExistingJSONFile('projects.json') || []);
+
+  mirrorProjectsToSrc(projectsForSrc);
   
   if (projects.length === 0 && !strapiAvailable && !hasExistingData) {
     console.warn('\n⚠️  WARNING: No projects exported and no existing data found!');

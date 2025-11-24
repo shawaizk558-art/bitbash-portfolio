@@ -1,8 +1,5 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { MobileOptimizations, MobileViewport } from "@/components/MobileOptimizations";
 import { lazy, Suspense } from "react";
 
 // Lazy load pages for better performance
@@ -17,12 +14,38 @@ const ProjectDetail = lazy(() => import("./pages/ProjectDetail"));
 const HowWeWork = lazy(() => import("./pages/HowWeWork"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
+const MobileViewport = lazy(() =>
+  import("@/components/MobileOptimizations").then((module) => ({
+    default: module.MobileViewport,
+  }))
+);
+
+const MobileOptimizations = lazy(() =>
+  import("@/components/MobileOptimizations").then((module) => ({
+    default: module.MobileOptimizations,
+  }))
+);
+
+const ToastContainer = lazy(() =>
+  import("@/components/ui/toaster").then((module) => ({
+    default: module.Toaster,
+  }))
+);
+
+const SonnerToaster = lazy(() =>
+  import("@/components/ui/sonner").then((module) => ({
+    default: module.Toaster,
+  }))
+);
+
 const App = () => (
   <TooltipProvider>
-    <MobileViewport />
-    <MobileOptimizations />
-    <Toaster />
-    <Sonner />
+    <Suspense fallback={null}>
+      <MobileViewport />
+      <MobileOptimizations />
+      <ToastContainer />
+      <SonnerToaster />
+    </Suspense>
     <BrowserRouter>
       <Suspense fallback={<div className="flex min-h-screen items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>

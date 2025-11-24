@@ -8,117 +8,11 @@
  */
 
 import type { Project } from '@/data/projects';
+import projectsJson from '@/data/strapi-projects.json';
 
-// Environment detection
-// Cache for static data
-let staticDataCache: {
-  projects: Project[] | null;
-} = {
-  projects: null,
-};
-
-/**
- * Load static JSON data from public/data/
- * 
- * ROOT CAUSE: 304 responses have empty bodies by design. The fetch API doesn't
- * automatically populate the response body from cache for 304 responses.
- * 
- * SOLUTION: Always use cache-busting for JSON files to prevent 304 responses.
- * This ensures we always get the actual data, not just a 304 status.
- * 
- * Performance impact is minimal since JSON files are small and we have
- * in-memory caching (staticDataCache) to avoid repeated fetches.
- */
-async function loadStaticData(filename: string): Promise<any> {
-  // Always use cache-busting to prevent 304 responses with empty bodies
-  // Use a timestamp to ensure we get fresh data, but the query param
-  // changes on each page load, preventing 304 responses
-  // The unique query param makes each request unique, preventing 304
-  const cacheBuster = `?v=${Date.now()}&_=${Math.random().toString(36).substring(7)}`;
-  const url = `/data/${filename}${cacheBuster}`;
-  
-  // Fetch with reload to bypass cache and ensure we get actual data
-  // This prevents 304 responses which have empty bodies
-  const response = await fetch(url, {
-    cache: 'reload', // Bypass cache and reload from server
-  });
-  
-  // 304 should not happen with cache-busting, but handle it just in case
-  if (response.status === 304) {
-    // If we still get 304 (shouldn't happen), force a complete bypass
-    const bypassUrl = `/data/${filename}?nocache=${Date.now()}-${Math.random()}`;
-    
-    const bypassResponse = await fetch(bypassUrl, {
-      cache: 'no-store', // Completely bypass cache
-      headers: {
-        'Cache-Control': 'no-store, no-cache, must-revalidate',
-        'Pragma': 'no-cache',
-      },
-    });
-    
-    if (!bypassResponse.ok) {
-      throw new Error(`Failed to load ${filename}: ${bypassResponse.status} ${bypassResponse.statusText}`);
-    }
-    
-    const text = await bypassResponse.text();
-    
-    if (!text || text.trim().length === 0) {
-      throw new Error(`Failed to load ${filename}: Response body is empty after bypass`);
-    }
-    
-    try {
-      return JSON.parse(text);
-    } catch (parseError) {
-      throw new Error(`Failed to parse JSON from ${filename}: ${parseError}`);
-    }
-  }
-  
-  // Handle other non-ok responses
-  if (!response.ok) {
-    throw new Error(`Failed to load ${filename}: ${response.status} ${response.statusText}`);
-  }
-  
-  // Read and verify response body
-  const text = await response.text();
-  
-  if (!text || text.trim().length === 0) {
-    throw new Error(`Failed to load ${filename}: Response body is empty`);
-  }
-  
-  // Parse JSON
-  try {
-    return JSON.parse(text);
-  } catch (parseError) {
-    throw new Error(`Failed to parse JSON from ${filename}: ${parseError}`);
-  }
-}
-
-/**
- * Load projects data (cached)
- * Only loads from projects.json - no index file needed
- */
-async function loadProjectsData(): Promise<{
-  projects: Project[];
-}> {
-  // Check if we have cached data
-  if (staticDataCache.projects) {
-    return {
-      projects: staticDataCache.projects,
-    };
-  }
-
-  try {
-    const projects = await loadStaticData('projects.json');
-    staticDataCache.projects = Array.isArray(projects) ? projects : [];
-
-    return {
-      projects: staticDataCache.projects,
-    };
-  } catch (error) {
-    console.error('Error loading static projects data:', error);
-    return { projects: [] };
-  }
-}
+const STATIC_PROJECTS: Project[] = Array.isArray(projectsJson)
+  ? (projectsJson as Project[])
+  : [];
 
 /**
  * Transform Strapi project to frontend Project interface
@@ -233,8 +127,7 @@ export async function getProjects(params: {
   sort?: string;
   pagination?: { page: number; pageSize: number };
 } = {}): Promise<Project[]> {
-  const { projects } = await loadProjectsData();
-  return applyFiltersAndSort(projects, params);
+  return applyFiltersAndSort(STATIC_PROJECTS, params);
 }
 
 /**
@@ -244,7 +137,6 @@ export async function getProjects(params: {
  * @returns Promise<Project | null>
  */
 export async function getProjectBySlug(slug: string): Promise<Project | null> {
-  const { projects } = await loadProjectsData();
-  return projects.find((p) => p.slug === slug) || null;
+  return STATIC_PROJECTS.find((p) => p.slug === slug) || null;
 }
 

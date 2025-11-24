@@ -1,7 +1,14 @@
-import { Play, Star } from "lucide-react";
+import { Play, Star, X } from "lucide-react";
 import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 import { projects } from "@/data/projects";
+import { AutoPlayVideo } from "@/components/AutoPlayVideo";
+import {
+  getMediaAssets,
+  getPosterPath,
+  getVideoSources,
+} from "@/lib/mediaAssets";
+import { LiteYouTubeEmbed } from "@/components/LiteYouTubeEmbed";
 
 const gradientClasses = {
   purple: "from-purple-400 to-purple-600",
@@ -46,99 +53,6 @@ export const Showcase = ({
     }
   }, []);
 
-  const getMediaAssets = (slug: string) => {
-    switch (slug) {
-      case "petla":
-        return {
-          gif: "/petla.gif",
-          alt: "Petla website preview",
-          avatarSrc: "/petla.svg",
-          avatarAlt: "Petla Logo",
-          avatarWrapperClass: "bg-white p-1"
-        };
-      case "actuary-list":
-        return {
-          gif: "/actuarylist.gif",
-          alt: "Actuary List website preview",
-          avatarSrc: "/actuarylist-logo.png",
-          avatarAlt: "Actuary List Logo",
-          avatarWrapperClass: "bg-white"
-        };
-      case "scraper-glass":
-        return {
-          gif: "/scraperglass.gif",
-          alt: "Scraper Glass website preview",
-          avatarSrc: "/scraperglass-logo.png",
-          avatarAlt: "Scraper Glass Logo",
-          avatarWrapperClass: "bg-white"
-        };
-      case "threads-scraper":
-        return {
-          gif: "/thread-scraper.gif",
-          alt: "Threads Scraper preview",
-          avatarSrc: "https://cdn.simpleicons.org/threads/000000",
-          avatarAlt: "Threads Logo",
-          avatarWrapperClass: "bg-white p-1.5"
-        };
-      case "twitter-bot":
-        return {
-          gif: "/twitter.gif",
-          alt: "Twitter Bot preview",
-          avatarSrc: "https://cdn.simpleicons.org/x/000000",
-          avatarAlt: "Twitter/X Logo",
-          avatarWrapperClass: "bg-white p-1.5"
-        };
-      case "ttinit":
-        return {
-          gif: "/ttinit.gif",
-          alt: "TTinit TikTok Shop Affiliate Outreach Bot preview",
-          avatarSrc: "/ttinit-logo.png",
-          avatarAlt: "TTinit Logo",
-          avatarWrapperClass: "bg-white"
-        };
-      case "spotify-bot":
-        return {
-          gif: "/spotify.gif",
-          alt: "Spotify Bot preview",
-          avatarSrc: "https://cdn.simpleicons.org/spotify/1DB954",
-          avatarAlt: "Spotify Logo",
-          avatarWrapperClass: "bg-white p-1.5"
-        };
-      case "purepeak":
-        return {
-          gif: "/purepeak.gif",
-          alt: "PurePeak TikTok Shop scaling preview",
-          avatarSrc: "/purepeak_ltd_logo.jpeg",
-          avatarAlt: "PurePeak Logo",
-          avatarWrapperClass: "bg-white"
-        };
-      case "facebook-scraper":
-        return {
-          gif: "/facebook.gif",
-          alt: "Facebook Scraper preview",
-          avatarSrc: "https://cdn.simpleicons.org/facebook/1877F2",
-          avatarAlt: "Facebook Logo",
-          avatarWrapperClass: "bg-white p-1.5"
-        };
-      case "linkedin-automation":
-        return {
-          gif: "/linkedin_automation-system.gif",
-          alt: "LinkedIn Automation System preview",
-          avatarSrc: "https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png",
-          avatarAlt: "LinkedIn Logo",
-          avatarWrapperClass: "bg-white p-1.5"
-        };
-      default:
-        return {
-          gif: "",
-          alt: `${slug} preview`,
-          avatarSrc: "",
-          avatarAlt: `${slug} logo`,
-          avatarWrapperClass: "bg-gradient-to-br from-purple-400 to-purple-600"
-        };
-    }
-  };
-
   return (
     <section className={`${paddingClass ?? "py-12 sm:py-16 md:py-24"} bg-white`}>
       <div className="container-responsive">
@@ -157,7 +71,7 @@ export const Showcase = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-2 sm:px-0">
           {projectsToDisplay.map((project, index) => {
             const mediaAssets = getMediaAssets(project.slug);
-            const hasCustomGif = Boolean(mediaAssets.gif);
+            const hasVideo = Boolean(mediaAssets.videoKey);
 
             return (
             <div
@@ -166,65 +80,54 @@ export const Showcase = ({
             >
               {/* Video Thumbnail - Mobile Optimized */}
               <div 
-                className="relative aspect-video bg-gradient-to-br overflow-hidden group cursor-pointer"
-                onClick={() => {
-                  if (project.youtubeVideoId) {
-                    setPlayingVideoIndex(playingVideoIndex === index ? null : index);
-                  }
-                }}
+                className="relative aspect-video bg-gradient-to-br overflow-hidden group"
               >
                 {project.youtubeVideoId ? (
-                  /* Cards with GIF/YouTube video */
-                  <>
-                    {playingVideoIndex === index ? (
-                      /* YouTube video embed - shows YouTube's own play button */
-                      <div className="absolute inset-0 w-full h-full z-0">
-                        <iframe
-                          src={`https://www.youtube.com/embed/${project.youtubeVideoId}?rel=0`}
-                          className="w-full h-full"
-                          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                          title={`${project.name} Video`}
-                        ></iframe>
-                      </div>
-                    ) : (
-                      /* GIF Display with play button overlay */
+                  <div className="absolute inset-0 w-full h-full z-0">
+                    <LiteYouTubeEmbed
+                      videoId={project.youtubeVideoId}
+                      title={`${project.name} Video`}
+                      isPlaying={playingVideoIndex === index}
+                      onPlay={() => setPlayingVideoIndex(index)}
+                      className="w-full h-full"
+                      placeholderClassName="relative block w-full h-full text-left"
+                    >
                       <>
-                        {hasCustomGif && (
-                          <div className="absolute inset-0 w-full h-full z-0">
-                            <img
-                              src={mediaAssets.gif}
-                              alt={mediaAssets.alt}
-                              className="w-full h-full object-cover"
-                              loading="eager"
-                              decoding="async"
-                              style={{ imageRendering: "auto" }}
-                            />
-                          </div>
+                        {hasVideo ? (
+                          <AutoPlayVideo
+                            sources={getVideoSources(mediaAssets.videoKey!)}
+                            poster={getPosterPath(mediaAssets.videoKey!)}
+                            alt={mediaAssets.alt}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className={`absolute inset-0 bg-gradient-to-br ${gradientClasses[project.videoPlaceholder]} opacity-80`} />
                         )}
-                        {/* Play Button Overlay */}
-                        <div 
-                          className="absolute inset-0 flex items-center justify-center z-10 cursor-pointer"
-                          onClick={() => {
-                            setPlayingVideoIndex(index);
-                          }}
-                        >
+                        <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
                           <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg touch-target">
-                            <Play className="w-5 h-5 sm:w-7 sm:w-7 text-gray-900 ml-1" fill="currentColor" />
+                            <Play className="w-5 h-5 sm:w-7 text-gray-900 ml-1" fill="currentColor" />
                           </div>
                         </div>
                       </>
+                    </LiteYouTubeEmbed>
+                    {playingVideoIndex === index && (
+                      <button
+                        type="button"
+                        className="absolute top-3 right-3 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-gray-900 shadow-md"
+                        aria-label="Close video"
+                        onClick={() => setPlayingVideoIndex(null)}
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
                     )}
-                  </>
-                ) : hasCustomGif ? (
+                  </div>
+                ) : hasVideo ? (
                   <div className="absolute inset-0 w-full h-full z-0">
-                    <img
-                      ref={setHighPriority}
-                      src={mediaAssets.gif}
+                    <AutoPlayVideo
+                      sources={getVideoSources(mediaAssets.videoKey!)}
+                      poster={getPosterPath(mediaAssets.videoKey!)}
                       alt={mediaAssets.alt}
                       className="w-full h-full object-cover"
-                      loading="eager"
-                      decoding="async"
                     />
                   </div>
                 ) : (
@@ -345,13 +248,11 @@ export const Showcase = ({
                   </div>
                 ) : (
                   <div className="absolute inset-0">
-                    <img
-                      ref={setHighPriority}
-                      src="/kareem.gif"
+                    <AutoPlayVideo
+                      sources={getVideoSources("kareem")}
+                      poster={getPosterPath("kareem")}
                       alt="Kareem testimonial preview"
                       className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04] will-change-transform"
-                      loading="eager"
-                      decoding="async"
                     />
                   </div>
                 )}
@@ -424,12 +325,11 @@ export const Showcase = ({
                   <>
                 {/* Video placeholder with play button */}
                 <div className="absolute inset-0">
-                  <img
-                    src="/Syed_Actuary-list.gif"
+                  <AutoPlayVideo
+                    sources={getVideoSources("syed")}
+                    poster={getPosterPath("syed")}
                     alt="Actuary List testimonial preview"
                     className="w-full h-full object-cover object-[center_35%] transition-transform duration-500 ease-out group-hover:scale-[1.04] will-change-transform"
-                    loading="eager"
-                    decoding="async"
                   />
                 </div>
                   </>
@@ -505,12 +405,11 @@ export const Showcase = ({
                   </div>
                 ) : (
                   <div className="absolute inset-0">
-                    <img
-                      src="/odeta.gif"
+                    <AutoPlayVideo
+                      sources={getVideoSources("odeta")}
+                      poster={getPosterPath("odeta")}
                       alt="Odeta testimonial preview"
                       className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04] will-change-transform"
-                      loading="eager"
-                      decoding="async"
                     />
                 </div>
                 )}
@@ -584,12 +483,11 @@ export const Showcase = ({
                   </div>
                 ) : (
                   <div className="absolute inset-0">
-                    <img
-                      src="/hugo.gif"
+                    <AutoPlayVideo
+                      sources={getVideoSources("hugo")}
+                      poster={getPosterPath("hugo")}
                       alt="Hugo Saunder testimonial preview"
                       className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04] will-change-transform"
-                      loading="eager"
-                      decoding="async"
                     />
                 </div>
                 )}
