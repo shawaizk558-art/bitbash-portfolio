@@ -158,6 +158,7 @@ export const Showcase = ({
           {projectsToDisplay.map((project, index) => {
             const mediaAssets = getMediaAssets(project.slug);
             const hasCustomGif = Boolean(mediaAssets.gif);
+            const shouldEagerLoad = index === 0;
 
             return (
             <div
@@ -196,7 +197,8 @@ export const Showcase = ({
                               src={mediaAssets.gif}
                               alt={mediaAssets.alt}
                               className="w-full h-full object-cover"
-                              loading="eager"
+                              loading={shouldEagerLoad ? "eager" : "lazy"}
+                              decoding="async"
                               style={{ imageRendering: "auto" }}
                             />
                           </div>
@@ -218,11 +220,11 @@ export const Showcase = ({
                 ) : hasCustomGif ? (
                   <div className="absolute inset-0 w-full h-full z-0">
                     <img
-                      ref={setHighPriority}
+                      ref={shouldEagerLoad ? setHighPriority : null}
                       src={mediaAssets.gif}
                       alt={mediaAssets.alt}
                       className="w-full h-full object-cover"
-                      loading="eager"
+                      loading={shouldEagerLoad ? "eager" : "lazy"}
                       decoding="async"
                     />
                   </div>
@@ -349,7 +351,7 @@ export const Showcase = ({
                       src="/kareem.gif"
                       alt="Kareem testimonial preview"
                       className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04] will-change-transform"
-                      loading="eager"
+                      loading="lazy"
                       decoding="async"
                     />
                   </div>
@@ -424,12 +426,11 @@ export const Showcase = ({
                 {/* Video placeholder with play button */}
                 <div className="absolute inset-0">
                   <img
-                    ref={setHighPriority}
                     src="/Syed_Actuary-list.gif"
                     alt="Actuary List testimonial preview"
-                        className="w-full h-full object-cover object-[center_35%] transition-transform duration-500 ease-out group-hover:scale-[1.04] will-change-transform"
-                    loading="eager"
-                        decoding="async"
+                    className="w-full h-full object-cover object-[center_35%] transition-transform duration-500 ease-out group-hover:scale-[1.04] will-change-transform"
+                    loading="lazy"
+                    decoding="async"
                   />
                 </div>
                   </>
@@ -506,11 +507,10 @@ export const Showcase = ({
                 ) : (
                   <div className="absolute inset-0">
                     <img
-                      ref={setHighPriority}
                       src="/odeta.gif"
                       alt="Odeta testimonial preview"
                       className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04] will-change-transform"
-                      loading="eager"
+                      loading="lazy"
                       decoding="async"
                     />
                 </div>
@@ -586,11 +586,10 @@ export const Showcase = ({
                 ) : (
                   <div className="absolute inset-0">
                     <img
-                      ref={setHighPriority}
                       src="/hugo.gif"
                       alt="Hugo Saunder testimonial preview"
                       className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04] will-change-transform"
-                      loading="eager"
+                      loading="lazy"
                       decoding="async"
                     />
                 </div>

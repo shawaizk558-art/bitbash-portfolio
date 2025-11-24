@@ -126,25 +126,25 @@ const ProjectDetail = () => {
                     {/* GIF/Thumbnail Display */}
                     <div className="absolute inset-0 w-full h-full">
                       {project.slug === "petla" && (
-                        <img src="/petla.gif" alt={`${project.name} preview`} className="w-full h-full object-cover" />
+                        <img src="/petla.gif" alt={`${project.name} preview`} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                       )}
                       {project.slug === "scraper-glass" && (
-                        <img src="/scraperglass.gif" alt={`${project.name} preview`} className="w-full h-full object-cover" />
+                        <img src="/scraperglass.gif" alt={`${project.name} preview`} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                       )}
                       {project.slug === "actuary-list" && (
-                        <img src="/actuarylist.gif" alt={`${project.name} preview`} className="w-full h-full object-cover" />
+                        <img src="/actuarylist.gif" alt={`${project.name} preview`} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                       )}
                       {project.slug === "threads-scraper" && (
-                        <img src="/thread-scraper.gif" alt={`${project.name} preview`} className="w-full h-full object-cover" />
+                        <img src="/thread-scraper.gif" alt={`${project.name} preview`} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                       )}
                       {project.slug === "twitter-bot" && (
-                        <img src="/twitter.gif" alt={`${project.name} preview`} className="w-full h-full object-cover" />
+                        <img src="/twitter.gif" alt={`${project.name} preview`} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                       )}
                       {project.slug === "spotify-bot" && (
-                        <img src="/spotify.gif" alt={`${project.name} preview`} className="w-full h-full object-cover" />
+                        <img src="/spotify.gif" alt={`${project.name} preview`} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                       )}
                       {project.slug === "facebook-scraper" && (
-                        <img src="/facebook.gif" alt={`${project.name} preview`} className="w-full h-full object-cover" />
+                        <img src="/facebook.gif" alt={`${project.name} preview`} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                       )}
                       {!["petla", "scraper-glass", "actuary-list", "threads-scraper", "twitter-bot", "spotify-bot", "facebook-scraper"].includes(project.slug) && (
                         <div className={`absolute inset-0 bg-gradient-to-br ${gradientClasses[project.videoPlaceholder]} opacity-90`} />
