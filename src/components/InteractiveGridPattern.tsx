@@ -20,6 +20,7 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
         let mouseX = -1000;
         let mouseY = -1000;
         let lastFrameTime = 0;
+        let canvasRect = canvas.getBoundingClientRect();
 
         // Grid configuration
         const gap = 56; // Distance between dots (larger gap reduces density)
@@ -31,17 +32,21 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
 
         const isDesktop = () => window.innerWidth >= 1024;
 
+        const updateCanvasRect = () => {
+            canvasRect = canvas.getBoundingClientRect();
+        };
+
         const resize = () => {
             width = window.innerWidth;
             height = window.innerHeight;
             canvas.width = width;
             canvas.height = height;
+            updateCanvasRect();
         };
 
         const handleMouseMove = (e: MouseEvent) => {
-            const rect = canvas.getBoundingClientRect();
-            mouseX = e.clientX - rect.left;
-            mouseY = e.clientY - rect.top;
+            mouseX = e.clientX - canvasRect.left;
+            mouseY = e.clientY - canvasRect.top;
         };
 
         const handleMouseLeave = () => {
@@ -140,6 +145,7 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
         resize();
         handleVisibility();
         window.addEventListener('resize', handleResize);
+        window.addEventListener('scroll', updateCanvasRect, true);
         window.addEventListener('mousemove', handleMouseMove);
         window.addEventListener('mouseleave', handleMouseLeave);
         document.addEventListener('visibilitychange', handleVisibility);
@@ -147,6 +153,7 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
         return () => {
             stopAnimation();
             window.removeEventListener('resize', handleResize);
+            window.removeEventListener('scroll', updateCanvasRect, true);
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('mouseleave', handleMouseLeave);
             document.removeEventListener('visibilitychange', handleVisibility);
