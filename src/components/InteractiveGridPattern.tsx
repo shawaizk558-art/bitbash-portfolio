@@ -19,16 +19,19 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
         let height = 0;
         let mouseX = -1000;
         let mouseY = -1000;
+        let targetMouseX = -1000;
+        let targetMouseY = -1000;
         let lastFrameTime = 0;
         let canvasRect = canvas.getBoundingClientRect();
         let resizeObserver: ResizeObserver | null = null;
 
         // Grid configuration
-        const gap = 56; // Distance between dots (larger gap reduces density)
-        const dotSize = 2;
-        const hoverRadius = 100;
-        const flowSpeed = 0.15;
-        const FRAME_INTERVAL = 1000 / 15;
+        const gap = 42; // Distance between lines (larger gap reduces density)
+        const lineWidth = 1;
+        const hoverRadius = 30;
+        const flowSpeed = 0.5;
+        const FRAME_INTERVAL = 1000 / 30;
+        const cursorSmoothing = 0.18;
         let offset = 0;
 
         const isDesktop = () => window.innerWidth >= 1024;
@@ -45,14 +48,24 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
             updateCanvasRect();
         };
 
+        const resetCursor = () => {
+            targetMouseX = -1000;
+            targetMouseY = -1000;
+        };
+
         const handleMouseMove = (e: MouseEvent) => {
-            mouseX = e.clientX - canvasRect.left;
-            mouseY = e.clientY - canvasRect.top;
+            const { left, right, top, bottom } = canvasRect;
+            const { clientX, clientY } = e;
+            if (clientX >= left && clientX <= right && clientY >= top && clientY <= bottom) {
+                targetMouseX = clientX - left;
+                targetMouseY = clientY - top;
+            } else {
+                resetCursor();
+            }
         };
 
         const handleMouseLeave = () => {
-            mouseX = -1000;
-            mouseY = -1000;
+            resetCursor();
         };
 
         const clearCanvas = () => {
@@ -73,6 +86,9 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
             }
             lastFrameTime = now;
 
+            mouseX += (targetMouseX - mouseX) * cursorSmoothing;
+            mouseY += (targetMouseY - mouseY) * cursorSmoothing;
+
             clearCanvas();
 
             offset = (offset + flowSpeed) % gap;
@@ -80,37 +96,42 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
             const cols = Math.ceil(width / gap) + 2;
             const rows = Math.ceil(height / gap) + 2;
 
+            ctx.lineWidth = lineWidth;
+
             for (let i = -1; i < cols; i++) {
-                for (let j = -1; j < rows; j++) {
-                    const baseX = i * gap + offset;
-                    const baseY = j * gap + offset;
+                const baseX = i * gap + offset;
+                const dx = mouseX - baseX;
+                const distance = Math.abs(dx);
+                let alpha = 0.08;
 
-                    const dx = mouseX - baseX;
-                    const dy = mouseY - baseY;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-
-                    let x = baseX;
-                    let y = baseY;
-                    let size = dotSize;
-                    let alpha = 0.08;
-
-                    if (distance < hoverRadius) {
-                        const force = (hoverRadius - distance) / hoverRadius;
-                        const angle = Math.atan2(dy, dx);
-                        const moveDistance = force * 18;
-
-                        x -= Math.cos(angle) * moveDistance;
-                        y -= Math.sin(angle) * moveDistance;
-
-                        size = dotSize + force * 2;
-                        alpha = 0.1 + force * 0.25;
-                    }
-
-                    ctx.beginPath();
-                    ctx.arc(x, y, size, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(139, 92, 246, ${alpha})`;
-                    ctx.fill();
+                if (distance < hoverRadius) {
+                    const force = (hoverRadius - distance) / hoverRadius;
+                    alpha = 0.15 + force * 0.25;
                 }
+
+                ctx.strokeStyle = `rgba(139, 92, 246, ${alpha})`;
+                ctx.beginPath();
+                ctx.moveTo(baseX, -gap);
+                ctx.lineTo(baseX, height + gap);
+                ctx.stroke();
+            }
+
+            for (let j = -1; j < rows; j++) {
+                const baseY = j * gap + offset;
+                const dy = mouseY - baseY;
+                const distance = Math.abs(dy);
+                let alpha = 0.08;
+
+                if (distance < hoverRadius) {
+                    const force = (hoverRadius - distance) / hoverRadius;
+                    alpha = 0.15 + force * 0.25;
+                }
+
+                ctx.strokeStyle = `rgba(139, 92, 246, ${alpha})`;
+                ctx.beginPath();
+                ctx.moveTo(-gap, baseY);
+                ctx.lineTo(width + gap, baseY);
+                ctx.stroke();
             }
 
             animationFrameId = requestAnimationFrame(draw);
@@ -148,9 +169,12 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
         window.addEventListener('resize', handleResize);
         window.addEventListener('mousemove', handleMouseMove);
         window.addEventListener('mouseleave', handleMouseLeave);
+        window.addEventListener('scroll', updateCanvasRect, { passive: true });
         document.addEventListener('visibilitychange', handleVisibility);
 
-        if ('ResizeObserver' in window) {
+        const supportsResizeObserver = typeof window !== 'undefined' && 'ResizeObserver' in window;
+
+        if (supportsResizeObserver) {
             resizeObserver = new ResizeObserver(updateCanvasRect);
             resizeObserver.observe(canvas);
         } else {
@@ -160,13 +184,14 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
         return () => {
             stopAnimation();
             window.removeEventListener('resize', handleResize);
-            if (resizeObserver) {
+            if (supportsResizeObserver && resizeObserver) {
                 resizeObserver.disconnect();
             } else {
                 window.removeEventListener('scroll', updateCanvasRect, true);
             }
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('mouseleave', handleMouseLeave);
+            window.removeEventListener('scroll', updateCanvasRect);
             document.removeEventListener('visibilitychange', handleVisibility);
         };
     }, []);
