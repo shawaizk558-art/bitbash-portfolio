@@ -17,10 +17,6 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
         let animationFrameId: number | null = null;
         let width = 0;
         let height = 0;
-        let mouseX = -1000;
-        let mouseY = -1000;
-        let targetMouseX = -1000;
-        let targetMouseY = -1000;
         let lastFrameTime = 0;
         let canvasRect = canvas.getBoundingClientRect();
         let resizeObserver: ResizeObserver | null = null;
@@ -28,10 +24,8 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
         // Grid configuration
         const gap = 42; // Distance between lines (larger gap reduces density)
         const lineWidth = 1;
-        const hoverRadius = 30;
         const flowSpeed = 0.5;
         const FRAME_INTERVAL = 1000 / 30;
-        const cursorSmoothing = 0.18;
         let offset = 0;
 
         const isDesktop = () => window.innerWidth >= 1024;
@@ -46,26 +40,6 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
             canvas.width = width;
             canvas.height = height;
             updateCanvasRect();
-        };
-
-        const resetCursor = () => {
-            targetMouseX = -1000;
-            targetMouseY = -1000;
-        };
-
-        const handleMouseMove = (e: MouseEvent) => {
-            const { left, right, top, bottom } = canvasRect;
-            const { clientX, clientY } = e;
-            if (clientX >= left && clientX <= right && clientY >= top && clientY <= bottom) {
-                targetMouseX = clientX - left;
-                targetMouseY = clientY - top;
-            } else {
-                resetCursor();
-            }
-        };
-
-        const handleMouseLeave = () => {
-            resetCursor();
         };
 
         const clearCanvas = () => {
@@ -86,9 +60,6 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
             }
             lastFrameTime = now;
 
-            mouseX += (targetMouseX - mouseX) * cursorSmoothing;
-            mouseY += (targetMouseY - mouseY) * cursorSmoothing;
-
             clearCanvas();
 
             offset = (offset + flowSpeed) % gap;
@@ -98,17 +69,11 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
 
             ctx.lineWidth = lineWidth;
 
+            const shimmer = Math.sin(performance.now() / 900);
+
             for (let i = -1; i < cols; i++) {
                 const baseX = i * gap + offset;
-                const dx = mouseX - baseX;
-                const distance = Math.abs(dx);
-                let alpha = 0.08;
-
-                if (distance < hoverRadius) {
-                    const force = (hoverRadius - distance) / hoverRadius;
-                    alpha = 0.15 + force * 0.25;
-                }
-
+                const alpha = 0.08 + 0.04 * Math.sin(i * 0.5 + shimmer);
                 ctx.strokeStyle = `rgba(139, 92, 246, ${alpha})`;
                 ctx.beginPath();
                 ctx.moveTo(baseX, -gap);
@@ -118,15 +83,7 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
 
             for (let j = -1; j < rows; j++) {
                 const baseY = j * gap + offset;
-                const dy = mouseY - baseY;
-                const distance = Math.abs(dy);
-                let alpha = 0.08;
-
-                if (distance < hoverRadius) {
-                    const force = (hoverRadius - distance) / hoverRadius;
-                    alpha = 0.15 + force * 0.25;
-                }
-
+                const alpha = 0.08 + 0.04 * Math.cos(j * 0.5 + shimmer);
                 ctx.strokeStyle = `rgba(139, 92, 246, ${alpha})`;
                 ctx.beginPath();
                 ctx.moveTo(-gap, baseY);
@@ -167,8 +124,6 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
         resize();
         handleVisibility();
         window.addEventListener('resize', handleResize);
-        window.addEventListener('mousemove', handleMouseMove);
-        window.addEventListener('mouseleave', handleMouseLeave);
         window.addEventListener('scroll', updateCanvasRect, { passive: true });
         document.addEventListener('visibilitychange', handleVisibility);
 
@@ -189,8 +144,6 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
             } else {
                 window.removeEventListener('scroll', updateCanvasRect, true);
             }
-            window.removeEventListener('mousemove', handleMouseMove);
-            window.removeEventListener('mouseleave', handleMouseLeave);
             window.removeEventListener('scroll', updateCanvasRect);
             document.removeEventListener('visibilitychange', handleVisibility);
         };
