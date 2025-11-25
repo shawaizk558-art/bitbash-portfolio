@@ -21,6 +21,7 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
         let mouseY = -1000;
         let lastFrameTime = 0;
         let canvasRect = canvas.getBoundingClientRect();
+        let resizeObserver: ResizeObserver | null = null;
 
         // Grid configuration
         const gap = 56; // Distance between dots (larger gap reduces density)
@@ -145,15 +146,25 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
         resize();
         handleVisibility();
         window.addEventListener('resize', handleResize);
-        window.addEventListener('scroll', updateCanvasRect, true);
         window.addEventListener('mousemove', handleMouseMove);
         window.addEventListener('mouseleave', handleMouseLeave);
         document.addEventListener('visibilitychange', handleVisibility);
 
+        if ('ResizeObserver' in window) {
+            resizeObserver = new ResizeObserver(updateCanvasRect);
+            resizeObserver.observe(canvas);
+        } else {
+            window.addEventListener('scroll', updateCanvasRect, true);
+        }
+
         return () => {
             stopAnimation();
             window.removeEventListener('resize', handleResize);
-            window.removeEventListener('scroll', updateCanvasRect, true);
+            if (resizeObserver) {
+                resizeObserver.disconnect();
+            } else {
+                window.removeEventListener('scroll', updateCanvasRect, true);
+            }
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('mouseleave', handleMouseLeave);
             document.removeEventListener('visibilitychange', handleVisibility);
