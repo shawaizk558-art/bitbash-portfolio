@@ -9,13 +9,36 @@
     <meta name="author" content="BitBash" />
     <meta name="keywords" content="automation, development, AI, business solutions, intelligent automation, web development, mobile apps" />
     <meta name="robots" content="index, follow" />
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9RM36DRDK7"></script>
+    <!-- Google tag (gtag.js) deferred to keep main thread light -->
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-9RM36DRDK7');
+      (function(w, d, id) {
+        w.dataLayer = w.dataLayer || [];
+        function gtag(){w.dataLayer.push(arguments);}
+        w.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', id);
+
+        let gtagLoaded = false;
+        const loadGtag = () => {
+          if (gtagLoaded) return;
+          gtagLoaded = true;
+          const script = d.createElement('script');
+          script.id = 'gtag-js';
+          script.async = true;
+          script.src = `https://www.googletagmanager.com/gtag/js?id=${id}`;
+          d.head.appendChild(script);
+        };
+
+        if ('requestIdleCallback' in w) {
+          w.requestIdleCallback(loadGtag, { timeout: 5000 });
+        } else {
+          w.setTimeout(loadGtag, 3000);
+        }
+
+        ['scroll', 'click', 'keydown'].forEach((evt) => {
+          w.addEventListener(evt, loadGtag, { once: true, passive: true });
+        });
+      })(window, document, 'G-9RM36DRDK7');
     </script>
     <link rel="canonical" href="https://bitbash.dev/" />
     <link rel="alternate" href="https://bitbash.dev/" hreflang="en" />
