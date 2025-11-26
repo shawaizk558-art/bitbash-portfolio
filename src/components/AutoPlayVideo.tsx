@@ -23,6 +23,8 @@ export const AutoPlayVideo = ({
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [shouldPlay, setShouldPlay] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const scrollTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -30,6 +32,30 @@ export const AutoPlayVideo = ({
     setPrefersReducedMotion(mediaQuery.matches);
     mediaQuery.addEventListener("change", handleChange);
     return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
+
+  // Detect scroll stop
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolling(true);
+      
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+      
+      scrollTimeoutRef.current = window.setTimeout(() => {
+        setIsScrolling(false);
+      }, 150); // Wait 150ms after scroll stops
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -41,20 +67,39 @@ export const AutoPlayVideo = ({
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setShouldPlay(true);
-            node.play().catch(() => {
-              // Autoplay might still fail; keep poster visible.
-            });
           } else {
+            setShouldPlay(false);
             node.pause();
+            node.currentTime = 0;
           }
         });
       },
-      { threshold: 0.5 }
+      { 
+        threshold: 0.6,
+        rootMargin: '0px'
+      }
     );
 
     observer.observe(node);
     return () => observer.disconnect();
   }, [prefersReducedMotion]);
+
+  // Only play video when visible AND scroll has stopped
+  useEffect(() => {
+    const node = videoRef.current;
+    if (!node || prefersReducedMotion) return;
+
+    if (shouldPlay && !isScrolling) {
+      // Delay play slightly to ensure scroll has fully stopped
+      const playTimeout = setTimeout(() => {
+        node.play().catch(() => {});
+      }, 50);
+      
+      return () => clearTimeout(playTimeout);
+    } else if (!shouldPlay || isScrolling) {
+      node.pause();
+    }
+  }, [shouldPlay, isScrolling, prefersReducedMotion]);
 
   if (prefersReducedMotion) {
     return (
@@ -77,8 +122,12 @@ export const AutoPlayVideo = ({
       loop={loop}
       playsInline
       preload="metadata"
-      autoPlay={shouldPlay}
       aria-label={alt}
+      style={{ 
+        transform: 'translateZ(0)', // Force GPU acceleration
+        backfaceVisibility: 'hidden' as const,
+        willChange: isScrolling ? 'auto' : 'transform'
+      }}
     >
       {sources.map((source) => (
         <source key={source.type} src={source.src} type={source.type} />

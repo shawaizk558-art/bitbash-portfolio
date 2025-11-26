@@ -124,7 +124,17 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
         resize();
         handleVisibility();
         window.addEventListener('resize', handleResize);
-        window.addEventListener('scroll', updateCanvasRect, { passive: true });
+        
+        // Throttle scroll updates to avoid jank
+        let scrollTimeout: number | null = null;
+        const throttledScroll = () => {
+            if (scrollTimeout) return;
+            scrollTimeout = window.setTimeout(() => {
+                updateCanvasRect();
+                scrollTimeout = null;
+            }, 16); // ~60fps
+        };
+        window.addEventListener('scroll', throttledScroll, { passive: true });
         document.addEventListener('visibilitychange', handleVisibility);
 
         const supportsResizeObserver = typeof window !== 'undefined' && 'ResizeObserver' in window;
@@ -141,10 +151,8 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
             window.removeEventListener('resize', handleResize);
             if (supportsResizeObserver && resizeObserver) {
                 resizeObserver.disconnect();
-            } else {
-                window.removeEventListener('scroll', updateCanvasRect, true);
             }
-            window.removeEventListener('scroll', updateCanvasRect);
+            window.removeEventListener('scroll', throttledScroll);
             document.removeEventListener('visibilitychange', handleVisibility);
         };
     }, []);

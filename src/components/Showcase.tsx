@@ -76,7 +76,12 @@ export const Showcase = ({
             return (
             <div
               key={project.slug}
-              className="bg-white rounded-2xl shadow-lg hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100"
+              className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100"
+              style={{ 
+                contentVisibility: 'auto',
+                contain: 'layout style paint',
+                transform: 'translateZ(0)'
+              }}
             >
               {/* Video Thumbnail - Mobile Optimized */}
               <div 
@@ -104,7 +109,7 @@ export const Showcase = ({
                           <div className={`absolute inset-0 bg-gradient-to-br ${gradientClasses[project.videoPlaceholder]} opacity-80`} />
                         )}
                         <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-                          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg touch-target">
+                          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/90 rounded-full flex items-center justify-center shadow-lg touch-target">
                             <Play className="w-5 h-5 sm:w-7 text-gray-900 ml-1" fill="currentColor" />
                           </div>
                         </div>
@@ -136,7 +141,7 @@ export const Showcase = ({
                     
                     {/* Play Button - Mobile Optimized */}
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg touch-target">
+                      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/90 rounded-full flex items-center justify-center shadow-lg touch-target">
                         <Play className="w-5 h-5 sm:w-7 sm:w-7 text-gray-900 ml-1" fill="currentColor" />
                       </div>
                     </div>
@@ -275,7 +280,7 @@ export const Showcase = ({
                       </div>
                       <button
                         type="button"
-                        className="flex items-center justify-center rounded-full bg-white/90 group-hover:bg-red-600 backdrop-blur-sm shadow-lg w-9 h-9 sm:w-10 sm:h-10 hover:scale-105 transition-transform transition-colors duration-300 ease-out flex-shrink-0"
+                        className="flex items-center justify-center rounded-full bg-white/90 group-hover:bg-red-600 shadow-lg w-9 h-9 sm:w-10 sm:h-10 transition-colors duration-300 ease-out flex-shrink-0"
                         aria-label="Play testimonial video"
                         onClick={(e) => {
                           e.stopPropagation();
@@ -356,7 +361,7 @@ export const Showcase = ({
                       {/* Small play button on the right */}
                       <button
                         type="button"
-                        className="flex items-center justify-center rounded-full bg-white/90 group-hover:bg-red-600 backdrop-blur-sm shadow-lg w-9 h-9 sm:w-10 sm:h-10 hover:scale-105 transition-transform transition-colors duration-300 ease-out flex-shrink-0"
+                        className="flex items-center justify-center rounded-full bg-white/90 group-hover:bg-red-600 shadow-lg w-9 h-9 sm:w-10 sm:h-10 transition-colors duration-300 ease-out flex-shrink-0"
                         aria-label="Play testimonial video"
                         onClick={(e) => {
                           e.stopPropagation();
@@ -434,7 +439,7 @@ export const Showcase = ({
                       {/* Small play button */}
                       <button
                         type="button"
-                        className="flex items-center justify-center rounded-full bg-white/90 group-hover:bg-red-600 backdrop-blur-sm shadow-lg w-9 h-9 sm:w-10 sm:h-10 hover:scale-105 transition-transform transition-colors duration-300 ease-out flex-shrink-0"
+                        className="flex items-center justify-center rounded-full bg-white/90 group-hover:bg-red-600 shadow-lg w-9 h-9 sm:w-10 sm:h-10 transition-colors duration-300 ease-out flex-shrink-0"
                         aria-label="Play testimonial video"
                         onClick={(e) => {
                           e.stopPropagation();
@@ -512,7 +517,7 @@ export const Showcase = ({
                       {/* Small play button */}
                       <button
                         type="button"
-                        className="flex items-center justify-center rounded-full bg-white/90 group-hover:bg-red-600 backdrop-blur-sm shadow-lg w-9 h-9 sm:w-10 sm:h-10 hover:scale-105 transition-transform transition-colors duration-300 ease-out flex-shrink-0"
+                        className="flex items-center justify-center rounded-full bg-white/90 group-hover:bg-red-600 shadow-lg w-9 h-9 sm:w-10 sm:h-10 transition-colors duration-300 ease-out flex-shrink-0"
                         aria-label="Play testimonial video"
                         onClick={(e) => {
                           e.stopPropagation();
