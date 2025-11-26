@@ -1,45 +1,11 @@
 import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
 
 /**
  * RoutePreloader component
- * Intelligently prefetches route chunks to improve navigation performance
+ * Intelligently prefetches route chunks on hover to improve navigation performance
+ * Removed automatic prefetching to avoid creating critical request chains
  */
 export const RoutePreloader = () => {
-    const location = useLocation();
-
-    useEffect(() => {
-        // Preload common routes after initial page load
-        const preloadCommonRoutes = () => {
-            // Only preload if we're on the homepage
-            if (location.pathname === "/") {
-                // Preload most commonly visited routes
-                const commonRoutes = [
-                    () => import("@/pages/AutomationServices"),
-                    () => import("@/pages/DevelopmentServices"),
-                    () => import("@/pages/Contact"),
-                ];
-
-                // Use requestIdleCallback to preload during idle time
-                if ("requestIdleCallback" in window) {
-                    window.requestIdleCallback(
-                        () => {
-                            commonRoutes.forEach((route) => route());
-                        },
-                        { timeout: 3000 }
-                    );
-                } else {
-                    // Fallback for browsers without requestIdleCallback
-                    setTimeout(() => {
-                        commonRoutes.forEach((route) => route());
-                    }, 2000);
-                }
-            }
-        };
-
-        preloadCommonRoutes();
-    }, [location.pathname]);
-
     // Add hover prefetching for navigation links
     useEffect(() => {
         const handleLinkHover = (e: MouseEvent) => {

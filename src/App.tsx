@@ -2,6 +2,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import { RoutePreloader } from "@/components/RoutePreloader";
+import { Toaster as ToastContainer } from "@/components/ui/toaster";
+import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 
 // Lazy load pages for better performance
 const Index = lazy(() => import("./pages/Index"));
@@ -27,26 +29,14 @@ const MobileOptimizations = lazy(() =>
   }))
 );
 
-const ToastContainer = lazy(() =>
-  import("@/components/ui/toaster").then((module) => ({
-    default: module.Toaster,
-  }))
-);
-
-const SonnerToaster = lazy(() =>
-  import("@/components/ui/sonner").then((module) => ({
-    default: module.Toaster,
-  }))
-);
-
 const App = () => (
   <TooltipProvider>
     <Suspense fallback={null}>
       <MobileViewport />
       <MobileOptimizations />
-      <ToastContainer />
-      <SonnerToaster />
     </Suspense>
+    <ToastContainer />
+    <SonnerToaster />
     <BrowserRouter>
       <RoutePreloader />
       <Suspense fallback={<div className="flex min-h-screen items-center justify-center">

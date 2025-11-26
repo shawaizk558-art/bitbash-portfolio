@@ -53,32 +53,26 @@ export default defineConfig(({ mode }) => ({
 
     rollupOptions: {
       output: {
-        // Manual chunk splitting for better caching
+        // Manual chunk splitting - consolidated to reduce critical path depth
         manualChunks: {
-          // React core
-          "react-vendor": ["react", "react-dom"],
-
-          // React Router
-          "router": ["react-router-dom"],
-
-          // UI libraries (Radix UI components)
-          "ui-vendor": [
+          // Single vendor chunk for all React-related libraries
+          "vendor": [
+            "react",
+            "react-dom",
+            "react-router-dom",
             "@radix-ui/react-dropdown-menu",
             "@radix-ui/react-label",
             "@radix-ui/react-slot",
             "@radix-ui/react-toast",
             "@radix-ui/react-tooltip",
-          ],
-
-          // Markdown rendering
-          "markdown": ["react-markdown", "remark-gfm"],
-
-          // Utility libraries
-          "utils": [
             "clsx",
             "class-variance-authority",
             "tailwind-merge",
           ],
+
+          // Separate chunk for heavy libraries
+          "markdown": ["react-markdown", "remark-gfm"],
+          "sonner": ["sonner"],
         },
 
         // Optimize chunk file names for better caching
