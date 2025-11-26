@@ -41,38 +41,60 @@ export default defineConfig(({ mode }) => ({
         drop_console: true,
         drop_debugger: true,
         pure_funcs: ["console.log", "console.info"],
-        passes: 2,
+        passes: 3, // More aggressive
+        unsafe_arrows: true,
+        unsafe_methods: true,
+        toplevel: true,
       },
       mangle: {
         safari10: true,
+        toplevel: true,
+      },
+      format: {
+        comments: false, // Remove all comments
       },
     },
 
     // Chunk size warnings
     chunkSizeWarningLimit: 500,
+    
+    // Target modern browsers for smaller bundles
+    target: 'es2020',
+    
+    // Enable module preload for faster loading
+    modulePreload: {
+      polyfill: false,
+    },
 
     rollupOptions: {
+      // Tree shaking optimizations
+      treeshake: {
+        moduleSideEffects: 'no-external',
+        propertyReadSideEffects: false,
+        tryCatchDeoptimization: false
+      },
       output: {
         // Manual chunk splitting - consolidated to reduce critical path depth
-        manualChunks: {
-          // Single vendor chunk for all React-related libraries
-          "vendor": [
-            "react",
-            "react-dom",
-            "react-router-dom",
-            "@radix-ui/react-dropdown-menu",
-            "@radix-ui/react-label",
-            "@radix-ui/react-slot",
-            "@radix-ui/react-toast",
-            "@radix-ui/react-tooltip",
-            "clsx",
-            "class-variance-authority",
-            "tailwind-merge",
-          ],
-
-          // Separate chunk for heavy libraries
-          "markdown": ["react-markdown", "remark-gfm"],
-          "sonner": ["sonner"],
+        manualChunks: (id) => {
+          // Core vendor chunk
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+              return 'vendor-react';
+            }
+            if (id.includes('@radix-ui')) {
+              return 'vendor-ui';
+            }
+            if (id.includes('lenis')) {
+              return 'vendor-lenis';
+            }
+            if (id.includes('lucide-react')) {
+              return 'vendor-icons';
+            }
+            if (id.includes('react-markdown') || id.includes('remark')) {
+              return 'vendor-markdown';
+            }
+            return 'vendor-misc';
+          }
         },
 
         // Optimize chunk file names for better caching

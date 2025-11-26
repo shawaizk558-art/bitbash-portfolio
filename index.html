@@ -16,7 +16,7 @@
   <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
   <link rel="dns-prefetch" href="https://www.google-analytics.com" />
 
-  <!-- Google tag (gtag.js) deferred to keep main thread light -->
+  <!-- Google tag (gtag.js) - Ultra-deferred to minimize unused JS -->
   <script>
     (function (w, d, id) {
       w.dataLayer = w.dataLayer || [];
@@ -26,6 +26,8 @@
       gtag('config', id);
 
       let gtagLoaded = false;
+      let interactionDetected = false;
+      
       const loadGtag = () => {
         if (gtagLoaded) return;
         gtagLoaded = true;
@@ -36,15 +38,25 @@
         d.head.appendChild(script);
       };
 
-      // Increased timeout from 5000ms to 8000ms to defer GTM even further
+      // Only load GTM after user interaction or after 10s
+      const handleInteraction = () => {
+        if (!interactionDetected) {
+          interactionDetected = true;
+          // Wait additional 2s after first interaction
+          setTimeout(loadGtag, 2000);
+        }
+      };
+
+      // Delayed loading - increased to 10s
       if ('requestIdleCallback' in w) {
-        w.requestIdleCallback(loadGtag, { timeout: 8000 });
+        w.requestIdleCallback(loadGtag, { timeout: 10000 });
       } else {
-        w.setTimeout(loadGtag, 5000);
+        w.setTimeout(loadGtag, 10000);
       }
 
-      ['scroll', 'click', 'keydown'].forEach((evt) => {
-        w.addEventListener(evt, loadGtag, { once: true, passive: true });
+      // Load on first meaningful interaction
+      ['scroll', 'click', 'keydown', 'touchstart'].forEach((evt) => {
+        w.addEventListener(evt, handleInteraction, { once: true, passive: true });
       });
     })(window, document, 'G-9RM36DRDK7');
   </script>
