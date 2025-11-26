@@ -12,6 +12,10 @@
   <meta name="keywords"
     content="automation, development, AI, business solutions, intelligent automation, web development, mobile apps" />
   <meta name="robots" content="index, follow" />
+  <!-- DNS prefetch for third-party domains -->
+  <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+  <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+
   <!-- Google tag (gtag.js) deferred to keep main thread light -->
   <script>
     (function (w, d, id) {
@@ -32,10 +36,11 @@
         d.head.appendChild(script);
       };
 
+      // Increased timeout from 5000ms to 8000ms to defer GTM even further
       if ('requestIdleCallback' in w) {
-        w.requestIdleCallback(loadGtag, { timeout: 5000 });
+        w.requestIdleCallback(loadGtag, { timeout: 8000 });
       } else {
-        w.setTimeout(loadGtag, 3000);
+        w.setTimeout(loadGtag, 5000);
       }
 
       ['scroll', 'click', 'keydown'].forEach((evt) => {
@@ -72,16 +77,11 @@
   <link rel="preconnect" href="https://i.ytimg.com" crossorigin />
 
   <!-- Performance: Preload testimonial GIFs, profile images, and key feature stacks -->
+  <!-- Reduced to only LCP-critical images to minimize initial payload -->
   <link rel="preload" as="image" href="/zee.jpg" fetchpriority="high" />
   <link rel="preload" as="image" href="/awais.jpg" fetchpriority="high" />
-  <link rel="preload" as="image" href="/hassan-arslan.png" fetchpriority="high" />
-  <link rel="preload" as="image" href="/mughees.jpg" fetchpriority="high" />
-  <link rel="preload" as="image" href="/fras.png" fetchpriority="high" />
   <link rel="preload" as="image" href="/stack1.png" fetchpriority="high" />
   <link rel="preload" as="image" href="/stack2.png" fetchpriority="high" />
-  <link rel="preload" as="image" href="/stack3.png" fetchpriority="high" />
-  <link rel="preload" as="image" href="/stack4.png" fetchpriority="high" />
-  <link rel="preload" as="image" href="/stack5.png" fetchpriority="high" />
   <!-- Preconnect & async load Google Fonts to reduce render blocking -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

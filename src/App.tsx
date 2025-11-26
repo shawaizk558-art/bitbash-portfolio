@@ -1,6 +1,7 @@
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
+import { RoutePreloader } from "@/components/RoutePreloader";
 
 // Lazy load pages for better performance
 const Index = lazy(() => import("./pages/Index"));
@@ -47,6 +48,7 @@ const App = () => (
       <SonnerToaster />
     </Suspense>
     <BrowserRouter>
+      <RoutePreloader />
       <Suspense fallback={<div className="flex min-h-screen items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
       </div>}>
