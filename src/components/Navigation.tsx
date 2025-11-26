@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Code, Smartphone, Palette, Zap, Database, Globe, Cloud, Github, Building2, ShoppingCart, Rocket, Bot, GitBranch, Shield, Menu, X } from "@/lib/icons";
 import { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Logo } from "@/components/Logo";
 
@@ -45,27 +45,22 @@ export const Navigation = () => {
       const panel = mobileMenuRef.current;
       const toggle = menuToggleRef.current;
       if (!panel) return;
+      
       const target = event.target as Node;
-      if (!panel.contains(target) && (!toggle || !toggle.contains(target))) {
+      const isInPanel = panel.contains(target);
+      const isInToggle = toggle && toggle.contains(target);
+      
+      // Only close if click is outside both panel and toggle
+      if (!isInPanel && !isInToggle) {
         closeMobileMenu();
       }
     };
 
-    const handlePointerMove = (event: PointerEvent) => {
-      if (event.pointerType !== "mouse") return;
-      const panel = mobileMenuRef.current;
-      if (!panel) return;
-      const target = event.target as Node;
-      if (!panel.contains(target)) {
-        closeMobileMenu();
-      }
-    };
-
+    // Only use click-outside detection, no hover-based closing
     document.addEventListener("pointerdown", handlePointerDown, true);
-    document.addEventListener("pointermove", handlePointerMove);
+    
     return () => {
       document.removeEventListener("pointerdown", handlePointerDown, true);
-      document.removeEventListener("pointermove", handlePointerMove);
     };
   }, [mobileMenuOpen]);
 
@@ -96,9 +91,9 @@ export const Navigation = () => {
       <div className="container-responsive">
         <div className="flex items-center h-16">
           {/* Logo - Left Side */}
-          <a href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity lg:min-h-[44px] min-h-[44px]" onClick={closeMobileMenu}>
+          <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity lg:min-h-[44px] min-h-[44px]" onClick={closeMobileMenu}>
             <Logo size="lg" variant="default" />
-          </a>
+          </Link>
           
           {/* Mobile Menu Button - Sleek & Simple */}
           <button
@@ -269,17 +264,17 @@ export const Navigation = () => {
             </div>
 
 
-            <a href="/projects" className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0">
+            <Link to="/projects" className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0">
               <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Portfolio</span>
-            </a>
+            </Link>
 
-            <a href="/pricing" className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0">
+            <Link to="/pricing" className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0">
               <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Pricing</span>
-            </a>
+            </Link>
 
-            <a href="/how-we-work" className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0">
+            <Link to="/how-we-work" className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0">
               <span className="font-normal text-black text-base lg:text-[17px] whitespace-nowrap" style={{ fontSize: '17px' }}>Our Work Model</span>
-            </a>
+            </Link>
 
           </div>
           
@@ -287,7 +282,7 @@ export const Navigation = () => {
           <div
             className="hidden lg:flex items-center ml-auto"
           >
-            <a href="/contact">
+            <Link to="/contact">
               <button 
                 className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold text-base px-5 py-2 rounded-md flex items-center justify-center"
                 style={{
@@ -296,7 +291,7 @@ export const Navigation = () => {
               >
                 Contact us
               </button>
-            </a>
+            </Link>
           </div>
         </div>
         
@@ -333,70 +328,70 @@ export const Navigation = () => {
 
                 {/* Navigation Links */}
                 <div className="space-y-1">
-                <a 
-                  href="/" 
+                <Link 
+                  to="/" 
                   className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
                   onClick={closeMobileMenu}
                 >
                   <span>Home</span>
-                </a>
-                <a 
-                  href="/automation-services" 
+                </Link>
+                <Link 
+                  to="/automation-services" 
                   className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
                   onClick={closeMobileMenu}
                 >
                   <span>Automation</span>
-                </a>
-                <a 
-                  href="/development-services" 
+                </Link>
+                <Link 
+                  to="/development-services" 
                   className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
                   onClick={closeMobileMenu}
                 >
                   <span>Development</span>
-                </a>
-                <a 
-                  href="/projects" 
+                </Link>
+                <Link 
+                  to="/projects" 
                   className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
                   onClick={closeMobileMenu}
                 >
                   <span>Projects</span>
-                </a>
-                <a 
-                  href="/pricing" 
+                </Link>
+                <Link 
+                  to="/pricing" 
                   className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
                   onClick={closeMobileMenu}
                 >
                   <span>Pricing</span>
-                </a>
-                <a 
-                  href="/how-we-work" 
+                </Link>
+                <Link 
+                  to="/how-we-work" 
                   className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
                   onClick={closeMobileMenu}
                 >
                   <span>Our Work Model</span>
-                </a>
-                <a 
-                  href="/contact" 
+                </Link>
+                <Link 
+                  to="/contact" 
                   className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
                   onClick={closeMobileMenu}
                 >
                   <span>Contact</span>
-                </a>
+                </Link>
                 </div>
               </div>
               
               {/* CTA Buttons - At Bottom */}
               <div className="px-4 sm:px-6 py-4 sm:py-6 pt-6 sm:pt-8">
-                <a href="/contact" onClick={closeMobileMenu} className="block w-full text-center py-3 sm:py-4 text-base font-bold text-white border-2 border-white rounded-xl hover:bg-white hover:text-gray-900 transition-all duration-300 mb-3 sm:mb-4 min-h-[44px] flex items-center justify-center">
+                <Link to="/contact" onClick={closeMobileMenu} className="block w-full text-center py-3 sm:py-4 text-base font-bold text-white border-2 border-white rounded-xl hover:bg-white hover:text-gray-900 transition-all duration-300 mb-3 sm:mb-4 min-h-[44px] flex items-center justify-center">
                   Contact us
-                </a>
-                <a href="/contact" onClick={closeMobileMenu} className="block">
+                </Link>
+                <Link to="/contact" onClick={closeMobileMenu} className="block">
                   <button 
                     className="w-full py-3 sm:py-4 text-base font-semibold text-white bg-purple-600 rounded-xl hover:bg-purple-700 transition-all duration-300 min-h-[44px]"
                   >
                     Schedule a call
                   </button>
-                </a>
+                </Link>
               </div>
             </div>
           </div>

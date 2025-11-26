@@ -252,7 +252,7 @@ export const Showcase = ({
                       sources={getVideoSources("kareem")}
                       poster={getPosterPath("kareem")}
                       alt="Kareem testimonial preview"
-                      className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04] will-change-transform"
+                      className="w-full h-full object-cover"
                     />
                   </div>
                 )}
@@ -329,7 +329,7 @@ export const Showcase = ({
                     sources={getVideoSources("syed")}
                     poster={getPosterPath("syed")}
                     alt="Actuary List testimonial preview"
-                    className="w-full h-full object-cover object-[center_35%] transition-transform duration-500 ease-out group-hover:scale-[1.04] will-change-transform"
+                    className="w-full h-full object-cover object-[center_35%]"
                   />
                 </div>
                   </>
@@ -409,7 +409,7 @@ export const Showcase = ({
                       sources={getVideoSources("odeta")}
                       poster={getPosterPath("odeta")}
                       alt="Odeta testimonial preview"
-                      className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04] will-change-transform"
+                      className="w-full h-full object-cover"
                     />
                 </div>
                 )}
@@ -487,7 +487,7 @@ export const Showcase = ({
                       sources={getVideoSources("hugo")}
                       poster={getPosterPath("hugo")}
                       alt="Hugo Saunder testimonial preview"
-                      className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04] will-change-transform"
+                      className="w-full h-full object-cover"
                     />
                 </div>
                 )}
