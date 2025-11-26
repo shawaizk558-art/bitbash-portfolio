@@ -1,4 +1,5 @@
 import { Navigation } from "@/components/Navigation";
+import { SEO } from "@/components/SEO";
 import { Footer } from "@/components/Footer";
 import { getProjects } from "@/lib/strapi";
 import { Play, Star, X } from "lucide-react";
@@ -72,6 +73,12 @@ const Projects = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      <SEO
+        title="Our Projects - BitBash"
+        description="Explore our portfolio of successful software development and automation projects. See how we help businesses grow."
+        canonical="/projects"
+        image="/stack1.png"
+      />
       <Navigation />
 
       {/* Projects Hero Section - match Blog hero hierarchy/sizes */}

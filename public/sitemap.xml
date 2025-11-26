@@ -62,9 +62,14 @@
     <changefreq>weekly</changefreq>
     <priority>0.70</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://bitbash.dev/blog" />
-    <image:image>
-      <image:loc>https://bitbash.dev/placeholder.jpeg</image:loc>
-    </image:image>
+  </url>
+
+  <url>
+    <loc>https://bitbash.dev/how-we-work</loc>
+    <lastmod>2025-11-26T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.60</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://bitbash.dev/how-we-work" />
   </url>
 
   <url>

@@ -1,8 +1,15 @@
 import { Link } from "react-router-dom";
 
+import { SEO } from "@/components/SEO";
+
 const HowWeWork = () => {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-white px-6 py-24 text-center sm:px-12">
+      <SEO
+        title="How We Work - BitBash"
+        description="Learn about our transparent and efficient software development process. From kickoff to launch, we are with you every step of the way."
+        canonical="/how-we-work"
+      />
       <div className="max-w-2xl space-y-6">
         <span className="inline-flex items-center rounded-full bg-purple-50 px-4 py-1 text-sm font-semibold text-purple-600">
           Coming Soon

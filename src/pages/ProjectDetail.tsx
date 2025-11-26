@@ -1,4 +1,5 @@
 import { useParams, Link } from "react-router-dom";
+import { SEO } from "@/components/SEO";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { ArrowLeft, Play, X } from "lucide-react";
@@ -93,12 +94,18 @@ const ProjectDetail = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      <SEO
+        title={`${project.name} - BitBash Project`}
+        description={project.description.substring(0, 160)}
+        canonical={`/project/${project.slug}`}
+        image={mediaAssets.avatarSrc}
+      />
       <Navigation />
-      
+
       {/* Back Button */}
       <div className="container-responsive pt-6 pb-4">
-        <Link 
-          to="/" 
+        <Link
+          to="/"
           className="inline-flex items-center gap-2 text-gray-600 hover:text-purple-600 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -121,7 +128,7 @@ const ProjectDetail = () => {
       {/* GIF/Video Section - Clickable to Play YouTube Video */}
       <section className="container-responsive pb-8 sm:pb-12 lg:pb-16">
         <div className="max-w-4xl lg:max-w-5xl xl:max-w-6xl mx-auto">
-          <div 
+          <div
             className="relative aspect-video bg-gradient-to-br overflow-hidden rounded-2xl shadow-2xl group"
           >
             {project.youtubeVideoId ? (
