@@ -11,9 +11,6 @@
     <priority>1.00</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://bitbash.dev/" />
     <image:image>
-      <image:loc>https://bitbash.dev/splash.png</image:loc>
-    </image:image>
-    <image:image>
       <image:loc>https://bitbash.dev/favicon.png</image:loc>
     </image:image>
   </url>
