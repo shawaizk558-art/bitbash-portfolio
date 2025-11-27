@@ -1,16 +1,17 @@
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
+import { FAQ } from "@/components/FAQ";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Clock, 
-  ArrowRight, 
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Clock,
+  ArrowRight,
   CheckCircle,
   Globe,
   Smartphone,
@@ -100,7 +101,7 @@ const Contact = () => {
   return (
     <div className="min-h-screen">
       <Navigation />
-      
+
       {/* Hero Section - Mobile Optimized */}
       <section className="relative min-h-[clamp(220px,42vh,340px)] sm:min-h-[clamp(260px,46vh,380px)] md:min-h-[clamp(300px,50vh,420px)] lg:min-h-[clamp(280px,48vh,400px)] 2xl:min-h-[clamp(300px,46vh,420px)] pt-2 pb-6 sm:pb-8 bg-gradient-to-br from-purple-50 to-blue-50 flex items-center">
         <div className="container-responsive">
@@ -110,7 +111,7 @@ const Contact = () => {
               <span className="text-purple-600"> Automation Solution</span>
             </h1>
             <p className="text-responsive-base sm:text-responsive-lg text-gray-600 mb-6 sm:mb-8 max-w-3xl mx-auto">
-              Get a free consultation and discover how automation can transform your business. 
+              Get a free consultation and discover how automation can transform your business.
               Our experts are ready to help you scale with intelligent automation.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
@@ -138,7 +139,7 @@ const Contact = () => {
               Choose your preferred way to connect with our automation experts
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             {contactInfo.map((info, index) => (
               <Card key={index} className="p-4 sm:p-6 text-center hover:shadow-lg transition-shadow hover-mobile">
@@ -167,7 +168,7 @@ const Contact = () => {
                 Tell us about your automation needs and we'll provide a detailed solution
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12">
               {/* Contact Form - Mobile Optimized */}
               <Card className="p-6 sm:p-8">
@@ -183,22 +184,22 @@ const Contact = () => {
                       <Input id="lastName" placeholder="Doe" className="text-responsive-sm" />
                     </div>
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="email" className="text-responsive-sm">Email</Label>
                     <Input id="email" type="email" placeholder="john@company.com" className="text-responsive-sm" />
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="company" className="text-responsive-sm">Company</Label>
                     <Input id="company" placeholder="Your Company" className="text-responsive-sm" />
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="phone" className="text-responsive-sm">Phone (Optional)</Label>
                     <Input id="phone" placeholder="+1 (555) 123-4567" className="text-responsive-sm" />
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="service" className="text-responsive-sm">Service Interest</Label>
                     <select className="w-full p-3 border border-gray-300 rounded-md text-responsive-sm focus-mobile">
@@ -209,7 +210,7 @@ const Contact = () => {
                       <option>Not Sure</option>
                     </select>
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="budget" className="text-responsive-sm">Project Budget</Label>
                     <select className="w-full p-3 border border-gray-300 rounded-md text-responsive-sm focus-mobile">
@@ -220,7 +221,7 @@ const Contact = () => {
                       <option>Not Sure</option>
                     </select>
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="timeline" className="text-responsive-sm">Project Timeline</Label>
                     <select className="w-full p-3 border border-gray-300 rounded-md text-responsive-sm focus-mobile">
@@ -231,24 +232,24 @@ const Contact = () => {
                       <option>Just exploring</option>
                     </select>
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="message" className="text-responsive-sm">Project Description</Label>
-                    <Textarea 
-                      id="message" 
+                    <Textarea
+                      id="message"
                       placeholder="Tell us about your automation needs, current challenges, and what you'd like to achieve..."
                       rows={4}
                       className="text-responsive-sm"
                     />
                   </div>
-                  
+
                   <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 text-responsive-sm touch-friendly">
                     Send Message
                     <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                   </Button>
                 </form>
               </Card>
-              
+
               {/* Consultation Types - Mobile Optimized */}
               <div>
                 <h3 className="text-responsive-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Consultation Options</h3>
@@ -269,7 +270,7 @@ const Contact = () => {
                         </div>
                       </div>
                       <p className="text-responsive-sm text-gray-600 mb-3 sm:mb-4">{consultation.description}</p>
-                      <Button 
+                      <Button
                         className={`w-full touch-friendly text-responsive-sm ${index === 0 ? 'bg-purple-600 hover:bg-purple-700' : 'bg-gray-900 hover:bg-gray-800'}`}
                       >
                         Book This Consultation
@@ -277,14 +278,14 @@ const Contact = () => {
                     </Card>
                   ))}
                 </div>
-                
+
                 <div className="mt-6 sm:mt-8 p-4 sm:p-6 bg-blue-50 rounded-lg">
                   <div className="flex items-center gap-2 sm:gap-3 mb-3">
                     <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
                     <h4 className="text-responsive-base sm:text-lg font-semibold text-gray-900">Quick Response</h4>
                   </div>
                   <p className="text-responsive-sm text-gray-600">
-                    We typically respond within 2-4 hours during business hours. 
+                    We typically respond within 2-4 hours during business hours.
                     For urgent projects, call us directly.
                   </p>
                 </div>
@@ -305,7 +306,7 @@ const Contact = () => {
               Comprehensive automation solutions for every business need
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             {services.map((service, index) => (
               <Card key={index} className="p-4 sm:p-6 text-center hover:shadow-lg transition-shadow hover-mobile">
@@ -335,6 +336,9 @@ const Contact = () => {
           </div>
         </div>
       </section>
+
+      {/* FAQ Section */}
+      <FAQ variant="contact" />
 
       <Footer isHomepage={false} />
     </div>

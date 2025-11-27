@@ -62,10 +62,10 @@ export const Features = () => {
             More Than Just Developers. Your Complete Product Engineering Team
           </h2>
           <p className="text-base sm:text-lg lg:text-lg text-gray-600 px-4 sm:px-0 md:px-8">
-            'Full-Stack Development', 'AI Solutions', 'Automation System', 'Data Scraping', 'Data Analysing'.
+            Helping founders, companies, agencies and teams build automation-driven apps, AI tools, and full-stack platforms that deliver real results.
           </p>
         </div>
-        
+
         {/* Large Showcase Card with Tabs */}
         <div className="shadow-lg bg-white border border-gray-200 rounded-2xl sm:rounded-3xl overflow-hidden">
           {/* Tab Navigation - Mobile Optimized with Horizontal Scroll */}
@@ -77,7 +77,7 @@ export const Features = () => {
             `}</style>
             {tabs.map((tab, index) => (
               <div
-              key={index}
+                key={index}
                 onClick={() => handleTabClick(index)}
                 className={`flex-shrink-0 min-w-0 flex-1 md:min-w-[140px] sm:min-w-[150px] md:flex-1 md:min-w-0 lg:flex-1 lg:min-w-0 p-2 sm:p-3 md:p-4 lg:p-5 text-center cursor-pointer hover:bg-gray-50 transition-colors relative min-h-[44px] lg:min-h-0
                   ${activeTab === index ? 'bg-white' : 'bg-gray-50'}
@@ -85,10 +85,10 @@ export const Features = () => {
               >
                 <tab.icon className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 text-purple-600 mx-auto mb-0.5 sm:mb-1 md:mb-2" />
                 <h4 className="font-bold text-gray-900 text-[10px] sm:text-xs md:text-sm lg:text-base leading-tight">{tab.title}</h4>
-                
+
                 {/* Animated underline for each tab */}
                 {activeTab === index && (
-                  <div 
+                  <div
                     key={`tab-${index}-${activeTab}`}
                     className="absolute bottom-0 left-0 right-0 h-1 bg-purple-600 z-10 animate-expand"
                   />
@@ -103,32 +103,30 @@ export const Features = () => {
               {/* Container for maintaining aspect ratio */}
               <div className="relative w-full overflow-hidden rounded-lg">
                 {/* Invisible spacer to maintain container height based on active image */}
-                <img 
-                  src={tabs[activeTab].image} 
-                  alt={tabs[activeTab].title} 
+                <img
+                  src={tabs[activeTab].image}
+                  alt={tabs[activeTab].title}
                   className="w-full h-auto rounded-lg opacity-0 pointer-events-none"
                 />
                 {/* All images stacked absolutely for seamless crossfade */}
                 {tabs.map((tab, index) => (
-                  <img 
+                  <img
                     key={index}
-                    src={tab.image} 
-                    alt={tab.title} 
-                    className={`w-full h-auto rounded-lg absolute top-0 left-0 transition-opacity duration-500 ease-in-out ${
-                      activeTab === index ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none'
-                    }`}
+                    src={tab.image}
+                    alt={tab.title}
+                    className={`w-full h-auto rounded-lg absolute top-0 left-0 transition-opacity duration-500 ease-in-out ${activeTab === index ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none'
+                      }`}
                   />
                 ))}
               </div>
             </div>
-            
+
             {/* Callout Box - Dynamic based on active tab - Only show for options 1, 2, and 5 */}
             {(activeTab === 0 || activeTab === 1 || activeTab === 4) && (
-              <div className={`hidden sm:block relative mt-4 sm:mt-6 max-w-[300px] mx-auto sm:mx-0 sm:absolute sm:mt-0 z-20 ${
-                activeTab === 0 ? 'sm:left-8 sm:top-40 md:top-44' : 
-                activeTab === 4 ? 'sm:right-4 sm:top-24 md:top-28' : 
-                'sm:right-4 sm:top-10'
-              }`} style={{ overflow: 'visible' }}>
+              <div className={`hidden sm:block relative mt-4 sm:mt-6 max-w-[300px] mx-auto sm:mx-0 sm:absolute sm:mt-0 z-20 ${activeTab === 0 ? 'sm:left-8 sm:top-40 md:top-44' :
+                activeTab === 4 ? 'sm:right-4 sm:top-24 md:top-28' :
+                  'sm:right-4 sm:top-10'
+                }`} style={{ overflow: 'visible' }}>
                 <div className="bg-slate-800 text-white rounded-lg shadow-lg p-4 sm:p-5 relative">
                   <p className="text-sm sm:text-base leading-relaxed relative z-10">
                     {tabs[activeTab].description}
@@ -136,17 +134,17 @@ export const Features = () => {
                 </div>
                 {/* Triangular pointer - right side for first option, left side for second and fifth option */}
                 {activeTab === 0 ? (
-                  <div 
-                    className="absolute top-1/2 w-0 h-0 border-t-[12px] border-b-[12px] border-l-[12px] border-transparent border-l-slate-800" 
-                    style={{ 
+                  <div
+                    className="absolute top-1/2 w-0 h-0 border-t-[12px] border-b-[12px] border-l-[12px] border-transparent border-l-slate-800"
+                    style={{
                       right: '-12px',
                       transform: 'translateY(-50%)'
                     }}
                   ></div>
                 ) : (
-                  <div 
-                    className="absolute top-1/2 w-0 h-0 border-t-[12px] border-b-[12px] border-r-[12px] border-transparent border-r-slate-800" 
-                    style={{ 
+                  <div
+                    className="absolute top-1/2 w-0 h-0 border-t-[12px] border-b-[12px] border-r-[12px] border-transparent border-r-slate-800"
+                    style={{
                       left: '-12px',
                       transform: 'translateY(-50%)'
                     }}
@@ -167,7 +165,7 @@ export const Features = () => {
                 <Code className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
                 <span className="font-semibold text-purple-600 uppercase text-xs tracking-wide">FULL-STACK DEVELOPMENT</span>
               </div>
-              
+
               {/* Content positioned manually */}
               <div className="flex flex-col mt-2 sm:mt-4 md:mt-6">
                 <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 md:mb-6">
@@ -188,7 +186,7 @@ export const Features = () => {
                   </div>
                 </div>
               </div>
-              
+
               {/* Button as separate div */}
               <div className="mt-4 sm:mt-40 md:mt-52 lg:mt-64">
                 <button className="bg-white border border-gray-300 text-gray-900 font-bold px-3 py-2 rounded-sm shadow-sm hover:shadow-md transition-all flex items-center gap-1 text-xs sm:text-sm lg:text-sm w-fit min-h-[44px] lg:min-h-0">
@@ -199,9 +197,9 @@ export const Features = () => {
 
             {/* Right side - Visual mockups - Mobile Optimized */}
             <div className="bg-white flex items-center justify-center order-1 lg:order-2">
-              <img 
-                src="/stack1.png" 
-                alt="Full-Stack Development Stack" 
+              <img
+                src="/stack1.png"
+                alt="Full-Stack Development Stack"
                 className="w-full h-auto object-cover"
               />
             </div>
@@ -213,9 +211,9 @@ export const Features = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2">
             {/* Left side - Visual mockups - Mobile Optimized */}
             <div className="bg-white flex items-center justify-start lg:order-1 pr-4 pb-4 pl-0 pt-0 order-1 lg:order-1">
-              <img 
-                src="/stack2.png" 
-                alt="AI Solutions Stack" 
+              <img
+                src="/stack2.png"
+                alt="AI Solutions Stack"
                 className="w-full md:w-[95%] h-auto object-cover"
               />
             </div>
@@ -227,7 +225,7 @@ export const Features = () => {
                 <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
                 <span className="font-semibold text-purple-600 uppercase text-xs tracking-wide">AI SOLUTIONS</span>
               </div>
-              
+
               {/* Content positioned manually */}
               <div className="flex flex-col mt-2 sm:mt-4 md:mt-6">
                 <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 md:mb-6">
@@ -248,7 +246,7 @@ export const Features = () => {
                   </div>
                 </div>
               </div>
-              
+
               {/* Button as separate div */}
               <div className="mt-4 sm:mt-20 md:mt-28 mb-0">
                 <button className="bg-white border border-gray-300 text-gray-900 font-bold px-3 py-2 rounded-sm shadow-sm hover:shadow-md transition-all flex items-center gap-1 text-xs sm:text-sm lg:text-sm w-fit min-h-[44px] lg:min-h-0">
@@ -269,11 +267,11 @@ export const Features = () => {
                 <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
                 <span className="font-semibold text-purple-600 uppercase text-xs tracking-wide">AUTOMATION SYSTEM</span>
               </div>
-              
+
               {/* Content positioned manually */}
               <div className="flex flex-col mt-2 sm:mt-3 md:mt-4">
                 <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl font-bold text-gray-900 mb-2 sm:mb-3 md:mb-4">
-                  Intelligent Process Automation
+                  Custom Automation Solutions
                 </h3>
                 <div className="space-y-2 sm:space-y-3 mb-0">
                   <div className="flex items-start gap-3">
@@ -290,7 +288,7 @@ export const Features = () => {
                   </div>
                 </div>
               </div>
-              
+
               {/* Button as separate div */}
               <div className="mt-4 sm:mt-16 md:mt-20 mb-0">
                 <button className="bg-white border border-gray-300 text-gray-900 font-bold px-3 py-2 rounded-sm shadow-sm hover:shadow-md transition-all flex items-center gap-1 text-xs sm:text-sm lg:text-sm w-fit min-h-[44px] lg:min-h-0">
@@ -301,9 +299,9 @@ export const Features = () => {
 
             {/* Right side - Visual mockups - Mobile Optimized */}
             <div className="bg-white flex items-center justify-end pl-4 pb-4 pr-0 pt-0 order-1 lg:order-2">
-              <img 
-                src="/stack3.png" 
-                alt="Automation System Stack" 
+              <img
+                src="/stack3.png"
+                alt="Automation System Stack"
                 className="w-full md:w-[105%] h-auto object-cover"
               />
             </div>
@@ -315,9 +313,9 @@ export const Features = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2">
             {/* Left side - Visual mockups - Mobile Optimized */}
             <div className="bg-white flex items-center justify-start lg:order-1 pr-4 pb-4 pl-0 pt-0 order-1 lg:order-1">
-              <img 
-                src="/stack4.png" 
-                alt="Data Scraping Stack" 
+              <img
+                src="/stack4.png"
+                alt="Data Scraping Stack"
                 className="w-full md:w-[105%] h-auto object-cover"
               />
             </div>
@@ -329,11 +327,11 @@ export const Features = () => {
                 <Database className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
                 <span className="font-semibold text-purple-600 uppercase text-xs tracking-wide">DATA SCRAPING</span>
               </div>
-              
+
               {/* Content positioned manually */}
               <div className="flex flex-col mt-2 sm:mt-4 md:mt-6">
                 <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 md:mb-6">
-                  Extract Data from Any Source
+                  Stealth Grade Scraping
                 </h3>
                 <div className="space-y-2 sm:space-y-4 md:space-y-5 mb-0">
                   <div className="flex items-start gap-3">
@@ -350,7 +348,7 @@ export const Features = () => {
                   </div>
                 </div>
               </div>
-              
+
               {/* Button as separate div */}
               <div className="mt-4 sm:mt-40 md:mt-52 lg:mt-64">
                 <button className="bg-white border border-gray-300 text-gray-900 font-bold px-3 py-2 rounded-sm shadow-sm hover:shadow-md transition-all flex items-center gap-1 text-xs sm:text-sm lg:text-sm w-fit min-h-[44px] lg:min-h-0">
@@ -371,7 +369,7 @@ export const Features = () => {
                 <Code className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
                 <span className="font-semibold text-purple-600 uppercase text-xs tracking-wide">SAAS & MVP DEVELOPMENT</span>
               </div>
-              
+
               {/* Content positioned manually */}
               <div className="flex flex-col mt-2 sm:mt-4 md:mt-5">
                 <h3 className="text-2xl sm:text-2xl md:text-3xl lg:text-3xl font-bold text-gray-900 mb-3 sm:mb-4 md:mb-5">
@@ -392,7 +390,7 @@ export const Features = () => {
                   </div>
                 </div>
               </div>
-              
+
               {/* Button as separate div */}
               <div className="mt-4 sm:mt-20 md:mt-24 mb-0">
                 <button className="bg-white border border-gray-300 text-gray-900 font-bold px-3 py-2 rounded-sm shadow-sm hover:shadow-md transition-all flex items-center gap-1 text-xs sm:text-sm lg:text-sm w-fit min-h-[44px] lg:min-h-0">
@@ -403,31 +401,40 @@ export const Features = () => {
 
             {/* Right side - Visual mockups - Mobile Optimized */}
             <div className="bg-white flex items-center justify-end pl-4 pb-4 pr-0 pt-0 order-1 lg:order-2">
-              <img 
-                src="/stack5.png" 
-                alt="SaaS & MVP Development Stack" 
+              <img
+                src="/stack5.png"
+                alt="SaaS & MVP Development Stack"
                 className="w-full md:w-[105%] h-auto object-cover"
               />
             </div>
           </div>
         </div>
 
+        {/* Tagline Section */}
+        <div className="mt-16 sm:mt-20 md:mt-24 mb-16 sm:mb-20 md:mb-24">
+          <div className="max-w-7xl mx-auto text-center px-4">
+            <p className="text-2xl sm:text-3xl md:text-2xl lg:text-4xl text-gray-900 leading-tight lg:leading-tight font-bold line-clamp-3">
+              Custom automations, stealth-grade scraping, and full-stack engineering built to work as one engine — cutting manual work, boosting performance, and delivering results most teams can't touch.
+            </p>
+          </div>
+        </div>
+
         {/* How We Work Section */}
         <div className="mt-12 sm:mt-16 md:mt-24">
-          <div className="text-center pt-8 sm:pt-12 md:pt-16 mb-8 sm:mb-12">
+          <div className="text-center mb-8 sm:mb-12">
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 mb-4">
               This is how we work
             </h2>
           </div>
-          
+
           {/* Video Placeholder */}
           <div className="relative w-full max-w-5xl mx-auto">
             <div className="relative w-full aspect-video bg-gray-100 rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg border border-gray-200">
               {/* Placeholder image */}
               <div className="absolute inset-0">
-                <img 
-                  src="/placeholder.jpeg" 
-                  alt="How we work" 
+                <img
+                  src="/placeholder.jpeg"
+                  alt="How we work"
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -435,7 +442,7 @@ export const Features = () => {
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gray-900/50 backdrop-blur-sm flex items-center justify-center hover:bg-gray-900/60 transition-all cursor-pointer">
                   <svg className="w-10 h-10 sm:w-12 sm:h-12 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z"/>
+                    <path d="M8 5v14l11-7z" />
                   </svg>
                 </div>
               </div>

@@ -1,5 +1,6 @@
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
+import { FAQ } from "@/components/FAQ";
 import ContactUsCardsSection from "@/pages/contact/ContactUsCardsSection";
 import HeroBanner from "./HeroBanner";
 import TechLogos from "./TechLogos";
@@ -20,6 +21,9 @@ function ContactUs() {
       <TechLogos />
 
       {/* bottom CTA removed per request */}
+
+      {/* FAQ Section */}
+      <FAQ variant="contact" />
 
       <Footer isHomepage={false} />
     </div>

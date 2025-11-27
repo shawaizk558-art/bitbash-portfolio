@@ -3,7 +3,7 @@ export interface FAQEntry {
   answer: string;
 }
 
-export type FAQVariant = "default" | "pricing";
+export type FAQVariant = "default" | "pricing" | "contact";
 
 export const defaultFaqs: FAQEntry[] = [
   {
@@ -71,7 +71,7 @@ export const pricingFaqs: FAQEntry[] = [
   },
   {
     question: "Do you offer refunds?",
-    answer: "Yes — if we’re unable to meet the agreed-upon expectations or timelines, we provide a full or partial refund based on the project stage. Once the project meets the discussed scope, payments become non-refundable."
+    answer: "Yes — if we're unable to meet the agreed-upon expectations or timelines, we provide a full or partial refund based on the project stage. Once the project meets the discussed scope, payments become non-refundable."
   },
   {
     question: "What is included in post-delivery support?",
@@ -91,8 +91,32 @@ export const pricingFaqs: FAQEntry[] = [
   }
 ];
 
+export const contactFaqs: FAQEntry[] = [
+  {
+    question: "Why should I reach out?",
+    answer: "To quickly understand your goals and get direct guidance on the best solution—no fluff, no sales pitch."
+  },
+  {
+    question: "What happens after I contact you?",
+    answer: "We respond fast, usually within minutes during business hours, and help you figure out the next step based on what you need."
+  },
+  {
+    question: "What if I want a call instead of chatting?",
+    answer: "You can book a short demo call where we walk through your idea, timeline, and options in a simple, no-pressure conversation."
+  },
+  {
+    question: "Who will I be talking to?",
+    answer: "Always a real engineer or project lead—never a generic support bot or a sales rep."
+  },
+  {
+    question: "What do I get out of it?",
+    answer: "Clarity. You'll know what's possible, what it might cost, how long it could take, and whether BitBash is the right fit."
+  }
+];
+
 export const faqDatasets: Record<FAQVariant, FAQEntry[]> = {
   default: defaultFaqs,
-  pricing: pricingFaqs
+  pricing: pricingFaqs,
+  contact: contactFaqs
 };
 

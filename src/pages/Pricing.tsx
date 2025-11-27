@@ -1,123 +1,239 @@
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { FAQ } from "@/components/FAQ";
-// No CTA buttons in hero to match blog hero styling
-import {
-  Shield,
-  Users,
-  DollarSign,
-  Code
-} from "lucide-react";
+import { Check, Info, Database, Zap, Code } from "lucide-react";
 import { HeroBackground } from "@/components/HeroBackground";
+import { useNavigate } from "react-router-dom";
+import { Showcase } from "@/components/Showcase";
 
 const Pricing = () => {
-  // Removed detailed pricing datasets to simplify the page per request
-  // Dollar rain removed per request
+  const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gray-50">
       <Navigation />
 
-      {/* Hero Section - match Blog hero sizes and structure */}
-      <section className="relative min-h-[30vh] sm:min-h-[40vh] flex items-center justify-center overflow-hidden pt-14 pb-8 sm:pb-12 lg:pb-0">
+      {/* Hero Section */}
+      <section className="relative pt-24 pb-12 sm:pt-32 sm:pb-16 overflow-hidden">
         <HeroBackground />
         <div className="container-responsive relative z-20">
-          <div className="max-w-5xl mx-auto text-center flex flex-col items-center justify-center">
-            {/* Heading - Always visible, centered on mobile */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 m-0">
+          <div className="max-w-4xl mx-auto text-center">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6">
               Pricing
             </h1>
-            {/* Subtitle Lines - Hidden on mobile, visible on larger screens */}
-            <div className="hidden sm:block mt-4 space-responsive-sm">
-              <div className="space-y-1 sm:space-y-1.5">
-                <p className="text-base sm:text-lg md:text-xl lg:text-[21px] text-black font-semibold whitespace-nowrap">
-                  Transparent, value‑based pricing tailored to your project scope and timeline
-                </p>
-                <p className="text-base sm:text-lg md:text-xl lg:text-[21px] text-black whitespace-nowrap">
-                  No hidden fees. Clear deliverables. Enterprise‑grade quality.
-                </p>
-              </div>
-            </div>
+            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
+              Transparent project-based pricing. No hidden fees.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* Engagement Models (style-matched) */}
-      <section className="py-16 sm:py-20 bg-white">
-        <div className="container-responsive">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-start">
-            {/* Left: Content list */}
-            <div>
-              <h2 className="text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-                Engagement Models
-              </h2>
-              <p className="text-gray-600 text-base sm:text-lg mb-8">
-                Choose the collaboration model that best fits your scope, risk profile, and timelines. We keep pricing transparent regardless of the engagement.
-              </p>
+      {/* Pricing Cards */}
+      <section className="pb-24 px-4 sm:px-6 lg:px-8 mt-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
 
-              <div className="space-y-8">
-                {/* Fixed Cost */}
-                <div className="flex items-start gap-4">
-                  <DollarSign className="w-6 h-6 text-emerald-600 mt-1" />
-                  <div>
-                    <h3 className="text-lg sm:text-xl font-bold text-gray-900">Fixed Cost</h3>
-                    <p className="text-gray-600 text-sm sm:text-base">
-                      Best for well-defined scope and timelines. Predictable budgeting and clear milestones with transparent delivery.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Staff Augmentation */}
-                <div className="flex items-start gap-4">
-                  <Users className="w-6 h-6 text-emerald-600 mt-1" />
-                  <div>
-                    <h3 className="text-lg sm:text-xl font-bold text-gray-900">Staff / Resource Augmentation</h3>
-                    <p className="text-gray-600 text-sm sm:text-base">
-                      Scale your team quickly with our experienced engineers embedded into your workflow. Flexible, month-to-month.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Startup */}
-                <div className="flex items-start gap-4">
-                  <Code className="w-6 h-6 text-emerald-600 mt-1" />
-                  <div>
-                    <h3 className="text-lg sm:text-xl font-bold text-gray-900">Startup</h3>
-                    <p className="text-gray-600 text-sm sm:text-base">
-                      Fast iterations for MVPs with limited runway. Lean scope, rapid delivery, and a pathway to scale.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Dedicated Team */}
-                <div className="flex items-start gap-4">
-                  <Shield className="w-6 h-6 text-emerald-600 mt-1" />
-                  <div>
-                    <h3 className="text-lg sm:text-xl font-bold text-gray-900">Dedicated Development Team</h3>
-                    <p className="text-gray-600 text-sm sm:text-base">
-                      A cross‑functional squad aligned to your roadmap. Ideal for long‑term ownership and complex systems.
-                    </p>
-                  </div>
+            {/* Card 1: Scraping Project */}
+            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col h-full">
+              <div className="flex justify-between items-start mb-6">
+                <div className="flex items-center gap-2">
+                  <Database className="w-5 h-5 text-purple-600" />
+                  <h3 className="text-xl font-bold text-gray-900">Scraping Project</h3>
                 </div>
               </div>
+
+              <div className="mb-2">
+                <div className="flex items-baseline flex-wrap">
+                  <span className="text-3xl sm:text-4xl font-bold text-gray-900">$400 - $1,500</span>
+                </div>
+                <p className="text-gray-500 text-sm mt-2">One-time fixed cost</p>
+              </div>
+
+              <div className="bg-gray-50 rounded-lg p-3 mb-8">
+                <p className="text-gray-700 font-medium text-sm">Perfect for data extraction needs</p>
+              </div>
+
+              <div className="space-y-4 mb-8 flex-grow">
+                <div className="flex items-center gap-3">
+                  <div className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                    <Check className="w-3 h-3 text-gray-600" />
+                  </div>
+                  <span className="text-gray-600 text-sm">Custom Data Extraction</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                    <Check className="w-3 h-3 text-gray-600" />
+                  </div>
+                  <span className="text-gray-600 text-sm">Anti-bot handling & Proxy rotation</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                    <Check className="w-3 h-3 text-gray-600" />
+                  </div>
+                  <span className="text-gray-600 text-sm">Output in CSV, JSON, or Excel</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                    <Check className="w-3 h-3 text-gray-600" />
+                  </div>
+                  <span className="text-gray-600 text-sm">Automated scheduled runs</span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => navigate('/contact')}
+                className="w-full bg-white border border-gray-200 text-gray-900 font-bold py-3 px-4 rounded-xl hover:bg-gray-50 transition-colors mt-auto"
+              >
+                Get Started
+              </button>
             </div>
 
-            {/* Right: Illustration */}
-            <div className="hidden sm:flex items-center justify-center">
-              <div className="w-full max-w-xl aspect-square bg-gradient-to-br from-purple-50 to-white rounded-3xl border border-gray-200 shadow-md overflow-hidden flex items-center justify-center relative">
-                <img src="/splash.png" alt="Pricing illustration" className="w-4/5 h-auto object-contain" />
-                {/* Dollar sign overlay */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white/90 backdrop-blur-sm rounded-full shadow-lg flex items-center justify-center">
-                    <DollarSign className="w-10 h-10 sm:w-12 sm:h-12 text-purple-600" />
-                  </div>
+            {/* Card 2: Automation Project - Highlighted */}
+            <div className="bg-white rounded-3xl p-8 shadow-xl border-2 border-purple-600 relative z-10 flex flex-col h-full">
+              <div className="flex justify-between items-start mb-6">
+                <div className="flex items-center gap-2">
+                  <Zap className="w-5 h-5 text-purple-600" />
+                  <h3 className="text-xl font-bold text-purple-600">Automation Project</h3>
                 </div>
-                {/* Dollar rain overlay removed */}
+                <div className="bg-purple-100 text-purple-700 text-xs font-bold px-2 py-1 rounded-full">
+                  POPULAR
+                </div>
               </div>
+
+              <div className="mb-2">
+                <div className="flex items-baseline flex-wrap">
+                  <span className="text-3xl sm:text-4xl font-bold text-gray-900">$700 - $3,000</span>
+                </div>
+                <p className="text-gray-500 text-sm mt-2">One-time fixed cost</p>
+              </div>
+
+              <div className="bg-gray-50 rounded-lg p-3 mb-8">
+                <p className="text-gray-700 font-medium text-sm">Streamline your business workflows</p>
+              </div>
+
+              <div className="space-y-4 mb-8 flex-grow">
+                <div className="flex items-center gap-3">
+                  <div className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                    <Check className="w-3 h-3 text-gray-600" />
+                  </div>
+                  <span className="text-gray-600 text-sm">Workflow Automation Scripts</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                    <Check className="w-3 h-3 text-gray-600" />
+                  </div>
+                  <span className="text-gray-600 text-sm">API Integrations</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                    <Check className="w-3 h-3 text-gray-600" />
+                  </div>
+                  <span className="text-gray-600 text-sm">Custom Bots (Discord, Telegram, Slack)</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                    <Check className="w-3 h-3 text-gray-600" />
+                  </div>
+                  <span className="text-gray-600 text-sm">Error Handling & Logging</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                    <Check className="w-3 h-3 text-gray-600" />
+                  </div>
+                  <span className="text-gray-600 text-sm">Cloud Deployment Setup</span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => navigate('/contact')}
+                className="w-full bg-purple-600 text-white font-bold py-3 px-4 rounded-xl hover:bg-purple-700 transition-colors mt-auto shadow-lg shadow-purple-200"
+              >
+                Start Automating
+              </button>
             </div>
+
+            {/* Card 3: Custom Solution */}
+            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col h-full">
+              <div className="flex justify-between items-start mb-6">
+                <div className="flex items-center gap-2">
+                  <Code className="w-5 h-5 text-purple-600" />
+                  <h3 className="text-xl font-bold text-gray-900">Custom Solution</h3>
+                </div>
+              </div>
+
+              <div className="mb-2">
+                <div className="flex items-baseline">
+                  <span className="text-3xl sm:text-4xl font-bold text-gray-900">Let's Talk</span>
+                </div>
+                <p className="text-gray-500 text-sm mt-2">Tailored to your requirements</p>
+              </div>
+
+              <div className="bg-gray-50 rounded-lg p-3 mb-8">
+                <p className="text-gray-700 font-medium text-sm">For complex platforms & SaaS</p>
+              </div>
+
+              <div className="space-y-4 mb-8 flex-grow">
+                <div className="flex items-center gap-3">
+                  <div className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                    <Check className="w-3 h-3 text-gray-600" />
+                  </div>
+                  <span className="text-gray-600 text-sm">Full-Stack Web & Mobile Apps</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                    <Check className="w-3 h-3 text-gray-600" />
+                  </div>
+                  <span className="text-gray-600 text-sm">SaaS MVP Development</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                    <Check className="w-3 h-3 text-gray-600" />
+                  </div>
+                  <span className="text-gray-600 text-sm">AI Model Integration</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                    <Check className="w-3 h-3 text-gray-600" />
+                  </div>
+                  <span className="text-gray-600 text-sm">Dedicated Development Team</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                    <Check className="w-3 h-3 text-gray-600" />
+                  </div>
+                  <span className="text-gray-600 text-sm">Long-term Maintenance</span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => navigate('/contact')}
+                className="w-full bg-white border border-gray-200 text-gray-900 font-bold py-3 px-4 rounded-xl hover:bg-gray-50 transition-colors mt-auto"
+              >
+                Contact Sales
+              </button>
+            </div>
+
           </div>
         </div>
       </section>
+
+      {/* Showcase Section */}
+      <section className="pt-16 pb-16 bg-white">
+        <div className="container-responsive text-center">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            Exceptional Work Delivered by Our Team
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            See the results of our dedicated engineering and design expertise.
+          </p>
+        </div>
+      </section>
+
+      <Showcase
+        showHeader={false}
+        showTestimonials={false}
+        paddingClass="pt-0 pb-16 sm:pb-24 bg-white"
+      />
 
       {/* Pricing FAQ */}
       <FAQ variant="pricing" />
