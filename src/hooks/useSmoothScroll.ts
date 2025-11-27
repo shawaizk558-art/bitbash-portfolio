@@ -1,15 +1,6 @@
 import { useEffect } from 'react';
 import Lenis from 'lenis';
 
-/**
- * Custom hook for implementing smooth scroll using Lenis
- * 
- * What this does:
- * - Creates a smooth, momentum-based scroll experience
- * - Uses requestAnimationFrame for optimal performance (60fps)
- * - Automatically cleans up when component unmounts
- * - Optimized for desktop devices (touch devices use native smooth scrolling)
- */
 export const useSmoothScroll = () => {
   useEffect(() => {
     // Initialize Lenis with configuration
@@ -28,15 +19,6 @@ export const useSmoothScroll = () => {
       },
     });
 
-    /**
-     * Animation loop using requestAnimationFrame (RAF)
-     * 
-     * Why RAF?
-     * - Syncs with browser's repaint cycle (~60fps)
-     * - Automatically pauses when tab is inactive (saves CPU)
-     * - Better performance than setInterval/setTimeout
-     * - Smoother animations aligned with screen refresh
-     */
     function raf(time: number) {
       lenis.raf(time); // Update Lenis scroll position
       requestAnimationFrame(raf); // Schedule next frame
