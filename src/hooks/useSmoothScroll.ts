@@ -13,10 +13,6 @@ export const useSmoothScroll = () => {
       wheelMultiplier: 1,   // Adjust scroll speed (1 = normal)
       touchMultiplier: 2,   // Touch scroll multiplier
       infinite: false,      // Don't loop scroll (no infinite scroll)
-      prevent: (node) => {
-        // Prevent smooth scroll on video elements to avoid jitter
-        return node.tagName === 'VIDEO' || node.closest('video') !== null;
-      },
     });
 
     function raf(time: number) {

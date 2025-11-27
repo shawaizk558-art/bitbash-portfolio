@@ -77,14 +77,14 @@ const DevelopmentServices = () => {
       <Navigation />
 
       {/* Hero Section - Mobile Optimized */}
-      <section className="relative min-h-[clamp(220px,42vh,340px)] sm:min-h-[clamp(260px,46vh,380px)] md:min-h-[clamp(300px,50vh,420px)] lg:min-h-[clamp(280px,48vh,400px)] 2xl:min-h-[clamp(300px,46vh,420px)] flex items-center justify-center overflow-hidden pt-16">
+      <section className="relative min-h-[clamp(220px,42vh,340px)] sm:min-h-[clamp(260px,46vh,380px)] md:min-h-[clamp(300px,50vh,420px)] lg:min-h-[clamp(280px,48vh,400px)] 2xl:min-h-[clamp(300px,46vh,420px)] flex items-center justify-center overflow-hidden pt-14">
         {/* Animated gradient background */}
         <HeroBackground />
 
         <div className="relative z-10 container-responsive text-center">
           <div className="max-w-4xl mx-auto space-responsive-lg animate-fade-in">
             <div className="space-responsive-sm">
-              <h1 className="text-responsive-3xl sm:text-responsive-4xl md:text-5xl lg:text-[54px] font-bold leading-[1.1] tracking-tight font-sans px-2 sm:px-0">
+              <h1 className="text-responsive-3xl sm:text-responsive-4xl md:text-4xl lg:text-5xl font-bold leading-[1.1] tracking-tight font-sans px-2 sm:px-0">
                 Custom Development <span className="text-primary">Solutions</span>
               </h1>
 

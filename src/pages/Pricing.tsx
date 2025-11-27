@@ -19,12 +19,12 @@ const Pricing = () => {
       <Navigation />
 
       {/* Hero Section - match Blog hero sizes and structure */}
-      <section className="relative min-h-[30vh] sm:min-h-[40vh] flex items-center justify-center overflow-hidden pt-8 pb-0 sm:pt-10 sm:pb-6">
+      <section className="relative min-h-[30vh] sm:min-h-[40vh] flex items-center justify-center overflow-hidden pt-14 pb-8 sm:pb-12 lg:pb-0">
         <HeroBackground />
         <div className="container-responsive relative z-20">
           <div className="max-w-5xl mx-auto text-center flex flex-col items-center justify-center">
             {/* Heading - Always visible, centered on mobile */}
-            <h1 className="text-3xl sm:text-responsive-3xl sm:text-responsive-4xl md:text-6xl font-bold text-gray-900 m-0">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 m-0">
               Pricing
             </h1>
             {/* Subtitle Lines - Hidden on mobile, visible on larger screens */}
@@ -48,7 +48,7 @@ const Pricing = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-start">
             {/* Left: Content list */}
             <div>
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              <h2 className="text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
                 Engagement Models
               </h2>
               <p className="text-gray-600 text-base sm:text-lg mb-8">

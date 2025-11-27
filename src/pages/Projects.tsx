@@ -82,12 +82,12 @@ const Projects = () => {
       <Navigation />
 
       {/* Projects Hero Section - match Blog hero hierarchy/sizes */}
-      <section className="relative min-h-[clamp(220px,42vh,340px)] sm:min-h-[clamp(260px,46vh,380px)] md:min-h-[clamp(300px,50vh,420px)] lg:min-h-[clamp(280px,48vh,400px)] 2xl:min-h-[clamp(300px,46vh,420px)] flex items-center justify-center overflow-hidden pt-12 sm:pt-16 pb-6 sm:pb-8 lg:pb-12">
+      <section className="relative min-h-[clamp(220px,42vh,340px)] sm:min-h-[clamp(260px,46vh,380px)] md:min-h-[clamp(300px,50vh,420px)] lg:min-h-[clamp(280px,48vh,400px)] 2xl:min-h-[clamp(300px,46vh,420px)] flex items-center justify-center overflow-hidden pt-14 pb-6 sm:pb-8 lg:pb-12">
         <HeroBackground />
         <div className="container-responsive relative z-20">
           <div className="max-w-5xl mx-auto text-center flex flex-col items-center justify-center space-y-4 sm:space-responsive-lg">
             <div className="mt-4 sm:mt-6 lg:mt-10">
-              <h1 className="text-3xl sm:text-responsive-3xl sm:text-responsive-4xl md:text-6xl font-bold text-gray-900">
+              <h1 className="text-3xl sm:text-responsive-3xl sm:text-responsive-4xl md:text-5xl lg:text-6xl font-bold text-gray-900">
                 BitBash <span className="text-purple-600">Projects</span>
               </h1>
             </div>

@@ -189,10 +189,10 @@ const Blog = () => {
         {/* Match homepage purple animated gradient */}
         <HeroBackground />
         <div className="container-responsive relative z-20">
-          <div className="max-w-5xl mx-auto text-center flex flex-col items-center justify-center lg:-mt-8 2xl:-mt-4">
+          <div className="max-w-5xl mx-auto text-center flex flex-col items-center justify-center 2xl:-mt-4">
             {/* Heading - Always visible */}
             <div className="mt-6 sm:mt-8 md:mt-10 lg:mt-16 mb-3 sm:mb-4 md:mb-5 lg:mb-6 px-4 sm:px-0">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold text-gray-900">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900">
                 BitBash <span className="text-purple-600">Blog</span>
               </h1>
             </div>

@@ -116,10 +116,10 @@ const ProjectDetail = () => {
       {/* Project Title and Niche at Top */}
       <section className="container-responsive pt-10 sm:pt-12 md:pt-16 lg:pt-20 pb-6 sm:pb-8 lg:pb-10">
         <div className="max-w-4xl lg:max-w-5xl xl:max-w-6xl mx-auto text-center">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-3 sm:mb-4 lg:mb-5">
+          <h1 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-3 sm:mb-4 lg:mb-5">
             {project.name}
           </h1>
-          <p className="text-lg sm:text-xl md:text-2xl lg:text-2xl xl:text-3xl text-purple-600 font-semibold">
+          <p className="text-lg sm:text-xl md:text-xl lg:text-2xl xl:text-3xl text-purple-600 font-semibold">
             {project.role}
           </p>
         </div>
