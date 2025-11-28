@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Copy } from "lucide-react";
 
 type IconHpbProps = {
   icon: React.ReactNode;
@@ -11,6 +12,17 @@ type IconHpbProps = {
 };
 
 const IconHpb: React.FC<IconHpbProps> = ({ icon, heading, desc, link, btncontent, bluebtnlink }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    if (bluebtnlink?.startsWith('mailto:')) {
+      const email = bluebtnlink.replace('mailto:', '');
+      await navigator.clipboard.writeText(email);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   return (
     <div className="group p-5 sm:p-6 rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-md hover:border-gray-300 transition-all">
       <div className="flex items-start gap-4">
@@ -24,13 +36,32 @@ const IconHpb: React.FC<IconHpbProps> = ({ icon, heading, desc, link, btncontent
             </a>
           )}
           {btncontent && bluebtnlink && (
-            <div className="mt-3">
-              <a href={bluebtnlink} target="_blank" rel="noreferrer">
+            <div className="mt-3 flex gap-4 items-center">
+              <a
+                href={bluebtnlink}
+                {...(bluebtnlink.startsWith('mailto:') ? {} : { target: "_blank", rel: "noreferrer" })}
+              >
                 <Button className="bg-purple-600 hover:bg-purple-700 text-white text-sm sm:text-base h-10 px-4">{btncontent}</Button>
               </a>
+              {bluebtnlink.startsWith('mailto:') && (
+                <div className="relative">
+                  {copied && (
+                    <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs text-gray-600 whitespace-nowrap">
+                      copied
+                    </span>
+                  )}
+                  <button
+                    onClick={handleCopy}
+                    className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
+                    title="Copy email"
+                  >
+                    <Copy className="h-4 w-4" />
+                  </button>
+                </div>
+              )}
             </div>
           )}
-        </div>
+        </div> 
       </div>
     </div>
   );

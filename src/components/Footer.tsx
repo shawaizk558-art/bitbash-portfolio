@@ -49,7 +49,7 @@ export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
               <li className="m-0 p-0" style={{ paddingLeft: 0, marginLeft: 0, listStyle: 'none' }}><a href="/pricing" className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors" style={{ display: 'block' }}>Pricing</a></li>
               <li className="m-0 p-0" style={{ paddingLeft: 0, marginLeft: 0, listStyle: 'none' }}><a href="/projects" className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors" style={{ display: 'block' }}>Projects</a></li>
               <li className="m-0 p-0" style={{ paddingLeft: 0, marginLeft: 0, listStyle: 'none' }}><a href="/how-we-work" className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors" style={{ display: 'block' }}>Engagement Model</a></li>
-              
+
             </ul>
           </div>
 
@@ -75,16 +75,38 @@ export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
               <Logo size="lg" variant="white" />
             </a>
           </div>
-          
+
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-xs sm:text-sm text-gray-500" style={{ margin: 0, padding: 0, display: 'block' }}>
               Copyright 2025. BITBASH. LTD. All rights reserved!
             </p>
-            
-            <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6">
-              <a href="#" className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors">support@bitbash.com</a>
-              <a href="#" className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors">Privacy</a>
-              <a href="#" className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors">Terms of Service</a>
+
+            <div className="flex flex-col items-center sm:items-end gap-4">
+              {/* Certification Badges */}
+              <div className="flex items-center gap-3 sm:gap-4">
+                <img
+                  src="/badges/ssl-secured.png"
+                  alt="SSL Secured"
+                  className="h-12 sm:h-14 w-auto opacity-80 hover:opacity-100 transition-opacity"
+                />
+                <img
+                  src="/badges/norton-secured.png"
+                  alt="Norton Secured"
+                  className="h-12 sm:h-14 w-auto opacity-80 hover:opacity-100 transition-opacity"
+                />
+                <img
+                  src="/badges/pci-compliant.png"
+                  alt="PCI Compliant"
+                  className="h-12 sm:h-14 w-auto opacity-80 hover:opacity-100 transition-opacity"
+                />
+              </div>
+
+              {/* Links */}
+              <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6">
+                <a href="#" className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors">support@bitbash.com</a>
+                <a href="#" className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors">Privacy</a>
+                <a href="#" className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors">Terms of Service</a>
+              </div>
             </div>
           </div>
         </div>

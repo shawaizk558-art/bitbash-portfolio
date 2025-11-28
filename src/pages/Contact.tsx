@@ -28,29 +28,33 @@ const Contact = () => {
       icon: Mail,
       title: "Email Us",
       description: "Get in touch via email",
-      contact: "hello@bitbash.com",
-      action: "Send Email"
+      contact: "sale@bitbash.dev",
+      action: "Send Email",
+      link: "mailto:sale@bitbash.dev"
+    },
+    {
+      icon: MessageCircle,
+      title: "Telegram",
+      description: "Chat with us on Telegram",
+      contact: "@Bitbash333",
+      action: "Open Telegram",
+      link: "https://t.me/Bitbash333"
     },
     {
       icon: Phone,
-      title: "Call Us",
-      description: "Speak with our team",
-      contact: "+1 (555) 123-4567",
-      action: "Call Now"
+      title: "WhatsApp",
+      description: "Message us on WhatsApp",
+      contact: "WhatsApp Chat",
+      action: "Open WhatsApp",
+      link: "https://api.whatsapp.com/send/?phone=923249868488&text=Hi+Zeeshan%2C+I%27m+interested+in+automation.&type=phone_number&app_absent=0"
     },
     {
-      icon: MapPin,
-      title: "Visit Us",
-      description: "Our office location",
-      contact: "San Francisco, CA",
-      action: "Get Directions"
-    },
-    {
-      icon: Clock,
-      title: "Business Hours",
-      description: "When we're available",
-      contact: "Mon-Fri 9AM-6PM PST",
-      action: "Schedule Call"
+      icon: Calendar,
+      title: "Book a Demo",
+      description: "Schedule a meeting",
+      contact: "Free Consultation",
+      action: "Schedule Meeting",
+      link: "https://calendar.app.google/RSyUVmGtkqpucGCY7"
     }
   ];
 
@@ -147,9 +151,11 @@ const Contact = () => {
                 <h3 className="text-responsive-base sm:text-xl font-semibold text-gray-900 mb-2">{info.title}</h3>
                 <p className="text-responsive-sm text-gray-600 mb-3">{info.description}</p>
                 <div className="text-responsive-base sm:text-lg font-semibold text-purple-600 mb-3 sm:mb-4">{info.contact}</div>
-                <Button variant="outline" className="w-full touch-friendly text-responsive-sm">
-                  {info.action}
-                </Button>
+                <a href={info.link} target="_blank" rel="noopener noreferrer" className="block">
+                  <Button variant="outline" className="w-full touch-friendly text-responsive-sm">
+                    {info.action}
+                  </Button>
+                </a>
               </Card>
             ))}
           </div>
