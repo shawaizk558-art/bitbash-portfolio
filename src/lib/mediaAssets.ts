@@ -1,3 +1,6 @@
+// Import LinkedIn logo statically to ensure it's bundled correctly in production
+import linkedinLogo from "@/assets/avatars/linkedin.svg";
+
 type MediaAsset = {
   videoKey: string | null;
   alt: string;
@@ -70,7 +73,7 @@ const MEDIA_MAP: Record<string, Partial<MediaAsset>> = {
   "linkedin-automation": {
     videoKey: "linkedin-automation",
     alt: "LinkedIn Automation System preview",
-    avatarSrc: "/avatars/linkedin.svg",
+    avatarSrc: linkedinLogo, // Use imported path to ensure proper bundling
     avatarAlt: "LinkedIn Logo",
     avatarWrapperClass: "bg-white p-1.5",
   },
