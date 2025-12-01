@@ -131,11 +131,11 @@ export const projects: Project[] = [
   },
   {
     slug: "api-scraper",
-    name: "API Scraper",
-    role: "Content Automation System",
-    quote: "BitBash built an API scraper management dashboard that automates content collection, source management, and posting workflows. Features include API manager, source site configuration, channel management, posting history tracking, cookie management, and category organization.",
-    description: "A comprehensive content automation system with a management dashboard that streamlines the entire content collection and posting workflow. The system includes API management, source site configuration, multi-channel posting, historical tracking, cookie management, and category organization for efficient content automation.",
-    technologies: ["Python", "FastAPI", "React", "PostgreSQL", "Web Scraping", "API Integration"],
+    name: "Telegram News Automation Bot",
+    role: "Telegram Content Automation System",
+    quote: "The Telegram News Bot Automation System automatically collects, filters, translates, and posts curated content to Telegram channels. With an intelligent backend pipeline and a clean admin dashboard, it eliminates manual posting and keeps every channel consistently updated with high-quality content.",
+    description: "The Telegram News Bot Automation System automatically collects, filters, translates, and posts curated content to Telegram channels. It uses an intelligent backend pipeline for classification and scheduling, supported by a clean admin dashboard to manage channels, quotas, categories, and translation settings. Designed for efficiency and reliability, it eliminates manual posting and ensures consistent, high-quality content delivery across multiple channels and languages.",
+    technologies: ["Python", "FastAPI", "Telegram Bot API", "PostgreSQL", "React", "Automation", "Translation APIs"],
     videoPlaceholder: "orange",
     youtubeVideoId: "0k-NNkDWMsE",
     rating: 5

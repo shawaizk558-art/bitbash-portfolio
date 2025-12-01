@@ -79,10 +79,10 @@ const MEDIA_MAP: Record<string, Partial<MediaAsset>> = {
   },
   "api-scraper": {
     videoKey: "api-scraper",
-    alt: "API Scraper management dashboard preview",
-    avatarSrc: "",
-    avatarAlt: "API Scraper Logo",
-    avatarWrapperClass: "bg-gradient-to-br from-orange-400 to-orange-600",
+    alt: "Telegram News Automation Bot preview",
+    avatarSrc: "/avatars/telegram.svg",
+    avatarAlt: "Telegram Logo",
+    avatarWrapperClass: "bg-white p-1.5",
   },
   "spotify-automation": {
     videoKey: "spotify",
