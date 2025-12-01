@@ -2,6 +2,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import { RoutePreloader } from "@/components/RoutePreloader";
+import { ScrollToTop } from "@/components/ScrollToTop";
 import { Toaster as ToastContainer } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
@@ -45,25 +46,30 @@ const App = () => {
         <ToastContainer />
         <SonnerToaster />
         <BrowserRouter>
-        <RoutePreloader />
-        <Suspense fallback={<div className="flex min-h-screen items-center justify-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
-        </div>}>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/automation-services" element={<AutomationServices />} />
-            <Route path="/development-services" element={<DevelopmentServices />} />
-            <Route path="/pricing" element={<Pricing />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/projects" element={<Projects />} />
-            <Route path="/how-we-work" element={<HowWeWork />} />
-            <Route path="/project/:slug" element={<ProjectDetail />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Suspense>
-    </BrowserRouter>
+          <ScrollToTop />
+          <RoutePreloader />
+          <Suspense
+            fallback={
+              <div className="flex min-h-screen items-center justify-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+              </div>
+            }
+          >
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/automation-services" element={<AutomationServices />} />
+              <Route path="/development-services" element={<DevelopmentServices />} />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/projects" element={<Projects />} />
+              <Route path="/how-we-work" element={<HowWeWork />} />
+              <Route path="/project/:slug" element={<ProjectDetail />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </BrowserRouter>
       </TooltipProvider>
     </HelmetProvider>
   );

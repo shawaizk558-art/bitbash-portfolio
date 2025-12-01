@@ -20,12 +20,16 @@ export const useSmoothScroll = () => {
       requestAnimationFrame(raf); // Schedule next frame
     }
 
+    // Expose Lenis instance globally so other components (e.g. ScrollToTop) can use it
+    (window as any).lenis = lenis;
+
     // Start the animation loop
     requestAnimationFrame(raf);
 
     // Cleanup function when component unmounts
     return () => {
       lenis.destroy(); // Remove event listeners and stop animation
+      (window as any).lenis = undefined;
     };
   }, []); // Empty dependency array = runs once on mount
 };

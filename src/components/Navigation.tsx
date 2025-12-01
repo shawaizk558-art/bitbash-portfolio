@@ -5,6 +5,7 @@ import { useLocation, Link } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Logo } from "@/components/Logo";
 import { ContactButton } from "@/components/ContactButton";
+import { scrollToTopImmediate } from "@/lib/scrollToTop";
 
 export const Navigation = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -92,7 +93,14 @@ export const Navigation = () => {
       <div className="container-responsive">
         <div className="flex items-center h-16">
           {/* Logo - Left Side */}
-          <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity lg:min-h-[44px] min-h-[44px]" onClick={closeMobileMenu}>
+          <Link
+            to="/"
+            className="flex items-center space-x-2 hover:opacity-80 transition-opacity lg:min-h-[44px] min-h-[44px]"
+            onClick={() => {
+              scrollToTopImmediate();
+              closeMobileMenu();
+            }}
+          >
             <Logo size="lg" variant="default" />
           </Link>
           
@@ -152,14 +160,22 @@ export const Navigation = () => {
                     <div>
                       <h3 className="text-sm font-bold text-gray-900 mb-3 sm:mb-4">Browser & Mobile</h3>
                       <div className="space-y-2 sm:space-y-3">
-                        <a href="/automation-services" className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg hover:bg-gray-50 transition-colors group min-h-[44px]">
+                        <a
+                          href="/automation-services"
+                          onClick={scrollToTopImmediate}
+                          className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg hover:bg-gray-50 transition-colors group min-h-[44px]"
+                        >
                           <Globe className="w-5 h-5 text-purple-600 mt-0.5" />
                           <div>
                             <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">Browser Automation</div>
                             <p className="text-xs text-gray-500 mt-0.5">Selenium, Puppeteer, stealth scraping</p>
                           </div>
                         </a>
-                        <a href="/automation-services" className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group">
+                        <a
+                          href="/automation-services"
+                          onClick={scrollToTopImmediate}
+                          className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group"
+                        >
                           <Smartphone className="w-5 h-5 text-purple-600 mt-0.5" />
                           <div>
                             <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">Mobile Automation</div>
@@ -180,14 +196,22 @@ export const Navigation = () => {
                     <div>
                       <h3 className="text-sm font-bold text-gray-900 mb-3 sm:mb-4">Data & Workflow</h3>
                       <div className="space-y-2 sm:space-y-3">
-                        <a href="/automation-services" className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg hover:bg-gray-50 transition-colors group min-h-[44px]">
+                        <a
+                          href="/automation-services"
+                          onClick={scrollToTopImmediate}
+                          className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg hover:bg-gray-50 transition-colors group min-h-[44px]"
+                        >
                           <Database className="w-5 h-5 text-purple-600 mt-0.5" />
                           <div>
                             <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">Data Extraction</div>
                             <p className="text-xs text-gray-500 mt-0.5">Custom scrapers for any website</p>
                           </div>
                         </a>
-                        <a href="/automation-services" className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group">
+                        <a
+                          href="/automation-services"
+                          onClick={scrollToTopImmediate}
+                          className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group"
+                        >
                           <Zap className="w-5 h-5 text-purple-600 mt-0.5" />
                           <div>
                             <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">Workflow Automation</div>
@@ -207,7 +231,11 @@ export const Navigation = () => {
 
                   {/* Bottom Link */}
                   <div className="mt-6 pt-6 border-t border-gray-200">
-                    <a href="/automation-services" className="text-sm font-semibold text-purple-600 hover:text-purple-700 flex items-center gap-2">
+                    <a
+                      href="/automation-services"
+                      onClick={scrollToTopImmediate}
+                      className="text-sm font-semibold text-purple-600 hover:text-purple-700 flex items-center gap-2"
+                    >
                       View all automation services
                       <span>→</span>
                     </a>
@@ -230,21 +258,33 @@ export const Navigation = () => {
               {openDropdown === 'development' && (
                 <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[90vw] max-w-[400px] lg:w-[400px] bg-white rounded-2xl shadow-2xl border border-gray-200 p-4 sm:p-6 lg:p-8 opacity-0 animate-fadeIn">
                       <div className="space-y-2 sm:space-y-3">
-                    <a href="/development-services" className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg hover:bg-gray-50 transition-colors group min-h-[44px]">
+                    <a
+                      href="/development-services"
+                      onClick={scrollToTopImmediate}
+                      className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg hover:bg-gray-50 transition-colors group min-h-[44px]"
+                    >
                       <Globe className="w-5 h-5 text-purple-600 mt-0.5" />
                           <div>
                         <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">Web Applications</div>
                         <p className="text-xs text-gray-500 mt-0.5">React, Vue, Angular solutions</p>
                           </div>
                         </a>
-                    <a href="/development-services" className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group">
+                    <a
+                      href="/development-services"
+                      onClick={scrollToTopImmediate}
+                      className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group"
+                    >
                       <Smartphone className="w-5 h-5 text-purple-600 mt-0.5" />
                           <div>
                         <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">Mobile Apps</div>
                         <p className="text-xs text-gray-500 mt-0.5">Native and cross-platform</p>
                           </div>
                         </a>
-                    <a href="/development-services" className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group">
+                    <a
+                      href="/development-services"
+                      onClick={scrollToTopImmediate}
+                      className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group"
+                    >
                           <Database className="w-5 h-5 text-purple-600 mt-0.5" />
                           <div>
                         <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">API Development</div>
@@ -255,7 +295,11 @@ export const Navigation = () => {
 
                   {/* Bottom Link */}
                   <div className="mt-6 pt-6 border-t border-gray-200">
-                    <a href="/development-services" className="text-sm font-semibold text-purple-600 hover:text-purple-700 flex items-center gap-2">
+                    <a
+                      href="/development-services"
+                      onClick={scrollToTopImmediate}
+                      className="text-sm font-semibold text-purple-600 hover:text-purple-700 flex items-center gap-2"
+                    >
                       View all development services
                       <span>→</span>
                     </a>
@@ -265,15 +309,27 @@ export const Navigation = () => {
             </div>
 
 
-            <Link to="/projects" className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0">
+            <Link
+              to="/projects"
+              className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0"
+              onClick={scrollToTopImmediate}
+            >
               <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Portfolio</span>
             </Link>
 
-            <Link to="/pricing" className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0">
+            <Link
+              to="/pricing"
+              className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0"
+              onClick={scrollToTopImmediate}
+            >
               <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Pricing</span>
             </Link>
 
-            <Link to="/how-we-work" className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0">
+            <Link
+              to="/how-we-work"
+              className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0"
+              onClick={scrollToTopImmediate}
+            >
               <span className="font-normal text-black text-base lg:text-[17px] whitespace-nowrap" style={{ fontSize: '17px' }}>Our Work Model</span>
             </Link>
 
@@ -321,49 +377,70 @@ export const Navigation = () => {
                 <Link 
                   to="/" 
                   className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
-                  onClick={closeMobileMenu}
+                  onClick={() => {
+                    scrollToTopImmediate();
+                    closeMobileMenu();
+                  }}
                 >
                   <span>Home</span>
                 </Link>
                 <Link 
                   to="/automation-services" 
                   className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
-                  onClick={closeMobileMenu}
+                  onClick={() => {
+                    scrollToTopImmediate();
+                    closeMobileMenu();
+                  }}
                 >
                   <span>Automation</span>
                 </Link>
                 <Link 
                   to="/development-services" 
                   className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
-                  onClick={closeMobileMenu}
+                  onClick={() => {
+                    scrollToTopImmediate();
+                    closeMobileMenu();
+                  }}
                 >
                   <span>Development</span>
                 </Link>
                 <Link 
                   to="/projects" 
                   className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
-                  onClick={closeMobileMenu}
+                  onClick={() => {
+                    scrollToTopImmediate();
+                    closeMobileMenu();
+                  }}
                 >
                   <span>Projects</span>
                 </Link>
                 <Link 
                   to="/pricing" 
                   className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
-                  onClick={closeMobileMenu}
+                  onClick={() => {
+                    scrollToTopImmediate();
+                    closeMobileMenu();
+                  }}
                 >
                   <span>Pricing</span>
                 </Link>
                 <Link 
                   to="/how-we-work" 
                   className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
-                  onClick={closeMobileMenu}
+                  onClick={() => {
+                    scrollToTopImmediate();
+                    closeMobileMenu();
+                  }}
                 >
                   <span>Our Work Model</span>
                 </Link>
                 <Link 
                   to="/contact" 
                   className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
-                  onClick={closeMobileMenu}
+                  onClick={() => {
+                    scrollToTopImmediate();
+                    closeMobileMenu();
+                  }}
                 >
                   <span>Contact</span>
                 </Link>
@@ -372,11 +449,25 @@ export const Navigation = () => {
               
               {/* CTA Buttons - At Bottom */}
               <div className="px-4 sm:px-6 py-4 sm:py-6 pt-6 sm:pt-8">
-                <Link to="/contact" onClick={closeMobileMenu} className="block w-full text-center py-3 sm:py-4 text-base font-bold text-white border-2 border-white rounded-xl hover:bg-white hover:text-gray-900 transition-all duration-300 mb-3 sm:mb-4 min-h-[44px] flex items-center justify-center">
+                <Link
+                  to="/contact"
+                  onClick={() => {
+                    scrollToTopImmediate();
+                    closeMobileMenu();
+                  }}
+                  className="block w-full text-center py-3 sm:py-4 text-base font-bold text-white border-2 border-white rounded-xl hover:bg-white hover:text-gray-900 transition-all duration-300 mb-3 sm:mb-4 min-h-[44px] flex items-center justify-center"
+                >
                   Contact us
                 </Link>
-                <Link to="/contact" onClick={closeMobileMenu} className="block">
-                  <button 
+                <Link
+                  to="/contact"
+                  onClick={() => {
+                    scrollToTopImmediate();
+                    closeMobileMenu();
+                  }}
+                  className="block"
+                >
+                  <button
                     className="w-full py-3 sm:py-4 text-base font-semibold text-white bg-purple-600 rounded-xl hover:bg-purple-700 transition-all duration-300 min-h-[44px]"
                   >
                     Schedule a call
