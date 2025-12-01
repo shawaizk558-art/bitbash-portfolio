@@ -2,7 +2,6 @@ import path from "node:path";
 import fs from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
-// @ts-expect-error ffmpeg-static ships without types
 import ffmpegPath from "ffmpeg-static";
 
 interface AssetConfig {
@@ -29,6 +28,7 @@ const assets: AssetConfig[] = [
   { name: "purepeak", input: "purepeak.gif" },
   { name: "facebook", input: "facebook.gif" },
   { name: "linkedin-automation", input: "linkedin_automation-system.gif" },
+  { name: "api-scraper", input: "api-scraper.gif" },
   { name: "kareem", input: "kareem.gif" },
   { name: "syed", input: "Syed_Actuary-list.gif" },
   { name: "odeta", input: "odeta.gif" },
@@ -42,6 +42,10 @@ async function ensureDirs() {
 
 function runFfmpeg(args: string[]) {
   return new Promise<void>((resolve, reject) => {
+    if (!ffmpegPath) {
+      reject(new Error("ffmpeg-static binary not found"));
+      return;
+    }
     const proc = spawn(ffmpegPath, args, { stdio: "inherit" });
     proc.on("close", (code) => {
       if (code === 0) resolve();

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Logo } from "@/components/Logo";
+import { ContactButton } from "@/components/ContactButton";
 
 export const Navigation = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -279,19 +280,8 @@ export const Navigation = () => {
           </div>
           
           {/* Desktop CTA Buttons - Right Side */}
-          <div
-            className="hidden lg:flex items-center ml-auto"
-          >
-            <Link to="/contact">
-              <button 
-                className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold text-base px-5 py-2 rounded-md flex items-center justify-center"
-                style={{
-                  height: '38px'
-                }}
-              >
-                Contact us
-              </button>
-            </Link>
+          <div className="hidden lg:flex items-center ml-auto">
+            <ContactButton label="Contact us" fullWidth={false} />
           </div>
         </div>
         

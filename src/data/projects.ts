@@ -130,13 +130,14 @@ export const projects: Project[] = [
     rating: 5
   },
   {
-    slug: "project-9",
-    name: "Project 9",
-    role: "Automation Project",
-    quote: "Coming soon - A new project showcasing innovative automation solutions and cutting-edge technology.",
-    description: "A new project showcasing innovative automation solutions and cutting-edge technology. More details coming soon.",
-    technologies: [],
+    slug: "api-scraper",
+    name: "API Scraper",
+    role: "Content Automation System",
+    quote: "BitBash built an API scraper management dashboard that automates content collection, source management, and posting workflows. Features include API manager, source site configuration, channel management, posting history tracking, cookie management, and category organization.",
+    description: "A comprehensive content automation system with a management dashboard that streamlines the entire content collection and posting workflow. The system includes API management, source site configuration, multi-channel posting, historical tracking, cookie management, and category organization for efficient content automation.",
+    technologies: ["Python", "FastAPI", "React", "PostgreSQL", "Web Scraping", "API Integration"],
     videoPlaceholder: "orange",
+    youtubeVideoId: "0k-NNkDWMsE",
     rating: 5
   }
 ];

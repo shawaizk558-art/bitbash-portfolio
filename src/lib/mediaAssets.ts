@@ -77,6 +77,13 @@ const MEDIA_MAP: Record<string, Partial<MediaAsset>> = {
     avatarAlt: "LinkedIn Logo",
     avatarWrapperClass: "bg-white p-1.5",
   },
+  "api-scraper": {
+    videoKey: "api-scraper",
+    alt: "API Scraper management dashboard preview",
+    avatarSrc: "",
+    avatarAlt: "API Scraper Logo",
+    avatarWrapperClass: "bg-gradient-to-br from-orange-400 to-orange-600",
+  },
   "spotify-automation": {
     videoKey: "spotify",
     alt: "Spotify automation preview",
