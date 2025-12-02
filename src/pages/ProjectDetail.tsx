@@ -2,33 +2,21 @@ import { useParams, Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
-import { ArrowLeft, Play, X } from "lucide-react";
+import { Hero } from "@/components/Hero";
+import { ArrowLeft } from "lucide-react";
 import { getProjectBySlug as getHardcodedProject } from "@/data/projects";
 import { getProjectBySlug as getStrapiProject } from "@/lib/strapi";
 import { useState, useEffect } from "react";
 import type { Project } from "@/data/projects";
-import { AutoPlayVideo } from "@/components/AutoPlayVideo";
-import { LiteYouTubeEmbed } from "@/components/LiteYouTubeEmbed";
 import {
   getMediaAssets,
-  getPosterPath,
-  getVideoSources,
 } from "@/lib/mediaAssets";
-
-const gradientClasses = {
-  purple: "from-purple-400 to-purple-600",
-  blue: "from-blue-400 to-blue-600",
-  green: "from-green-400 to-green-600",
-  orange: "from-orange-400 to-orange-600",
-  pink: "from-pink-400 to-pink-600",
-  teal: "from-teal-400 to-teal-600"
-};
+import { truncateDescription } from "@/lib/utils";
 
 const ProjectDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const [project, setProject] = useState<Project | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
   useEffect(() => {
     async function loadProject() {
@@ -90,7 +78,6 @@ const ProjectDetail = () => {
   }
 
   const mediaAssets = getMediaAssets(project.slug);
-  const hasPreviewVideo = Boolean(mediaAssets.videoKey);
 
   return (
     <div className="min-h-screen bg-white">
@@ -113,81 +100,16 @@ const ProjectDetail = () => {
         </Link>
       </div>
 
-      {/* Project Title and Niche at Top */}
-      <section className="container-responsive pt-10 sm:pt-12 md:pt-16 lg:pt-20 pb-6 sm:pb-8 lg:pb-10">
-        <div className="max-w-4xl lg:max-w-5xl xl:max-w-6xl mx-auto text-center">
-          <h1 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-3 sm:mb-4 lg:mb-5">
-            {project.name}
-          </h1>
-          <p className="text-lg sm:text-xl md:text-xl lg:text-2xl xl:text-3xl text-purple-600 font-semibold">
-            {project.role}
-          </p>
-        </div>
-      </section>
-
-      {/* GIF/Video Section - Clickable to Play YouTube Video */}
-      <section className="container-responsive pb-8 sm:pb-12 lg:pb-16">
-        <div className="max-w-4xl lg:max-w-5xl xl:max-w-6xl mx-auto">
-          <div
-            className="relative aspect-video bg-gradient-to-br overflow-hidden rounded-2xl shadow-2xl group"
-          >
-            {project.youtubeVideoId ? (
-              <div className="absolute inset-0 w-full h-full z-0">
-                <LiteYouTubeEmbed
-                  videoId={project.youtubeVideoId}
-                  title={project.name}
-                  isPlaying={isVideoPlaying}
-                  onPlay={() => setIsVideoPlaying(true)}
-                  className="w-full h-full"
-                  placeholderClassName="relative block w-full h-full text-left"
-                >
-                  <>
-                    {hasPreviewVideo ? (
-                      <AutoPlayVideo
-                        sources={getVideoSources(mediaAssets.videoKey!)}
-                        poster={getPosterPath(mediaAssets.videoKey!)}
-                        alt={mediaAssets.alt}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className={`absolute inset-0 bg-gradient-to-br ${gradientClasses[project.videoPlaceholder]} opacity-90`} />
-                    )}
-                    <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-                      <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl group-hover:bg-white transition-all group-hover:scale-110">
-                        <Play className="w-10 h-10 sm:w-12 sm:h-12 text-gray-900 ml-1" fill="currentColor" />
-                      </div>
-                    </div>
-                  </>
-                </LiteYouTubeEmbed>
-                {isVideoPlaying && (
-                  <button
-                    type="button"
-                    className="absolute top-4 right-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-gray-900 shadow-lg"
-                    aria-label="Close video"
-                    onClick={() => setIsVideoPlaying(false)}
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
-                )}
-              </div>
-            ) : hasPreviewVideo ? (
-              <AutoPlayVideo
-                sources={getVideoSources(mediaAssets.videoKey!)}
-                poster={getPosterPath(mediaAssets.videoKey!)}
-                alt={mediaAssets.alt}
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-            ) : (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className={`absolute inset-0 bg-gradient-to-br ${gradientClasses[project.videoPlaceholder]} opacity-90`} />
-                <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl z-10">
-                  <Play className="w-10 h-10 sm:w-12 sm:h-12 text-gray-900 ml-1" fill="currentColor" />
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
+      {/* Hero Section with Project Name and Description */}
+      <Hero 
+        title={project.name}
+        subtitle={truncateDescription(project.description)}
+        variant="compact"
+        buttons={[
+          { label: "See Our Work", href: "/projects", variant: "outline" },
+          { label: "Get a Quote", href: "/contact", variant: "default" }
+        ]}
+      />
 
       {/* Content Section - Description, Technologies, etc */}
       <section className="container-responsive pb-12 sm:pb-16 md:pb-20 lg:pb-24">
