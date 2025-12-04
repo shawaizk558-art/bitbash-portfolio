@@ -12,7 +12,7 @@ import { getMediaAssets } from "@/lib/mediaAssets";
 import { truncateDescription } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import telegramWeatherMarkdown from "/content/projects/project1.md?raw";
+import telegramWeatherMarkdown from "../../content/projects/project1.md?raw";
 
 const ProjectDetail = () => {
   const { slug } = useParams<{ slug: string }>();
