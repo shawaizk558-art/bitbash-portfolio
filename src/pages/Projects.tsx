@@ -177,20 +177,25 @@ const Projects = () => {
                       </div>
                     ) : shouldUseScreenshot && screenshotPath ? (
                       <>
-                        {/* Project Screenshot Thumbnail - No play button for screenshots */}
-                        <img
-                          src={screenshotPath}
-                          alt={`${project.name} preview`}
-                          className="absolute inset-0 w-full h-full object-cover"
-                          loading="lazy"
-                          onError={(e) => {
-                            // Fallback to gradient if screenshot fails to load
-                            const target = e.currentTarget;
-                            target.style.display = 'none';
-                            const fallback = target.nextElementSibling as HTMLElement;
-                            if (fallback) fallback.style.display = 'block';
-                          }}
-                        />
+                        {/* Project Screenshot Thumbnail - Centered with ultra-compact padding */}
+                        <div className="absolute inset-0 w-full h-full bg-white flex items-center justify-center p-0 sm:p-1">
+                          <img
+                            src={screenshotPath}
+                            alt={`${project.name} preview`}
+                            className="max-w-full max-h-full object-contain"
+                            loading="lazy"
+                            onError={(e) => {
+                              // Fallback to gradient if screenshot fails to load
+                              const target = e.currentTarget as HTMLImageElement;
+                              const wrapper = target.parentElement as HTMLElement | null;
+                              if (wrapper) {
+                                wrapper.style.display = 'none';
+                                const fallback = wrapper.nextElementSibling as HTMLElement | null;
+                                if (fallback) fallback.style.display = 'block';
+                              }
+                            }}
+                          />
+                        </div>
                         <div className={`absolute inset-0 bg-gradient-to-br ${gradientClasses[project.videoPlaceholder]} opacity-80 hidden`}></div>
                       </>
                     ) : (

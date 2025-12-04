@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { SocialProof } from "@/components/SocialProof";
 import { HeroBackground } from "@/components/HeroBackground";
+import type { ReactNode } from "react";
 
 interface HeroButton {
   label: string;
@@ -9,7 +10,7 @@ interface HeroButton {
 }
 
 interface HeroProps {
-  title?: string;
+  title?: ReactNode;
   subtitle?: string;
   variant?: "default" | "compact";
   buttons?: HeroButton[];
@@ -52,7 +53,11 @@ export const Hero = ({ title, subtitle, variant = "default", buttons }: HeroProp
 
       <div className="relative z-10 container-responsive text-center 2xl:-mt-4">
         <div className="max-w-4xl mx-auto space-responsive-lg animate-fade-in">
-          <div className="space-responsive-sm mt-6 sm:mt-10 lg:mt-14">
+          {/* Core project hero content (title + description) */}
+          <div
+            className="space-responsive-sm mt-6 sm:mt-10 lg:mt-14"
+            data-project-hero-core="true"
+          >
             <h1 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-bold leading-[1.1] tracking-tight font-sans px-2 sm:px-0">
               {title ? <span className="block sm:inline">{title}</span> : defaultTitle}
             </h1>
@@ -66,19 +71,19 @@ export const Hero = ({ title, subtitle, variant = "default", buttons }: HeroProp
           <div className="relative max-w-3xl mx-auto mt-8 sm:mt-10 lg:mt-12">
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:-translate-y-2">
               {heroButtons.map((button, index) => (
-                <Button
+              <Button
                   key={index}
                   variant={button.variant || "default"}
-                  size="lg"
+                size="lg"
                   className={
                     button.variant === "outline"
                       ? "h-12 lg:h-12 py-4 px-6 text-base sm:text-lg lg:text-lg font-semibold rounded-xl w-full sm:w-auto bg-transparent hover:bg-transparent text-gray-900 hover:text-gray-900 border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-lg shadow-gray-400/20 hover:shadow-gray-400/35 transition-colors transition-shadow duration-300"
                       : "h-12 lg:h-12 py-4 px-6 text-base sm:text-lg lg:text-lg font-semibold rounded-xl w-full sm:w-auto hover:scale-100 transition-all duration-300"
                   }
-                  asChild
-                >
+                asChild
+              >
                   <a href={button.href}>{button.label}</a>
-                </Button>
+              </Button>
               ))}
             </div>
 

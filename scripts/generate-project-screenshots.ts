@@ -75,75 +75,53 @@ async function generateScreenshot(
       timeout: 30000,
     });
 
-    // Wait for hero section to load
-    // The hero section is the section containing the project title (h1) in the Hero component
-    await page.waitForSelector('section h1', { timeout: 10000 });
+    // Wait for core project hero content (title + description) to load
+    // This targets the div we explicitly marked in the Hero component:
+    // <div data-project-hero-core="true">...</div>
+    await page.waitForSelector('[data-project-hero-core="true"]', { timeout: 10000 });
     await new Promise(resolve => setTimeout(resolve, 1500)); // Wait for animations and content to render
 
-    // Find the hero section element
-    // Look for the section that contains the project title and is after the back button
-    const heroSection = await page.evaluate(() => {
-      // Find all sections
-      const sections = Array.from(document.querySelectorAll('section'));
-      
-      // Find the section that contains the hero (has h1 with project name and hero background)
-      // It should be after the back button container
-      for (const section of sections) {
-        const h1 = section.querySelector('h1');
-        const hasHeroBackground = section.querySelector('[class*="HeroBackground"]') || 
-                                  section.querySelector('[class*="hero"]');
-        
-        // Check if this is the hero section (has title and hero styling)
-        if (h1 && (hasHeroBackground || section.querySelector('[class*="container-responsive"]'))) {
-          const rect = section.getBoundingClientRect();
-          // Only return if it's visible and has reasonable dimensions
-          if (rect.height > 200 && rect.width > 300) {
-            return {
-              x: Math.max(0, rect.x),
-              y: Math.max(0, rect.y),
-              width: rect.width,
-              height: rect.height,
-            };
-          }
-        }
+    // Find the core hero content element (title + description only)
+    const heroCore = await page.evaluate(() => {
+      const core = document.querySelector('[data-project-hero-core="true"]') as HTMLElement | null;
+      if (!core) return null;
+
+      const rect = core.getBoundingClientRect();
+
+      // Only return if it's visible and has reasonable dimensions
+      if (rect.height < 40 || rect.width < 200) {
+        return null;
       }
-      
-      // Fallback: find first section after back button
-      const backButton = document.querySelector('a[href="/"]');
-      if (backButton) {
-        const backButtonRect = backButton.closest('div')?.getBoundingClientRect();
-        if (backButtonRect) {
-          for (const section of sections) {
-            const rect = section.getBoundingClientRect();
-            // Section should be below the back button
-            if (rect.y > backButtonRect.bottom && rect.height > 200) {
-              return {
-                x: Math.max(0, rect.x),
-                y: Math.max(0, rect.y),
-                width: rect.width,
-                height: rect.height,
-              };
-            }
-          }
-        }
-      }
-      
-      return null;
+
+      return {
+        x: Math.max(0, rect.x),
+        y: Math.max(0, rect.y),
+        width: rect.width,
+        height: rect.height,
+      };
     });
 
-    if (!heroSection) {
-      throw new Error('Hero section not found');
+    if (!heroCore) {
+      throw new Error('Core project hero content not found');
     }
 
-    // Take screenshot of only the hero section
+    // Take a tight screenshot around the core content only
+    const horizontalPadding = 8; // small padding to avoid cutting off glyphs
+    const verticalPadding = 4;
+
+    const clipX = Math.max(0, Math.round(heroCore.x - horizontalPadding));
+    const clipY = Math.max(0, Math.round(heroCore.y - verticalPadding));
+    const clipWidth = Math.round(heroCore.width + horizontalPadding * 2);
+    const clipHeight = Math.round(heroCore.height + verticalPadding * 2);
+
     await page.screenshot({
       path: outputPath,
       type: 'png',
       clip: {
-        x: Math.round(heroSection.x),
-        y: Math.round(heroSection.y),
-        width: Math.round(heroSection.width),
-        height: Math.round(heroSection.height),
+        x: clipX,
+        y: clipY,
+        width: clipWidth,
+        height: clipHeight,
       },
     });
 

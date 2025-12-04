@@ -37,5 +37,6 @@ export {
   Star,
   BarChart3,
   Target,
-  Award
+  Award,
+  Video
 } from "lucide-react";
