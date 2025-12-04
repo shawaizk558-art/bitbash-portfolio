@@ -139,6 +139,27 @@ export const projects: Project[] = [
     videoPlaceholder: "orange",
     youtubeVideoId: "0k-NNkDWMsE",
     rating: 5
+  },
+  {
+    slug: "telegram-weather-alert-bot",
+    name: "Telegram Weather Alert Bot",
+    role: "Automated Weather Alert Telegram Bot",
+    quote:
+      "Telegram Weather Alert Bot sends automated weather alerts and real-time updates so users and teams stay prepared without constantly checking apps.",
+    description:
+      "This project builds a simple yet powerful automation system that pushes timely weather updates straight into Telegram. It monitors weather data, checks for significant changes, and sends alerts directly to Telegram. The whole idea behind this bot is to keep people informed with real-time weather alerts, especially when conditions shift quickly. It supports multiple regions, scheduled checks, configurable thresholds, and robust error handling so communities, teams, and home users can stay prepared with almost no manual effort.",
+    technologies: [
+      "Python",
+      "Async schedulers",
+      "Weather APIs",
+      "Telegram Bot API",
+      "Appilot",
+      "UI Automator",
+      "Appium (optional)",
+      "Logging & Proxy Management"
+    ],
+    videoPlaceholder: "green",
+    rating: 5
   }
 ];
 
