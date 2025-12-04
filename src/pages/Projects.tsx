@@ -112,6 +112,11 @@ const Projects = () => {
             {allProjects.map((project, index) => {
               const mediaAssets = getMediaAssets(project.slug);
               const hasVideo = Boolean(mediaAssets.videoKey);
+              // Use screenshot for projects after top 9 (index >= 9)
+              const shouldUseScreenshot = index >= 9 && !project.youtubeVideoId && !hasVideo;
+              const screenshotPath = shouldUseScreenshot 
+                ? `/project-screenshots/${project.slug}.png`
+                : null;
 
               return (
                 <div
@@ -170,6 +175,24 @@ const Projects = () => {
                           className="w-full h-full object-cover"
                         />
                       </div>
+                    ) : shouldUseScreenshot && screenshotPath ? (
+                      <>
+                        {/* Project Screenshot Thumbnail - No play button for screenshots */}
+                        <img
+                          src={screenshotPath}
+                          alt={`${project.name} preview`}
+                          className="absolute inset-0 w-full h-full object-cover"
+                          loading="lazy"
+                          onError={(e) => {
+                            // Fallback to gradient if screenshot fails to load
+                            const target = e.currentTarget;
+                            target.style.display = 'none';
+                            const fallback = target.nextElementSibling as HTMLElement;
+                            if (fallback) fallback.style.display = 'block';
+                          }}
+                        />
+                        <div className={`absolute inset-0 bg-gradient-to-br ${gradientClasses[project.videoPlaceholder]} opacity-80 hidden`}></div>
+                      </>
                     ) : (
                       <>
                         <div className={`absolute inset-0 bg-gradient-to-br ${gradientClasses[project.videoPlaceholder]} opacity-80`}></div>
@@ -194,24 +217,28 @@ const Projects = () => {
                     {/* Author Info - Mobile Optimized */}
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-                        {/* Avatar Placeholder */}
-                        {mediaAssets.avatarSrc ? (
-                          <div
-                            className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden ${mediaAssets.avatarWrapperClass}`}
-                          >
-                            <img
-                              ref={setHighPriority}
-                              src={mediaAssets.avatarSrc}
-                              alt={mediaAssets.avatarAlt}
-                              className="w-full h-full object-contain"
-                            />
-                          </div>
-                        ) : (
-                          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center flex-shrink-0">
-                            <span className="text-white font-bold text-xs sm:text-sm">
-                              {project.name.split(' ').map(n => n[0]).join('')}
-                            </span>
-                          </div>
+                        {/* Avatar Placeholder - Hidden for projects 10+ */}
+                        {index < 9 && (
+                          <>
+                            {mediaAssets.avatarSrc ? (
+                              <div
+                                className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden ${mediaAssets.avatarWrapperClass}`}
+                              >
+                                <img
+                                  ref={setHighPriority}
+                                  src={mediaAssets.avatarSrc}
+                                  alt={mediaAssets.avatarAlt}
+                                  className="w-full h-full object-contain"
+                                />
+                              </div>
+                            ) : (
+                              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center flex-shrink-0">
+                                <span className="text-white font-bold text-xs sm:text-sm">
+                                  {project.name.split(' ').map(n => n[0]).join('')}
+                                </span>
+                              </div>
+                            )}
+                          </>
                         )}
 
                         <div className="min-w-0 flex-1">

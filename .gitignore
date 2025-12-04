@@ -48,3 +48,6 @@ coverage
 .cache
 .vercel
 .venv
+
+# Screenshot generation
+scripts/screenshot-manifest.json
