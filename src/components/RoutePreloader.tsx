@@ -19,8 +19,12 @@ export const RoutePreloader = () => {
 
             // Map paths to their lazy-loaded components
             const routeMap: Record<string, () => Promise<any>> = {
-                "/automation-services": () => import("@/pages/AutomationServices"),
-                "/development-services": () => import("@/pages/DevelopmentServices"),
+                "/services": () => import("@/pages/AllServices"),
+                "/services/automation": () => import("@/pages/ServiceAutomation"),
+                "/services/scraping": () => import("@/pages/ServiceScraping"),
+                "/services/full-stack": () => import("@/pages/ServiceFullStack"),
+                "/services/ai-solutions": () => import("@/pages/ServiceAiSolutions"),
+                "/services/saas-mvp": () => import("@/pages/ServiceSaasMvp"),
                 "/pricing": () => import("@/pages/Pricing"),
                 "/contact": () => import("@/pages/Contact"),
                 "/projects": () => import("@/pages/Projects"),

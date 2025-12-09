@@ -12,6 +12,13 @@ export interface Project {
   targetAudience?: string[];
   keyFeatures?: string[];
   architectureHighlights?: string[];
+  // Optional sidebar details
+  pricing?: string;
+  timeline?: string;
+  postDeliverySupport?: string;
+  paymentMethods?: string;
+  moreDetails?: string;
+  developer?: string;
 }
 
 export const projects: Project[] = [

@@ -10,8 +10,12 @@ import { HelmetProvider } from "react-helmet-async";
 
 // Lazy load pages for better performance
 const Index = lazy(() => import("./pages/Index"));
-const AutomationServices = lazy(() => import("./pages/AutomationServices"));
-const DevelopmentServices = lazy(() => import("./pages/DevelopmentServices"));
+const AllServices = lazy(() => import("./pages/AllServices"));
+const ServiceAutomation = lazy(() => import("./pages/ServiceAutomation"));
+const ServiceScraping = lazy(() => import("./pages/ServiceScraping"));
+const ServiceFullStack = lazy(() => import("./pages/ServiceFullStack"));
+const ServiceAiSolutions = lazy(() => import("./pages/ServiceAiSolutions"));
+const ServiceSaasMvp = lazy(() => import("./pages/ServiceSaasMvp"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Projects = lazy(() => import("./pages/Projects"));
@@ -57,8 +61,12 @@ const App = () => {
           >
             <Routes>
               <Route path="/" element={<Index />} />
-              <Route path="/automation-services" element={<AutomationServices />} />
-              <Route path="/development-services" element={<DevelopmentServices />} />
+              <Route path="/services" element={<AllServices />} />
+              <Route path="/services/automation" element={<ServiceAutomation />} />
+              <Route path="/services/scraping" element={<ServiceScraping />} />
+              <Route path="/services/full-stack" element={<ServiceFullStack />} />
+              <Route path="/services/ai-solutions" element={<ServiceAiSolutions />} />
+              <Route path="/services/saas-mvp" element={<ServiceSaasMvp />} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/blog" element={<Blog />} />

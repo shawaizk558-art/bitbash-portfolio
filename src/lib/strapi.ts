@@ -65,6 +65,12 @@ function transformStrapiProject(strapiProject: any): Project {
     targetAudience: projectData.targetAudience || undefined,
     keyFeatures: projectData.keyFeatures || undefined,
     architectureHighlights: projectData.architectureHighlights || undefined,
+    pricing: projectData.pricing || projectData.priceRange || undefined,
+    timeline: projectData.timeline || projectData.deliveryTimeline || undefined,
+    postDeliverySupport: projectData.postDeliverySupport || projectData.support || undefined,
+    paymentMethods: projectData.paymentMethods || projectData.payments || undefined,
+    moreDetails: projectData.moreDetails || projectData.details || undefined,
+    developer: projectData.developer || projectData.owner || undefined,
   };
 }
 

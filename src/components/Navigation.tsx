@@ -15,8 +15,40 @@ export const Navigation = () => {
 
   const menuToggleRef = useRef<HTMLButtonElement | null>(null);
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
-  const automationRef = useRef<HTMLDivElement | null>(null);
-  const developmentRef = useRef<HTMLDivElement | null>(null);
+  const servicesRef = useRef<HTMLDivElement | null>(null);
+
+  const servicesMenuItems = [
+    {
+      title: "Automation",
+      description: "Browser, mobile, and workflow automation",
+      icon: Zap,
+      href: "/services/automation",
+    },
+    {
+      title: "Scraping",
+      description: "Data extraction and enrichment at scale",
+      icon: Database,
+      href: "/services/scraping",
+    },
+    {
+      title: "Full Stack Development",
+      description: "Frontend, backend, infra — end-to-end builds",
+      icon: Code,
+      href: "/services/full-stack",
+    },
+    {
+      title: "AI Solutions",
+      description: "Custom AI agents, copilots, and ML pipelines",
+      icon: Bot,
+      href: "/services/ai-solutions",
+    },
+    {
+      title: "SAAS MVP",
+      description: "Launch-ready SaaS builds in weeks",
+      icon: Rocket,
+      href: "/services/saas-mvp",
+    },
+  ];
 
   // Function to check if a page is currently active (mobile only)
   const isActivePage = (path: string) => {
@@ -72,8 +104,7 @@ export const Navigation = () => {
     const handleOutsidePointerDown = (event: PointerEvent) => {
       const target = event.target as Node;
       const refsMap: Record<string, React.RefObject<HTMLDivElement>> = {
-        automation: automationRef,
-        development: developmentRef,
+        services: servicesRef,
       };
       const activeRef = refsMap[openDropdown];
       if (activeRef?.current && !activeRef.current.contains(target)) {
@@ -142,166 +173,52 @@ export const Navigation = () => {
           <div
             className="hidden lg:flex items-center space-x-1 xl:space-x-2 absolute left-1/2 transform -translate-x-1/2"
           >
-            {/* Automation Dropdown - PRIMARY */}
-            <div className="relative" ref={automationRef}>
-              <div 
-                onClick={() => toggleDropdown('automation')}
-                className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0"
-              >
-                <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Automation</span>
-                <ChevronDown className={`w-4 h-4 text-gray-900 transition-transform duration-200 ${openDropdown === 'automation' ? 'rotate-180' : ''}`} />
-              </div>
-              
-              {/* Automation Dropdown */}
-              {openDropdown === 'automation' && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[90vw] max-w-[600px] lg:w-[600px] bg-white rounded-2xl shadow-2xl border border-gray-200 p-4 sm:p-6 lg:p-8 opacity-0 animate-fadeIn">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-                    {/* Browser & Mobile Column */}
-                    <div>
-                      <h3 className="text-sm font-bold text-gray-900 mb-3 sm:mb-4">Browser & Mobile</h3>
-                      <div className="space-y-2 sm:space-y-3">
-                        <a
-                          href="/automation-services"
-                          onClick={scrollToTopImmediate}
-                          className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg hover:bg-gray-50 transition-colors group min-h-[44px]"
-                        >
-                          <Globe className="w-5 h-5 text-purple-600 mt-0.5" />
-                          <div>
-                            <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">Browser Automation</div>
-                            <p className="text-xs text-gray-500 mt-0.5">Selenium, Puppeteer, stealth scraping</p>
-                          </div>
-                        </a>
-                        <a
-                          href="/automation-services"
-                          onClick={scrollToTopImmediate}
-                          className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group"
-                        >
-                          <Smartphone className="w-5 h-5 text-purple-600 mt-0.5" />
-                          <div>
-                            <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">Mobile Automation</div>
-                            <p className="text-xs text-gray-500 mt-0.5">iOS & Android app automation</p>
-                          </div>
-                        </a>
-                        <a href="#" className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group">
-                          <Shield className="w-5 h-5 text-purple-600 mt-0.5" />
-                          <div>
-                            <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">Stealth Technology</div>
-                            <p className="text-xs text-gray-500 mt-0.5">Bot detection bypass, proxies</p>
-                          </div>
-                        </a>
-                      </div>
-                    </div>
-
-                    {/* Data & Workflow Column */}
-                    <div>
-                      <h3 className="text-sm font-bold text-gray-900 mb-3 sm:mb-4">Data & Workflow</h3>
-                      <div className="space-y-2 sm:space-y-3">
-                        <a
-                          href="/automation-services"
-                          onClick={scrollToTopImmediate}
-                          className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg hover:bg-gray-50 transition-colors group min-h-[44px]"
-                        >
-                          <Database className="w-5 h-5 text-purple-600 mt-0.5" />
-                          <div>
-                            <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">Data Extraction</div>
-                            <p className="text-xs text-gray-500 mt-0.5">Custom scrapers for any website</p>
-                          </div>
-                        </a>
-                        <a
-                          href="/automation-services"
-                          onClick={scrollToTopImmediate}
-                          className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group"
-                        >
-                          <Zap className="w-5 h-5 text-purple-600 mt-0.5" />
-                          <div>
-                            <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">Workflow Automation</div>
-                            <p className="text-xs text-gray-500 mt-0.5">Business process automation</p>
-                          </div>
-                        </a>
-                        <a href="#" className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group">
-                          <GitBranch className="w-5 h-5 text-purple-600 mt-0.5" />
-                          <div>
-                            <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">API Integration</div>
-                            <p className="text-xs text-gray-500 mt-0.5">Connect to any platform</p>
-                          </div>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Bottom Link */}
-                  <div className="mt-6 pt-6 border-t border-gray-200">
-                    <a
-                      href="/automation-services"
-                      onClick={scrollToTopImmediate}
-                      className="text-sm font-semibold text-purple-600 hover:text-purple-700 flex items-center gap-2"
-                    >
-                      View all automation services
-                      <span>→</span>
-                    </a>
-                  </div>
-                </div>
-              )}
+            {/* About (non-clickable) */}
+            <div className="flex items-center space-x-1 px-3 py-2 rounded-lg min-h-[44px] lg:min-h-0">
+              <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>About</span>
             </div>
 
-            {/* Development Dropdown - SECONDARY */}
-            <div className="relative" ref={developmentRef}>
+            {/* Services Dropdown */}
+            <div className="relative" ref={servicesRef}>
               <div 
-                onClick={() => toggleDropdown('development')}
+                onClick={() => toggleDropdown('services')}
                 className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0"
               >
-                <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Development</span>
-                <ChevronDown className={`w-4 h-4 text-gray-900 transition-transform duration-200 ${openDropdown === 'development' ? 'rotate-180' : ''}`} />
+                <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Services</span>
+                <ChevronDown className={`w-4 h-4 text-gray-900 transition-transform duration-200 ${openDropdown === 'services' ? 'rotate-180' : ''}`} />
               </div>
               
-              {/* Development Dropdown */}
-              {openDropdown === 'development' && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[90vw] max-w-[400px] lg:w-[400px] bg-white rounded-2xl shadow-2xl border border-gray-200 p-4 sm:p-6 lg:p-8 opacity-0 animate-fadeIn">
-                      <div className="space-y-2 sm:space-y-3">
-                    <a
-                      href="/development-services"
-                      onClick={scrollToTopImmediate}
-                      className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg hover:bg-gray-50 transition-colors group min-h-[44px]"
-                    >
-                      <Globe className="w-5 h-5 text-purple-600 mt-0.5" />
-                          <div>
-                        <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">Web Applications</div>
-                        <p className="text-xs text-gray-500 mt-0.5">React, Vue, Angular solutions</p>
-                          </div>
-                        </a>
-                    <a
-                      href="/development-services"
-                      onClick={scrollToTopImmediate}
-                      className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group"
-                    >
-                      <Smartphone className="w-5 h-5 text-purple-600 mt-0.5" />
-                          <div>
-                        <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">Mobile Apps</div>
-                        <p className="text-xs text-gray-500 mt-0.5">Native and cross-platform</p>
-                          </div>
-                        </a>
-                    <a
-                      href="/development-services"
-                      onClick={scrollToTopImmediate}
-                      className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group"
-                    >
-                          <Database className="w-5 h-5 text-purple-600 mt-0.5" />
-                          <div>
-                        <div className="font-semibold text-gray-900 text-sm group-hover:text-purple-600">API Development</div>
-                        <p className="text-xs text-gray-500 mt-0.5">RESTful and GraphQL APIs</p>
-                          </div>
-                        </a>
+              {openDropdown === 'services' && (
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[90vw] max-w-[520px] bg-white rounded-2xl shadow-2xl border border-gray-200 p-3.5 sm:p-4 opacity-0 animate-fadeIn">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
+                    {servicesMenuItems.map(({ title, description, icon: Icon, href }) => (
+                      <Link
+                        key={title}
+                        to={href}
+                        onClick={() => {
+                          scrollToTopImmediate();
+                          setOpenDropdown(null);
+                        }}
+                        className="flex items-start gap-2.5 p-3 sm:p-3 rounded-xl border border-transparent hover:border-purple-100 hover:bg-purple-50/60 transition-all"
+                      >
+                        <div className="mt-0.5">
+                          <Icon className="w-5 h-5 text-purple-600" />
+                        </div>
+                        <div className="space-y-1">
+                          <div className="font-semibold text-gray-900 text-sm sm:text-sm">{title}</div>
+                          <p className="text-[11px] sm:text-xs text-gray-500 leading-snug">{description}</p>
+                        </div>
+                      </Link>
+                    ))}
                   </div>
-
-                  {/* Bottom Link */}
-                  <div className="mt-6 pt-6 border-t border-gray-200">
+                  <div className="mt-3.5 pt-3.5 border-t border-gray-200 flex justify-center">
                     <a
-                      href="/development-services"
+                      href="/services"
                       onClick={scrollToTopImmediate}
-                      className="text-sm font-semibold text-purple-600 hover:text-purple-700 flex items-center gap-2"
+                      className="text-sm font-semibold text-purple-600 hover:text-purple-700 flex items-center gap-1.5 leading-tight"
                     >
-                      View all development services
-                      <span>→</span>
+                      View all services
+                      <span className="text-base leading-none translate-y-[1px]">→</span>
                     </a>
                   </div>
                 </div>
@@ -384,26 +301,21 @@ export const Navigation = () => {
                 >
                   <span>Home</span>
                 </Link>
-                <Link 
-                  to="/automation-services" 
-                  className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
-                  onClick={() => {
-                    scrollToTopImmediate();
-                    closeMobileMenu();
-                  }}
-                >
-                  <span>Automation</span>
-                </Link>
-                <Link 
-                  to="/development-services" 
-                  className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
-                  onClick={() => {
-                    scrollToTopImmediate();
-                    closeMobileMenu();
-                  }}
-                >
-                  <span>Development</span>
-                </Link>
+                <div className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white min-h-[44px] rounded-lg opacity-80">
+                  <span>About</span>
+                </div>
+                <div className="flex flex-col gap-2 py-3 px-2 text-base sm:text-lg font-medium text-white min-h-[44px] rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <span>Services</span>
+                  </div>
+                  <div className="pl-3 space-y-2 text-sm sm:text-base font-normal text-white/90">
+                    <div>Automation</div>
+                    <div>Scraping</div>
+                    <div>Full Stack Development</div>
+                    <div>AI Solutions</div>
+                    <div>SAAS MVP</div>
+                  </div>
+                </div>
                 <Link 
                   to="/projects" 
                   className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
