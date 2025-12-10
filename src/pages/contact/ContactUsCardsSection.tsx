@@ -16,7 +16,7 @@ function ContactUsCardsSection() {
           <IconHpb
             icon={<img src="https://cdn.simpleicons.org/whatsapp/25D366" alt="whatsapp logo" width={36} height={36} />}
             heading={"WhatsApp & Inquiries"}
-            desc={"Get in touch via WhatsApp for instant responses. We're here to help you."}
+            desc={"Get in touch via WhatsApp for instant responses. We're here to help you with your needs"}
             btncontent="Message on WhatsApp"
             bluebtnlink="https://api.whatsapp.com/send/?phone=923249868488&text=Hi+Zeeshan%2C+I%27m+interested+in+automation.&type=phone_number&app_absent=0"
           />
@@ -32,7 +32,7 @@ function ContactUsCardsSection() {
           <IconHpb
             icon={<img src="https://cdn.simpleicons.org/telegram/26A5E4" alt="telegram logo" width={36} height={36} />}
             heading={"Telegram Support"}
-            desc={"Send us a quick DM on Telegram—our team is online and ready to help."}
+            desc={"Send us a quick DM on Telegram—our team is online and ready to help you."}
             btncontent="Send DM"
             bluebtnlink="https://t.me/Bitbash333"
           />

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { HeroBackground } from "@/components/HeroBackground";
@@ -155,27 +156,38 @@ const aiCategories = [
   },
 ];
 
+const cardKey = (title: string, index: number) => `ai-${index}-${title}`;
+
 const ServiceAiSolutions = () => {
+  const [expandedMap, setExpandedMap] = useState<Record<string, boolean>>({});
+
+  const toggleExpand = (key: string) => {
+    setExpandedMap((prev) => {
+      const next = { ...prev, [key]: !prev[key] };
+      return next;
+    });
+  };
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-white">
       <Navigation />
 
-      <section className="relative min-h-[260px] sm:min-h-[320px] md:min-h-[360px] flex items-center justify-center overflow-hidden pt-14">
+      <section className="relative pt-24 pb-12 sm:pt-32 sm:pb-16 overflow-hidden">
         <HeroBackground />
-        <div className="relative z-10 container-responsive text-center">
-          <div className="max-w-4xl mx-auto space-y-3 sm:space-y-4">
-            <h1 className="text-responsive-3xl sm:text-responsive-4xl md:text-4xl lg:text-5xl font-bold leading-[1.1] tracking-tight font-sans">
+        <div className="container-responsive relative z-20">
+          <div className="max-w-4xl mx-auto text-center">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6">
               AI Solutions
             </h1>
-            <p className="text-base sm:text-lg md:text-xl text-muted-foreground mx-auto text-center max-w-[780px] leading-relaxed">
+            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
               Agents, copilots, and ML pipelines designed for your data and workflows—built with safety and observability.
             </p>
           </div>
         </div>
       </section>
 
-      <section className="py-6 sm:py-8 md:py-10 bg-white">
-        <div className="container-responsive">
+      <section className="py-12 sm:py-14 bg-white">
+        <div className="max-w-screen-xl mx-auto px-4">
           <ServiceCtaCard
             title="AI Solutions"
             description="Agents, copilots, and ML pipelines tailored to your data with guardrails, evals, and observability."
@@ -190,37 +202,68 @@ const ServiceAiSolutions = () => {
         </div>
       </section>
 
-      <section className="py-8 sm:py-10 md:py-12 bg-white">
-        <div className="container-responsive">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8">What we build</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 sm:gap-6">
-            {aiCategories.map((category) => (
-              <Card key={category.title} className="p-5 sm:p-6 space-y-3 border border-gray-200">
-                <h3 className="text-xl font-bold text-gray-900">{category.title}</h3>
-                <div className="space-y-2">
-                  {category.items.map((item) => (
-                    <div key={item} className="flex items-start gap-2 text-sm sm:text-base text-gray-800">
-                      <CheckCircle className="w-4.5 h-4.5 text-green-500 mt-0.5" />
-                      <span>{item}</span>
-                    </div>
-                  ))}
+      <section className="py-12 sm:py-14 bg-gradient-to-b from-gray-50 to-white">
+        <div className="max-w-screen-xl mx-auto px-4 space-y-6">
+          <div className="flex flex-col gap-2">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">What we build</h2>
+            <p className="text-base text-gray-700 max-w-2xl leading-[1.65]">
+              AI product patterns and workflows—from audits to agentic systems—built with guardrails.
+            </p>
+          </div>
+          <div className="columns-1 md:columns-2 gap-6 sm:gap-7 [column-fill:_balance]">
+            {aiCategories.map((category, index) => {
+              const key = cardKey(category.title, index);
+              const isExpanded = !!expandedMap[key];
+              const items = isExpanded ? category.items : category.items.slice(0, 3);
+              const hiddenCount = Math.max(0, category.items.length - 3);
+              return (
+                <div key={key} className="break-inside-avoid-column mb-6 sm:mb-7">
+                  <Card className="p-5 sm:p-7 space-y-3 border border-gray-200/70 shadow-[0_8px_30px_-12px_rgba(15,23,42,0.18)] rounded-2xl transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_16px_40px_-18px_rgba(15,23,42,0.28)]">
+                  <div className="space-y-1.5">
+                    <h3 className="text-[19px] sm:text-xl font-semibold text-gray-900 tracking-tight">{category.title}</h3>
+                    <div className="h-1 w-12 rounded-full bg-purple-200" />
+                  </div>
+                  <div className="space-y-2">
+                    {items.map((item) => (
+                      <div
+                        key={item}
+                        className="flex items-start gap-2 text-[15px] sm:text-base text-gray-800 leading-[1.55]"
+                      >
+                        <span className="mt-2 h-1.5 w-1.5 rounded-full bg-gray-300/90" />
+                        <span>{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                  {hiddenCount > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => toggleExpand(key)}
+                      className="inline-flex items-center text-sm font-semibold text-purple-700 hover:text-purple-800 px-3 py-1.5 rounded-full border border-purple-100 hover:border-purple-200 bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                    >
+                      {isExpanded ? "Show less" : `See more (${hiddenCount})`}
+                      </button>
+                    )}
+                  </Card>
                 </div>
-              </Card>
-            ))}
+              );
+            })}
+            {aiCategories.length % 2 === 0 && (
+              <div className="break-inside-avoid-column mb-6 sm:mb-7" aria-hidden="true" />
+            )}
           </div>
         </div>
       </section>
 
-      <section className="py-10 sm:py-12 md:py-14 bg-white">
-        <div className="container-responsive grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-6 sm:gap-10">
-          <Card className="p-6 sm:p-8 space-y-4 sm:space-y-5">
+      <section className="py-12 sm:py-14 bg-white">
+        <div className="max-w-screen-xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-7 sm:gap-10">
+          <Card className="p-6 sm:p-8 space-y-4 sm:space-y-5 rounded-2xl bg-gradient-to-br from-purple-50 via-white to-purple-100/60 border border-purple-100 shadow-md overflow-hidden">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">What we deliver</h2>
-            <p className="text-base sm:text-lg text-gray-700">
+            <p className="text-base sm:text-lg text-gray-700 leading-[1.65] max-w-2xl">
               We build AI that ships: agents and copilots with retrieval, tools, and guardrails that fit your stack and compliance needs.
             </p>
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {bullets.map((item) => (
-                <div key={item} className="flex items-start gap-3 text-base text-gray-800">
+                <div key={item} className="flex items-start gap-2 text-base text-gray-800">
                   <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
                   <span>{item}</span>
                 </div>
@@ -228,12 +271,12 @@ const ServiceAiSolutions = () => {
             </div>
           </Card>
 
-          <Card className="p-6 sm:p-8 space-y-4 sm:space-y-5">
+          <Card className="p-6 sm:p-8 space-y-4 sm:space-y-5 rounded-2xl bg-gradient-to-br from-purple-50 via-white to-purple-100/60 border border-purple-100 shadow-md overflow-hidden">
             <h3 className="text-xl sm:text-2xl font-bold text-gray-900">Tech & approach</h3>
-            <p className="text-base text-gray-700">
+            <p className="text-base text-gray-700 leading-[1.65]">
               LangChain/LangGraph, vector stores, function calling, tool use, evals, monitoring, and secure deployments.
             </p>
-            <p className="text-base text-gray-700">
+            <p className="text-base text-gray-700 leading-[1.65]">
               We focus on reliability—prompt/version control, testing, telemetry, and fallback strategies so AI features stay stable in production.
             </p>
           </Card>

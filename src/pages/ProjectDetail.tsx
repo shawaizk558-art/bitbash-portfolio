@@ -175,10 +175,6 @@ const ProjectDetail = () => {
                     <p className="text-gray-600 font-medium">More Details</p>
                     <p className="text-gray-900 font-semibold">{sidebarContent.moreDetails}</p>
                   </div>
-                  <div>
-                    <p className="text-gray-600 font-medium">Developer</p>
-                    <p className="text-gray-900 font-semibold">{sidebarContent.developer}</p>
-                  </div>
                 </div>
               </div>
             </aside>
@@ -234,10 +230,6 @@ const ProjectDetail = () => {
                   <div>
                     <p className="text-gray-600 font-medium">More Details</p>
                     <p className="text-gray-900 font-semibold">{sidebarContent.moreDetails}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600 font-medium">Developer</p>
-                    <p className="text-gray-900 font-semibold">{sidebarContent.developer}</p>
                   </div>
                 </div>
               </div>
