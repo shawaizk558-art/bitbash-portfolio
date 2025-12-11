@@ -5,7 +5,7 @@ import { Footer } from "@/components/Footer";
 import { Hero } from "@/components/Hero";
 import { ArrowLeft } from "lucide-react";
 import { getProjectBySlug as getHardcodedProject } from "@/data/projects";
-import { getProjectBySlug as getStrapiProject } from "@/lib/strapi";
+import { getProjectBySlug as getStrapiProject, getMongoProjectBySlug } from "@/lib/strapi";
 import { useState, useEffect } from "react";
 import type { Project } from "@/data/projects";
 import { getMediaAssets } from "@/lib/mediaAssets";
@@ -14,9 +14,105 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import telegramWeatherMarkdown from "../../content/projects/project1.md?raw";
 
+/**
+ * Convert a string to title case (capitalize first letter of each word)
+ * Handles hyphens, underscores, and spaces
+ */
+function toTitleCase(str: string): string {
+  if (!str) return str;
+  
+  return str
+    // Replace hyphens and underscores with spaces
+    .replace(/[-_]/g, ' ')
+    // Split by spaces and capitalize first letter of each word
+    .split(' ')
+    .map(word => {
+      if (!word) return word;
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    })
+    .join(' ')
+    .trim();
+}
+
+/**
+ * Extract the opening paragraph from readme (between main title and ## Introduction)
+ */
+function extractOpeningParagraph(readme: string): string | null {
+  if (!readme) return null;
+  
+  // Match content between the main title (# Title) and ## Introduction
+  // This captures the opening paragraph
+  const openingMatch = readme.match(/^#\s+[^\n]+\n\n([\s\S]*?)(?=\n##\s+Introduction)/i);
+  
+  if (openingMatch && openingMatch[1]) {
+    return openingMatch[1].trim();
+  }
+  
+  return null;
+}
+
+/**
+ * Remove everything before ## Introduction heading from markdown content
+ * This removes the main title (# Title), opening paragraph, and any content before Introduction
+ */
+function removeContentBeforeIntroduction(markdown: string): string {
+  if (!markdown) return markdown;
+  
+  // Find ## Introduction and keep everything from there (including the heading)
+  const introMatch = markdown.match(/(##\s+Introduction[\s\S]*)/i);
+  
+  if (introMatch && introMatch[1]) {
+    // Return everything from ## Introduction onwards
+    return introMatch[1].trim();
+  }
+  
+  // If no Introduction found, remove the main title (# Title) and everything until first ## heading
+  // This handles cases where the structure might be slightly different
+  let cleaned = markdown
+    // Remove the main title line (# Title) - matches from start of string
+    .replace(/^#\s+[^\n]+/m, '')
+    // Remove any newlines after the title
+    .replace(/^\n+/m, '')
+    // Remove everything (including the opening paragraph) until the first ## heading
+    .replace(/^[\s\S]*?(?=\n##\s+)/, '');
+  
+  return cleaned.trim();
+}
+
+/**
+ * Remove Directory Structure Tree section from markdown content
+ */
+function removeDirectoryStructureTree(markdown: string): string {
+  // Match "## Directory Structure Tree" or "## Directory Structure" heading and everything until next heading or end
+  const directoryStructureRegex = /##\s+Directory\s+Structure\s+Tree[\s\S]*?(?=##\s+|$)/gi;
+  return markdown.replace(directoryStructureRegex, '').trim();
+}
+
+/**
+ * Clean up markdown content - remove extra leading whitespace and newlines
+ */
+function cleanMarkdownContent(markdown: string): string {
+  if (!markdown) return markdown;
+  // Remove all leading whitespace, newlines, and ensure it starts with the heading
+  return markdown.replace(/^\s+/, '').trim();
+}
+
+/**
+ * Remove extra spacing from the start of markdown - specifically for Introduction heading
+ */
+function removeLeadingSpacing(markdown: string): string {
+  if (!markdown) return markdown;
+  // If it starts with ## Introduction, ensure no leading whitespace
+  if (markdown.trim().startsWith('## Introduction')) {
+    return markdown.trim();
+  }
+  // Remove any leading newlines or spaces
+  return markdown.replace(/^[\s\n]+/, '');
+}
+
 const ProjectDetail = () => {
   const { slug } = useParams<{ slug: string }>();
-  const [project, setProject] = useState<Project | null>(null);
+  const [project, setProject] = useState<(Project & { title?: string; description?: string; readme?: string; [key: string]: any }) | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -34,7 +130,19 @@ const ProjectDetail = () => {
         return;
       }
 
-      // If not found in hardcoded, check Strapi
+      // If not found in hardcoded, check MongoDB projects
+      try {
+        const mongoProject = await getMongoProjectBySlug(slug);
+        if (mongoProject) {
+          setProject(mongoProject);
+          setIsLoading(false);
+          return;
+        }
+      } catch (error) {
+        console.error('Error loading project from MongoDB:', error);
+      }
+
+      // Fallback to Strapi if not found in MongoDB
       try {
         const strapiProject = await getStrapiProject(slug);
         setProject(strapiProject);
@@ -100,8 +208,8 @@ const ProjectDetail = () => {
   return (
     <div className="min-h-screen bg-white">
       <SEO
-        title={`${project.name} - BitBash Project`}
-        description={project.description.substring(0, 160)}
+        title={`${toTitleCase((project as any).title || project.name)} - BitBash Project`}
+        description={((project as any).description || project.description).substring(0, 160)}
         canonical={`/project/${project.slug}`}
         image={mediaAssets.avatarSrc}
       />
@@ -120,8 +228,12 @@ const ProjectDetail = () => {
 
       {/* Hero Section with Project Name and Description */}
       <Hero 
-        title={project.name}
-        subtitle={truncateDescription(project.description)}
+        title={toTitleCase((project as any).title || project.name)}
+        subtitle={
+          (project as any).readme 
+            ? (extractOpeningParagraph((project as any).readme) || truncateDescription((project as any).description || project.description))
+            : truncateDescription((project as any).description || project.description)
+        }
         variant="compact"
         buttons={[
           { label: "See Our Work", href: "/projects", variant: "outline" },
@@ -235,15 +347,20 @@ const ProjectDetail = () => {
               </div>
             </aside>
             <div className="space-y-8 sm:space-y-10 md:space-y-12 lg:space-y-14">
-              {/* Description */}
-              <div>
-                <h2 className="text-2xl sm:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb-4 sm:mb-6 lg:mb-8">
-                  Description
-                </h2>
-                <div className="prose prose-lg lg:prose-lg max-w-none">
-                  <p className="text-base sm:text-lg lg:text-lg xl:text-xl text-gray-700 leading-relaxed lg:leading-relaxed">
-                    {project.description}
-                  </p>
+              {/* Description - Use readme from MongoDB if available, otherwise use description */}
+              <div className="-mt-8 sm:-mt-10 md:-mt-12 lg:-mt-14">
+                <div className="prose prose-lg lg:prose-lg max-w-none [&>h2:first-child]:mt-0">
+                  {(project as any).readme ? (
+                    <div className="text-base sm:text-lg lg:text-lg xl:text-xl text-gray-700 leading-relaxed lg:leading-relaxed">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {removeLeadingSpacing(cleanMarkdownContent(removeDirectoryStructureTree(removeContentBeforeIntroduction((project as any).readme))))}
+                      </ReactMarkdown>
+                    </div>
+                  ) : (
+                    <p className="text-base sm:text-lg lg:text-lg xl:text-xl text-gray-700 leading-relaxed lg:leading-relaxed">
+                      {project.description}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -284,25 +401,6 @@ const ProjectDetail = () => {
                       </li>
                     ))}
                   </ul>
-                </div>
-              )}
-
-              {/* Technologies Used */}
-              {project.technologies.length > 0 && (
-                <div>
-                  <h2 className="text-2xl sm:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb-4 sm:mb-6 lg:mb-8">
-                    Technologies Used
-                  </h2>
-                  <div className="flex flex-wrap gap-1.5 sm:gap-2.5 lg:gap-4 justify-start">
-                    {project.technologies.map((tech, index) => (
-                      <span
-                        key={index}
-                        className="px-2 py-1 sm:px-3 sm:py-1.5 lg:px-5 lg:py-2.5 xl:px-6 xl:py-3 bg-purple-100 text-purple-700 rounded-full text-xs sm:text-sm lg:text-sm xl:text-base font-medium"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
                 </div>
               )}
 

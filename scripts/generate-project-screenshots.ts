@@ -2,7 +2,7 @@ import puppeteer from 'puppeteer';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { projects as hardcodedProjects } from '../src/data/projects';
-import { getProjects } from '../src/lib/strapi';
+import { getMongoProjects } from '../src/lib/strapi';
 import { generateContentHash } from './utils/content-hash';
 import type { Project } from '../src/data/projects';
 
@@ -145,19 +145,20 @@ async function main() {
   const manifest = await loadManifest();
   console.log(`📋 Loaded manifest with ${Object.keys(manifest).length} entries\n`);
 
-  // Get all projects (hardcoded + Strapi) - same logic as Projects.tsx
-  const strapiProjects = await getProjects({
-    sort: 'displayOrder:asc,publishedAt:desc'
-  });
+  // Get all projects (hardcoded + MongoDB) - same logic as Projects.tsx
+  const mongoProjects = await getMongoProjects();
   
-  // Filter out Strapi projects that have same slug as hardcoded (hardcoded take precedence)
+  // Filter out MongoDB projects that have same slug as hardcoded (hardcoded take precedence)
   const hardcodedSlugs = new Set(hardcodedProjects.map(p => p.slug));
-  const filteredStrapiProjects = strapiProjects.filter(
+  const filteredMongoProjects = mongoProjects.filter(
     project => !hardcodedSlugs.has(project.slug)
   );
 
-  // Combine all projects: hardcoded first, then Strapi (same as Projects.tsx)
-  const allProjects: Project[] = [...hardcodedProjects, ...filteredStrapiProjects];
+  // Combine all projects: hardcoded first, then MongoDB (same as Projects.tsx)
+  const allProjects: (Project & { mongoId?: string; [key: string]: any })[] = [
+    ...hardcodedProjects, 
+    ...filteredMongoProjects
+  ];
   
   // Filter projects (skip top 9)
   const projectsToProcess = allProjects.slice(SKIP_TOP_N);

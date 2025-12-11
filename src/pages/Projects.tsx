@@ -1,7 +1,7 @@
 import { Navigation } from "@/components/Navigation";
 import { SEO } from "@/components/SEO";
 import { Footer } from "@/components/Footer";
-import { getProjects } from "@/lib/strapi";
+import { getMongoProjects } from "@/lib/strapi";
 import { Play, Star, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState, useCallback } from "react";
@@ -16,29 +16,80 @@ import {
   getVideoSources,
 } from "@/lib/mediaAssets";
 
+/**
+ * Convert a string to title case (capitalize first letter of each word)
+ * Handles hyphens, underscores, and spaces
+ */
+function toTitleCase(str: string): string {
+  if (!str) return str;
+  
+  return str
+    // Replace hyphens and underscores with spaces
+    .replace(/[-_]/g, ' ')
+    // Split by spaces and capitalize first letter of each word
+    .split(' ')
+    .map(word => {
+      if (!word) return word;
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    })
+    .join(' ')
+    .trim();
+}
+
+/**
+ * Extract the Introduction section from readme markdown
+ * The Introduction section starts with "## Introduction" and ends at the next "##" heading
+ */
+function extractIntroductionFromReadme(readme: string): string | null {
+  if (!readme) return null;
+  
+  // Find the Introduction section
+  const introMatch = readme.match(/##\s+Introduction\s*\n\n([\s\S]*?)(?=\n##\s+|$)/i);
+  
+  if (introMatch && introMatch[1]) {
+    // Clean up the text: remove markdown formatting, extra whitespace
+    let introText = introMatch[1]
+      .trim()
+      // Remove markdown links but keep text: [text](url) -> text
+      .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1')
+      // Remove markdown bold/italic: **text** -> text, *text* -> text
+      .replace(/\*\*([^\*]+)\*\*/g, '$1')
+      .replace(/\*([^\*]+)\*/g, '$1')
+      // Remove markdown headers
+      .replace(/^###+\s+/gm, '')
+      // Remove code blocks
+      .replace(/```[\s\S]*?```/g, '')
+      .replace(/`([^`]+)`/g, '$1')
+      // Remove list markers at start of lines
+      .replace(/^[\s]*[-*+]\s+/gm, '')
+      // Remove extra newlines (max 2 consecutive)
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+    
+    // Take first paragraph or first 200 characters
+    const firstParagraph = introText.split('\n\n')[0];
+    return firstParagraph.length > 200 
+      ? firstParagraph.substring(0, 200).trim() + '...'
+      : firstParagraph;
+  }
+  
+  return null;
+}
+
 const Projects = () => {
-  const [dynamicProjects, setDynamicProjects] = useState<Project[]>([]);
+  const [mongoProjects, setMongoProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [playingVideoIndex, setPlayingVideoIndex] = useState<number | null>(null);
 
   useEffect(() => {
     async function fetchDynamicProjects() {
       try {
-        const strapiProjects = await getProjects({
-          sort: 'displayOrder:asc,publishedAt:desc'
-        });
-
-        // Filter out any projects that have the same slug as hardcoded projects
-        // (hardcoded projects take precedence)
-        const hardcodedSlugs = new Set(hardcodedProjects.map(p => p.slug));
-        const filteredProjects = strapiProjects.filter(
-          project => !hardcodedSlugs.has(project.slug)
-        );
-
-        setDynamicProjects(filteredProjects);
+        // Fetch MongoDB projects only (no Strapi projects below top 9)
+        const mongoProjectsData = await getMongoProjects();
+        setMongoProjects(mongoProjectsData);
       } catch (error) {
-        console.error('Error fetching dynamic projects:', error);
-        setDynamicProjects([]);
+        console.error('Error fetching MongoDB projects:', error);
+        setMongoProjects([]);
       } finally {
         setIsLoading(false);
       }
@@ -47,14 +98,27 @@ const Projects = () => {
     fetchDynamicProjects();
   }, []);
 
-  // Reorder projects (swap 2nd and 3rd for homepage consistency)
-  const reorderedHardcodedProjects = [...hardcodedProjects];
+  // Filter out Telegram Weather Alert Bot and reorder projects (swap 2nd and 3rd for homepage consistency)
+  const filteredHardcodedProjects = hardcodedProjects.filter(
+    project => project.slug !== 'telegram-weather-alert-bot'
+  );
+  const reorderedHardcodedProjects = [...filteredHardcodedProjects];
   if (reorderedHardcodedProjects.length > 2) {
     [reorderedHardcodedProjects[1], reorderedHardcodedProjects[2]] = [reorderedHardcodedProjects[2], reorderedHardcodedProjects[1]];
   }
 
-  // Combine all projects: hardcoded first, then dynamic
-  const allProjects = [...reorderedHardcodedProjects, ...dynamicProjects];
+  // Combine all projects: hardcoded first, then MongoDB only
+  // Filter out duplicates by slug (hardcoded takes precedence)
+  const hardcodedSlugs = new Set(reorderedHardcodedProjects.map(p => p.slug));
+  
+  const filteredMongoProjects = mongoProjects.filter(
+    project => !hardcodedSlugs.has(project.slug)
+  );
+  
+  const allProjects = [
+    ...reorderedHardcodedProjects, 
+    ...filteredMongoProjects
+  ];
 
   const setHighPriority = useCallback((node: HTMLImageElement | null) => {
     if (node) {
@@ -214,9 +278,15 @@ const Projects = () => {
 
                   {/* Card Content - Mobile Optimized - Clickable to navigate */}
                   <Link to={`/project/${project.slug}`} className="block p-4 sm:p-6 hover:bg-gray-50 transition-colors">
-                    {/* Quote */}
-                    <p className="text-gray-700 text-xs sm:text-sm lg:text-sm leading-relaxed mb-4 line-clamp-3">
-                      "{project.quote}"
+                    {/* Title - Use title from MongoDB if available, otherwise use name, convert to title case */}
+                    <p className="text-gray-700 text-xs sm:text-sm lg:text-sm leading-relaxed mb-2 font-semibold line-clamp-2">
+                      {toTitleCase((project as any).title || project.name)}
+                    </p>
+                    {/* Description - Use Introduction from readme, then description, then quote */}
+                    <p className="text-gray-600 text-xs sm:text-sm leading-relaxed mb-4 line-clamp-3">
+                      {extractIntroductionFromReadme((project as any).readme) || 
+                       (project as any).description || 
+                       project.quote}
                     </p>
 
                     {/* Author Info - Mobile Optimized */}
@@ -248,10 +318,10 @@ const Projects = () => {
 
                         <div className="min-w-0 flex-1">
                           <p className="font-semibold text-gray-900 text-xs sm:text-sm lg:text-sm truncate">
-                            {project.name}
+                            {toTitleCase((project as any).title || project.name)}
                           </p>
                           <p className="text-xs text-gray-500 truncate">
-                            {project.role}
+                            {toTitleCase((project as any).category || project.role)}
                           </p>
                         </div>
                       </div>
