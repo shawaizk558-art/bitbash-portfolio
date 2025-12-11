@@ -12,7 +12,9 @@
 
 import { promises as fs } from 'fs';
 import path from 'path';
-import puppeteer from 'puppeteer';
+import puppeteerCore from 'puppeteer-core';
+import chromium from '@sparticuz/chromium';
+import { put, list } from '@vercel/blob';
 import crypto from 'crypto';
 
 type VercelRequest = {
@@ -29,22 +31,31 @@ type VercelResponse = {
   end: () => void;
 };
 
-// In Vercel serverless, we can only write to /tmp (ephemeral)
-// For production, screenshots should be committed to git or use Vercel Blob Storage
+const SCREENSHOT_BLOB_PREFIX = 'project-screenshots/';
+const MANIFEST_BLOB_NAME = 'screenshot-manifest.json';
 const PROJECTS_FILE_PATH = path.join(process.cwd(), 'public', 'data', 'mongodb-projects.json');
-const SCREENSHOT_DIR = process.env.VERCEL 
-  ? path.join('/tmp', 'project-screenshots')  // Use /tmp in Vercel (ephemeral)
-  : path.join(process.cwd(), 'public', 'project-screenshots');  // Use public in local/dev
-const MANIFEST_PATH = process.env.VERCEL
-  ? path.join('/tmp', 'screenshot-manifest.json')  // Use /tmp in Vercel
-  : path.join(process.cwd(), 'scripts', 'screenshot-manifest.json');  // Use scripts in local/dev
+const LOCAL_SCREENSHOT_DIR = path.join(process.cwd(), 'public', 'project-screenshots');
+const LOCAL_MANIFEST_PATH = path.join(process.cwd(), 'scripts', 'screenshot-manifest.json');
 
 // Use production URL or fallback to localhost for testing
-const BASE_URL = process.env.VERCEL_URL 
-  ? `https://${process.env.VERCEL_URL}` 
+const BASE_URL = process.env.VERCEL 
+  ? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : process.env.SITE_URL || 'http://localhost:8080')
   : process.env.SITE_URL || 'http://localhost:8080';
 
 const SKIP_TOP_N = 9; // Skip first 9 projects (hardcoded)
+
+// Hardcoded project slugs (top 9 projects that take precedence)
+const HARDCODED_PROJECT_SLUGS = new Set([
+  'petla',
+  'scraper-glass',
+  'actuary-list',
+  'twitter-data-scraper-tweet-logger-scraper',
+  'telegram-weather-alert-bot',
+  'linkedin-scraper',
+  'instagram-scraper',
+  'reddit-scraper',
+  'youtube-scraper'
+]);
 
 interface ScreenshotManifest {
   [slug: string]: {
@@ -67,26 +78,67 @@ interface Project {
   [key: string]: any;
 }
 
-async function ensureDirectoryExists(dir: string) {
-  try {
-    await fs.access(dir);
-  } catch {
-    await fs.mkdir(dir, { recursive: true });
-  }
-}
-
 async function loadManifest(): Promise<ScreenshotManifest> {
   try {
-    const content = await fs.readFile(MANIFEST_PATH, 'utf-8');
-    return JSON.parse(content);
+    const hasBlobToken = process.env.VERCEL || 
+      process.env.BLOB_READ_WRITE_TOKEN || 
+      Object.keys(process.env).some(key => key.includes('BLOB') && key.includes('READ_WRITE_TOKEN'));
+    
+    if (hasBlobToken) {
+      try {
+        const { blobs } = await list({ prefix: MANIFEST_BLOB_NAME });
+        const blob = blobs.find(b => b.pathname === MANIFEST_BLOB_NAME);
+        if (blob && blob.url) {
+          const response = await fetch(blob.url);
+          if (response.ok) {
+            const content = await response.text();
+            return JSON.parse(content);
+          }
+        }
+      } catch (blobError: any) {
+        console.log('Could not read manifest from Blob Storage, trying local file');
+      }
+    }
+    
+    // Fallback: Read from local file
+    try {
+      const content = await fs.readFile(LOCAL_MANIFEST_PATH, 'utf-8');
+      return JSON.parse(content);
+    } catch {
+      return {};
+    }
   } catch {
     return {};
   }
 }
 
 async function saveManifest(manifest: ScreenshotManifest) {
-  await ensureDirectoryExists(path.dirname(MANIFEST_PATH));
-  await fs.writeFile(MANIFEST_PATH, JSON.stringify(manifest, null, 2), 'utf-8');
+  const jsonContent = JSON.stringify(manifest, null, 2);
+  
+  const hasBlobToken = process.env.VERCEL || 
+    process.env.BLOB_READ_WRITE_TOKEN || 
+    Object.keys(process.env).some(key => key.includes('BLOB') && key.includes('READ_WRITE_TOKEN'));
+  
+  if (hasBlobToken) {
+    try {
+      await put(MANIFEST_BLOB_NAME, jsonContent, {
+        access: 'public',
+        contentType: 'application/json',
+        addRandomSuffix: false,
+      });
+      console.log('✅ Manifest saved to Blob Storage');
+    } catch (blobError) {
+      console.error('⚠️  Error writing manifest to Blob Storage:', blobError);
+    }
+  }
+  
+  // Also save locally for backup
+  try {
+    await fs.mkdir(path.dirname(LOCAL_MANIFEST_PATH), { recursive: true });
+    await fs.writeFile(LOCAL_MANIFEST_PATH, jsonContent, 'utf-8');
+  } catch (fileError) {
+    // Ignore local file errors in production
+  }
 }
 
 async function readMongoProjects(): Promise<Project[]> {
@@ -136,10 +188,9 @@ function generateContentHash(project: Project & { mongoId?: string; [key: string
 }
 
 async function generateScreenshot(
-  browser: Awaited<ReturnType<typeof puppeteer.launch>>,
-  projectSlug: string,
-  outputPath: string
-): Promise<boolean> {
+  browser: Awaited<ReturnType<typeof puppeteerCore.launch>>,
+  projectSlug: string
+): Promise<{ success: boolean; url?: string }> {
   const page = await browser.newPage();
   
   try {
@@ -189,8 +240,7 @@ async function generateScreenshot(
     const clipWidth = Math.round(heroCore.width + horizontalPadding * 2);
     const clipHeight = Math.round(heroCore.height + verticalPadding * 2);
 
-    await page.screenshot({
-      path: outputPath,
+    const buffer = await page.screenshot({
       type: 'png',
       clip: {
         x: clipX,
@@ -198,13 +248,20 @@ async function generateScreenshot(
         width: clipWidth,
         height: clipHeight,
       },
+    }) as Buffer;
+
+    // Upload to Blob Storage
+    const blobName = `${SCREENSHOT_BLOB_PREFIX}${projectSlug}.png`;
+    const { url: blobUrl } = await put(blobName, buffer, {
+      access: 'public',
+      contentType: 'image/png',
     });
 
-    console.log(`  ✓ Screenshot saved: ${outputPath}`);
-    return true;
+    console.log(`  ✓ Screenshot uploaded: ${blobUrl}`);
+    return { success: true, url: blobUrl };
   } catch (error) {
     console.error(`  ✗ Failed to generate screenshot for ${projectSlug}:`, error);
-    return false;
+    return { success: false };
   } finally {
     await page.close();
   }
@@ -223,9 +280,6 @@ export default async function handler(
 
   try {
     console.log('🚀 Starting screenshot generation for MongoDB projects...');
-
-    // Ensure directories exist
-    await ensureDirectoryExists(SCREENSHOT_DIR);
 
     // Load manifest
     const manifest = await loadManifest();
@@ -261,10 +315,9 @@ export default async function handler(
       });
     }
 
-    // Launch browser
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: [
+    // Launch browser with Vercel-compatible chromium
+    const browser = await puppeteerCore.launch({
+      args: process.env.VERCEL ? chromium.args : [
         '--no-sandbox',
         '--disable-setuid-sandbox',
         '--disable-dev-shm-usage',
@@ -273,6 +326,11 @@ export default async function handler(
         '--no-zygote',
         '--single-process',
       ],
+      defaultViewport: chromium.defaultViewport,
+      executablePath: process.env.VERCEL 
+        ? await chromium.executablePath() 
+        : undefined,
+      headless: chromium.headless,
     });
 
     let generated = 0;
@@ -283,24 +341,26 @@ export default async function handler(
     for (const project of projectsToProcess) {
       const currentHash = generateContentHash(project);
       const existingEntry = manifest[project.slug];
-      const screenshotPath = path.join(SCREENSHOT_DIR, `${project.slug}.png`);
 
       // Check if screenshot exists and hash matches
       if (existingEntry?.hash === currentHash) {
+        // Check if screenshot exists in Blob Storage
         try {
-          await fs.access(screenshotPath);
-          console.log(`⏭️  Skipping ${project.slug} (no changes detected)`);
-          skipped++;
-          continue;
+          const { blobs } = await list({ prefix: `${SCREENSHOT_BLOB_PREFIX}${project.slug}.png` });
+          if (blobs.length > 0) {
+            console.log(`⏭️  Skipping ${project.slug} (no changes detected)`);
+            skipped++;
+            continue;
+          }
         } catch {
-          // Screenshot file doesn't exist, regenerate
+          // Screenshot doesn't exist, regenerate
         }
       }
 
       console.log(`📸 Generating screenshot for ${project.slug}...`);
-      const success = await generateScreenshot(browser, project.slug, screenshotPath);
+      const result = await generateScreenshot(browser, project.slug);
 
-      if (success) {
+      if (result.success) {
         manifest[project.slug] = {
           hash: currentHash,
           generatedAt: new Date().toISOString(),
