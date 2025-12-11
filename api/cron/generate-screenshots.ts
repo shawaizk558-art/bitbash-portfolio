@@ -35,9 +35,6 @@ type VercelResponse = {
 
 const SKIP_TOP_N = 9; // Skip first 9 projects
 
-// Set up Chromium for serverless
-chromium.setGraphicsMode(false);
-
 /**
  * Get production URL for rendering pages
  */

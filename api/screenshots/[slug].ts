@@ -5,7 +5,7 @@
  * and serves them to the frontend with proper caching headers.
  */
 
-import { get } from '@vercel/blob';
+import { list } from '@vercel/blob';
 import { promises as fs } from 'fs';
 import path from 'path';
 
@@ -49,10 +49,11 @@ export default async function handler(
     if (hasBlobToken) {
       try {
         const blobPath = `project-screenshots/${slug}.png`;
-        const blob = await get(blobPath);
+        const { blobs } = await list({ prefix: blobPath });
+        const blob = blobs.find(b => b.pathname === blobPath);
         
-        if (blob) {
-          // Fetch the blob content
+        if (blob && blob.url) {
+          // Fetch the blob content using the URL
           const response = await fetch(blob.url);
           if (response.ok) {
             const buffer = await response.arrayBuffer();
