@@ -8,7 +8,9 @@
  */
 
 import type { Project } from '@/data/projects';
-import projectsJson from '@/data/strapi-projects.json';
+// Use import attribute for NodeNext compatibility (Vercel type checking)
+// Vite bundler mode will handle this correctly
+import projectsJson from '@/data/strapi-projects.json' with { type: 'json' };
 
 const STATIC_PROJECTS: Project[] = Array.isArray(projectsJson)
   ? (projectsJson as Project[])
