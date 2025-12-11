@@ -42,7 +42,7 @@ async function ensureDirs() {
 
 function runFfmpeg(args: string[]) {
   return new Promise<void>((resolve, reject) => {
-    if (!ffmpegPath) {
+    if (!ffmpegPath || typeof ffmpegPath !== 'string') {
       reject(new Error("ffmpeg-static binary not found"));
       return;
     }

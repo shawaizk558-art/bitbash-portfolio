@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import type { Project } from '../../src/data/projects';
+import type { Project } from '../../src/data/projects.js';
 
 /**
  * Generate a hash from project content to detect changes

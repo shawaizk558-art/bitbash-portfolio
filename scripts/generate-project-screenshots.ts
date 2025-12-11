@@ -1,10 +1,10 @@
 import puppeteer from 'puppeteer';
 import { promises as fs } from 'fs';
 import path from 'path';
-import { projects as hardcodedProjects } from '../src/data/projects';
-import { getMongoProjects } from '../src/lib/strapi';
-import { generateContentHash } from './utils/content-hash';
-import type { Project } from '../src/data/projects';
+import { projects as hardcodedProjects } from '../src/data/projects.js';
+import { getMongoProjects } from '../src/lib/strapi.js';
+import { generateContentHash } from './utils/content-hash.js';
+import type { Project } from '../src/data/projects.js';
 
 const SCREENSHOT_DIR = path.join(process.cwd(), 'public', 'project-screenshots');
 const MANIFEST_PATH = path.join(process.cwd(), 'scripts', 'screenshot-manifest.json');

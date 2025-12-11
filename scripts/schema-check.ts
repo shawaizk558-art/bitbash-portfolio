@@ -1,9 +1,9 @@
-import { coreServices } from "../src/data/services";
-import { defaultFaqs } from "../src/data/faqs";
+import { coreServices } from "../src/data/services.js";
+import { defaultFaqs } from "../src/data/faqs.js";
 import {
   buildFAQSchema,
   buildServiceSchemas
-} from "../src/lib/schema";
+} from "../src/lib/schema.js";
 
 const errors: string[] = [];
 
