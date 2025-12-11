@@ -5,6 +5,7 @@ import { projects as hardcodedProjects } from '../src/data/projects.js';
 import { getMongoProjects } from '../src/lib/strapi.js';
 import { generateContentHash } from './utils/content-hash.js';
 import type { Project } from '../src/data/projects.js';
+import { put, list, head } from '@vercel/blob';
 
 const SCREENSHOT_DIR = path.join(process.cwd(), 'public', 'project-screenshots');
 const MANIFEST_PATH = path.join(process.cwd(), 'scripts', 'screenshot-manifest.json');
@@ -15,6 +16,7 @@ interface ScreenshotManifest {
   [slug: string]: {
     hash: string;
     generatedAt: string;
+    blobUrl?: string;
   };
 }
 
@@ -52,11 +54,66 @@ async function waitForServer(url: string, maxAttempts = 30): Promise<boolean> {
   return false;
 }
 
-async function generateScreenshot(
+/**
+ * Upload screenshot to Vercel Blob Storage
+ */
+async function uploadScreenshotToBlob(buffer: Buffer, slug: string): Promise<string | null> {
+  try {
+    // Check if we have blob storage access
+    const hasBlobToken = process.env.VERCEL || 
+      process.env.BLOB_READ_WRITE_TOKEN || 
+      Object.keys(process.env).some(key => key.includes('BLOB') && key.includes('READ_WRITE_TOKEN'));
+    
+    if (!hasBlobToken) {
+      console.log(`  ⚠️  No blob token found, skipping blob upload for ${slug}`);
+      return null;
+    }
+
+    const blobPath = `project-screenshots/${slug}.png`;
+    const blob = await put(blobPath, buffer, {
+      access: 'public',
+      contentType: 'image/png',
+      addRandomSuffix: false,
+    });
+
+    console.log(`  ✓ Uploaded to blob storage: ${blob.url}`);
+    return blob.url;
+  } catch (error) {
+    console.error(`  ⚠️  Error uploading to blob storage for ${slug}:`, error);
+    return null;
+  }
+}
+
+/**
+ * Check if screenshot exists in blob storage
+ */
+async function checkBlobExists(slug: string): Promise<boolean> {
+  try {
+    const hasBlobToken = process.env.VERCEL || 
+      process.env.BLOB_READ_WRITE_TOKEN || 
+      Object.keys(process.env).some(key => key.includes('BLOB') && key.includes('READ_WRITE_TOKEN'));
+    
+    if (!hasBlobToken) {
+      return false;
+    }
+
+    const blobPath = `project-screenshots/${slug}.png`;
+    await head(blobPath);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Generate screenshot and return buffer
+ * This function is reusable for both local script and cron job
+ */
+export async function generateScreenshotBuffer(
   browser: Awaited<ReturnType<typeof puppeteer.launch>>,
   projectSlug: string,
-  outputPath: string
-): Promise<boolean> {
+  baseUrl: string
+): Promise<Buffer | null> {
   const page = await browser.newPage();
   
   try {
@@ -67,7 +124,7 @@ async function generateScreenshot(
       deviceScaleFactor: 2, // Retina quality
     });
 
-    const url = `${BASE_URL}/project/${projectSlug}`;
+    const url = `${baseUrl}/project/${projectSlug}`;
     console.log(`  Navigating to ${url}...`);
     
     await page.goto(url, {
@@ -114,8 +171,7 @@ async function generateScreenshot(
     const clipWidth = Math.round(heroCore.width + horizontalPadding * 2);
     const clipHeight = Math.round(heroCore.height + verticalPadding * 2);
 
-    await page.screenshot({
-      path: outputPath,
+    const buffer = await page.screenshot({
       type: 'png',
       clip: {
         x: clipX,
@@ -123,13 +179,12 @@ async function generateScreenshot(
         width: clipWidth,
         height: clipHeight,
       },
-    });
+    }) as Buffer;
 
-    console.log(`  ✓ Screenshot saved: ${outputPath}`);
-    return true;
+    return buffer;
   } catch (error) {
     console.error(`  ✗ Failed to generate screenshot for ${projectSlug}:`, error);
-    return false;
+    return null;
   } finally {
     await page.close();
   }
@@ -210,23 +265,36 @@ async function main() {
 
     // Check if screenshot exists and hash matches
     if (existingEntry?.hash === currentHash) {
-      try {
-        await fs.access(screenshotPath);
+      // Check both local file and blob storage
+      const localExists = await fs.access(screenshotPath).then(() => true).catch(() => false);
+      const blobExists = await checkBlobExists(project.slug);
+      
+      if (localExists || blobExists) {
         console.log(`⏭️  Skipping ${project.slug} (no changes detected)`);
         skipped++;
         continue;
-      } catch {
-        // Screenshot file doesn't exist, regenerate
       }
     }
 
     console.log(`📸 Generating screenshot for ${project.slug}...`);
-    const success = await generateScreenshot(browser, project.slug, screenshotPath);
+    const buffer = await generateScreenshotBuffer(browser, project.slug, BASE_URL);
 
-    if (success) {
+    if (buffer) {
+      // Upload to blob storage
+      const blobUrl = await uploadScreenshotToBlob(buffer, project.slug);
+
+      // Also save locally for development
+      try {
+        await fs.writeFile(screenshotPath, buffer);
+        console.log(`  ✓ Screenshot saved locally: ${screenshotPath}`);
+      } catch (error) {
+        console.warn(`  ⚠️  Could not save locally: ${error}`);
+      }
+
       manifest[project.slug] = {
         hash: currentHash,
         generatedAt: new Date().toISOString(),
+        blobUrl: blobUrl || undefined,
       };
       generated++;
     } else {

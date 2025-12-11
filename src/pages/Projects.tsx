@@ -179,7 +179,7 @@ const Projects = () => {
               // Use screenshot for projects after top 9 (index >= 9)
               const shouldUseScreenshot = index >= 9 && !project.youtubeVideoId && !hasVideo;
               const screenshotPath = shouldUseScreenshot 
-                ? `/project-screenshots/${project.slug}.png`
+                ? `/api/screenshots/${project.slug}`
                 : null;
 
               return (
