@@ -10,9 +10,6 @@
  * Schedule: 9:00 AM UTC (2:00 PM PKT) daily
  */
 
-import puppeteer from 'puppeteer-core';
-// @ts-ignore - @sparticuz/chromium may not have type definitions
-import chromium from '@sparticuz/chromium';
 import { put, head, list } from '@vercel/blob';
 import { promises as fs } from 'fs';
 import path from 'path';
@@ -145,85 +142,68 @@ async function checkBlobExists(slug: string): Promise<boolean> {
 }
 
 /**
- * Generate screenshot and return buffer
- * Reuses logic from generate-project-screenshots.ts
+ * Generate screenshot using external screenshot API service
+ * This avoids Chromium dependency issues in Vercel Lambda
  */
 async function generateScreenshotBuffer(
-  browser: Awaited<ReturnType<typeof puppeteer.launch>>,
   projectSlug: string,
   baseUrl: string
 ): Promise<Buffer | null> {
-  const page = await browser.newPage();
-  
   try {
-    // Set viewport size (wide enough to capture hero section)
-    await page.setViewport({
-      width: 1920,
-      height: 1080,
-      deviceScaleFactor: 2, // Retina quality
-    });
-
     const url = `${baseUrl}/project/${projectSlug}`;
-    console.log(`  Navigating to ${url}...`);
+    console.log(`  Generating screenshot for ${url}...`);
     
-    await page.goto(url, {
-      waitUntil: 'networkidle0',
-      timeout: 30000,
-    });
-
-    // Wait for core project hero content (title + description) to load
-    await page.waitForSelector('[data-project-hero-core="true"]', { timeout: 10000 });
-    await new Promise(resolve => setTimeout(resolve, 1500)); // Wait for animations and content to render
-
-    // Find the core hero content element (title + description only)
-    const heroCore = await page.evaluate(() => {
-      const core = document.querySelector('[data-project-hero-core="true"]') as HTMLElement | null;
-      if (!core) return null;
-
-      const rect = core.getBoundingClientRect();
-
-      // Only return if it's visible and has reasonable dimensions
-      if (rect.height < 40 || rect.width < 200) {
-        return null;
-      }
-
-      return {
-        x: Math.max(0, rect.x),
-        y: Math.max(0, rect.y),
-        width: rect.width,
-        height: rect.height,
-      };
-    });
-
-    if (!heroCore) {
-      throw new Error('Core project hero content not found');
+    // Use htmlcsstoimage.com API (free tier available)
+    // Alternative: You can use other services like urlbox.io, screenshotapi.net, etc.
+    const screenshotApiUrl = process.env.SCREENSHOT_API_URL || 'https://hcti.io/v1/image';
+    const apiId = process.env.SCREENSHOT_API_ID;
+    const apiKey = process.env.SCREENSHOT_API_KEY;
+    
+    // If no API credentials, use a simple fetch-based approach with a public service
+    if (!apiId || !apiKey) {
+      // Fallback: Use a public screenshot service (you may need to sign up for free)
+      // For now, we'll use a simple approach - fetch the page and use a service
+      console.log('  ⚠️  No screenshot API credentials found, skipping...');
+      console.log('  💡 To enable screenshots, set SCREENSHOT_API_URL, SCREENSHOT_API_ID, and SCREENSHOT_API_KEY');
+      return null;
     }
-
-    // Take a tight screenshot around the core content only
-    const horizontalPadding = 8; // small padding to avoid cutting off glyphs
-    const verticalPadding = 4;
-
-    const clipX = Math.max(0, Math.round(heroCore.x - horizontalPadding));
-    const clipY = Math.max(0, Math.round(heroCore.y - verticalPadding));
-    const clipWidth = Math.round(heroCore.width + horizontalPadding * 2);
-    const clipHeight = Math.round(heroCore.height + verticalPadding * 2);
-
-    const buffer = await page.screenshot({
-      type: 'png',
-      clip: {
-        x: clipX,
-        y: clipY,
-        width: clipWidth,
-        height: clipHeight,
+    
+    // Use htmlcsstoimage API
+    const response = await fetch(screenshotApiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Basic ${Buffer.from(`${apiId}:${apiKey}`).toString('base64')}`,
       },
-    }) as Buffer;
-
-    return buffer;
+      body: JSON.stringify({
+        url: url,
+        selector: '[data-project-hero-core="true"]',
+        device_scale_factor: 2,
+        viewport_width: 1920,
+        viewport_height: 1080,
+      }),
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Screenshot API returned ${response.status}`);
+    }
+    
+    const data = await response.json();
+    if (!data.url) {
+      throw new Error('Screenshot API did not return image URL');
+    }
+    
+    // Fetch the generated screenshot
+    const imageResponse = await fetch(data.url);
+    if (!imageResponse.ok) {
+      throw new Error('Failed to fetch generated screenshot');
+    }
+    
+    const arrayBuffer = await imageResponse.arrayBuffer();
+    return Buffer.from(arrayBuffer);
   } catch (error) {
     console.error(`  ✗ Failed to generate screenshot for ${projectSlug}:`, error);
     return null;
-  } finally {
-    await page.close();
   }
 }
 
@@ -282,23 +262,6 @@ export default async function handler(
       });
     }
 
-    // Launch browser with Chromium for serverless
-    console.log('Launching browser...');
-    
-    // Get Chromium executable path
-    const executablePath = await chromium.executablePath();
-    console.log(`Chromium executable path: ${executablePath}`);
-    
-    // Launch browser with minimal configuration
-    // @sparticuz/chromium should handle all dependencies
-    const browser = await puppeteer.launch({
-      args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath: executablePath,
-      headless: chromium.headless,
-    });
-    console.log('Browser launched');
-
     let generated = 0;
     let skipped = 0;
     let failed = 0;
@@ -326,7 +289,7 @@ export default async function handler(
       }
 
       console.log(`📸 Generating screenshot for ${project.slug}...`);
-      const buffer = await generateScreenshotBuffer(browser, project.slug, baseUrl);
+      const buffer = await generateScreenshotBuffer(project.slug, baseUrl);
 
       if (buffer) {
         // Upload to blob storage
@@ -341,9 +304,6 @@ export default async function handler(
         failed++;
       }
     }
-
-    // Close browser
-    await browser.close();
 
     console.log(`Successfully processed screenshots. Generated: ${generated}, Skipped: ${skipped}, Failed: ${failed}`);
 
