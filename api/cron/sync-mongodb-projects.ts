@@ -60,6 +60,12 @@ async function getMongoClient(): Promise<MongoClient> {
   }
   const uri = process.env.MONGODB_URI;
   if (!uri) {
+    // Debug: Log all environment variables that start with MONGO
+    const mongoVars = Object.keys(process.env)
+      .filter(key => key.toUpperCase().includes('MONGO'))
+      .map(key => `${key}=${process.env[key] ? '***set***' : 'NOT SET'}`);
+    console.error('MongoDB environment variables:', mongoVars);
+    console.error('All env vars starting with MONGO:', JSON.stringify(mongoVars, null, 2));
     throw new Error('MONGODB_URI environment variable is not set');
   }
   client = new MongoClient(uri);
