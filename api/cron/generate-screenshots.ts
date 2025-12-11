@@ -285,17 +285,23 @@ export default async function handler(
     // Launch browser with Chromium for serverless
     console.log('Launching browser...');
     
+    // Configure Chromium for serverless environment
+    // @sparticuz/chromium provides a pre-built binary with all dependencies bundled
+    const executablePath = await chromium.executablePath();
+    
     const browser = await puppeteer.launch({
       args: [
         ...chromium.args,
         '--disable-gpu',
-        '--disable-dev-shm-usage',
-        '--disable-setuid-sandbox',
+        '--disable-software-rasterizer',
         '--no-sandbox',
+        '--disable-setuid-sandbox',
         '--single-process',
+        '--no-zygote',
+        '--disable-dev-shm-usage',
       ],
       defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(),
+      executablePath: executablePath,
       headless: chromium.headless,
     });
     console.log('Browser launched');
