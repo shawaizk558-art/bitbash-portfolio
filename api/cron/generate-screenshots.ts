@@ -11,6 +11,7 @@
  */
 
 import puppeteer from 'puppeteer-core';
+// @ts-ignore - @sparticuz/chromium may not have type definitions
 import chromium from '@sparticuz/chromium';
 import { put, head, list } from '@vercel/blob';
 import { promises as fs } from 'fs';
@@ -296,7 +297,6 @@ export default async function handler(
       defaultViewport: chromium.defaultViewport,
       executablePath: await chromium.executablePath(),
       headless: chromium.headless,
-      ignoreHTTPSErrors: true,
     });
     console.log('Browser launched');
 
