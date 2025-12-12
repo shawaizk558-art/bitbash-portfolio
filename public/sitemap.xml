@@ -16,11 +16,11 @@
   </url>
 
   <url>
-    <loc>https://bitbash.dev/automation-services</loc>
+    <loc>https://bitbash.dev/services/automation</loc>
     <lastmod>2025-11-06T00:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://bitbash.dev/automation-services" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://bitbash.dev/services/automation" />
     <image:image>
       <image:loc>https://bitbash.dev/automation3.png</image:loc>
     </image:image>

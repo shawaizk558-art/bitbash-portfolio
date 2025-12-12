@@ -15,6 +15,36 @@
       "source": "/Service-Details/:id",
       "destination": "/services",
       "permanent": true
+    },
+    {
+      "source": "/Contact-us",
+      "destination": "/contact",
+      "permanent": true
+    },
+    {
+      "source": "/contact-us",
+      "destination": "/contact",
+      "permanent": true
+    },
+    {
+      "source": "/Testimonials",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/testimonials",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/blog/:slug",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/automation-services",
+      "destination": "/services/automation",
+      "permanent": true
     }
   ],
   "rewrites": [
