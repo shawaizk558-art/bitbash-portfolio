@@ -10,6 +10,11 @@
       ],
       "destination": "https://bitbash.dev/:path*",
       "permanent": true
+    },
+    {
+      "source": "/Service-Details/:id",
+      "destination": "/services",
+      "permanent": true
     }
   ],
   "rewrites": [
