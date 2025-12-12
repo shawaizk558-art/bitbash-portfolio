@@ -13,7 +13,7 @@
     "export-data": "node scripts/export-strapi-data.js",
     "media:convert": "tsx scripts/convert-gifs.ts",
     "screenshots": "tsx scripts/generate-project-screenshots.ts",
-    "prebuild": "npm run export-data",
+    "prebuild": "npm run export-data || true",
     "import-projects": "node scripts/bulk-import-projects.js",
     "csv-to-json": "node scripts/csv-to-json.js",
     "add-project": "node scripts/add-project-direct.js",

@@ -372,7 +372,14 @@ async function exportData() {
 
 // Run export
 exportData().catch(err => {
-  console.error('Fatal error during export:', err);
-  process.exit(1);
+  // In production (Vercel), skip export if Strapi is not available
+  if (process.env.VERCEL || process.env.CI) {
+    console.log('⚠️  Skipping Strapi export in production (Strapi not available)');
+    console.log('   Using existing data files if available.');
+    process.exit(0); // Exit successfully to allow build to continue
+  } else {
+    console.error('Fatal error during export:', err);
+    process.exit(1);
+  }
 });
 
