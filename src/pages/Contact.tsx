@@ -1,6 +1,7 @@
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { FAQ } from "@/components/FAQ";
+import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -104,6 +105,11 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen">
+      <SEO
+        title="Contact Us - BitBash"
+        description="Get in touch with BitBash for automation, scraping, and full-stack development services. Email, WhatsApp, Telegram, or schedule a consultation."
+        canonical="/contact"
+      />
       <Navigation />
 
       {/* Hero Section - Mobile Optimized */}

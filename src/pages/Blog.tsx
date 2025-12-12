@@ -1,5 +1,6 @@
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
+import { SEO } from "@/components/SEO";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -182,6 +183,11 @@ const Blog = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      <SEO
+        title="Blog - BitBash"
+        description="Latest news, tutorials, and insights about automation, web scraping, and development. Stay updated with the latest trends and best practices."
+        canonical="/blog"
+      />
       <Navigation />
 
       {/* Blog Hero Section */}
