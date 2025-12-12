@@ -1,17 +1,6 @@
 {
   "redirects": [
     {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.bitbash.dev"
-        }
-      ],
-      "destination": "https://bitbash.dev/:path*",
-      "permanent": true
-    },
-    {
       "source": "/Service-Details/:id",
       "destination": "/services",
       "permanent": true
