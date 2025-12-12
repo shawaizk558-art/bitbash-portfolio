@@ -19,7 +19,7 @@ type VercelRequest = {
 type VercelResponse = {
   status: (code: number) => VercelResponse;
   json: (data: any) => void;
-  send: (data: any) => void;
+  send: (data: Buffer | string) => void;
   setHeader: (name: string, value: string) => void;
   end: () => void;
 };

@@ -80,6 +80,7 @@ const Projects = () => {
   const [mongoProjects, setMongoProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [playingVideoIndex, setPlayingVideoIndex] = useState<number | null>(null);
+  const [displayCount, setDisplayCount] = useState(30); // Show 30 projects initially
 
   useEffect(() => {
     async function fetchDynamicProjects() {
@@ -119,6 +120,10 @@ const Projects = () => {
     ...reorderedHardcodedProjects, 
     ...filteredMongoProjects
   ];
+
+  // Get projects to display (first N projects based on displayCount)
+  const displayedProjects = allProjects.slice(0, displayCount);
+  const hasMoreProjects = allProjects.length > displayCount;
 
   const setHighPriority = useCallback((node: HTMLImageElement | null) => {
     if (node) {
@@ -173,13 +178,15 @@ const Projects = () => {
       <section className="pt-0 sm:pt-2 md:pt-4 pb-12 sm:pb-16 md:pb-20">
         <div className="container-responsive">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-2 sm:px-0">
-            {allProjects.map((project, index) => {
+            {displayedProjects.map((project, index) => {
               const mediaAssets = getMediaAssets(project.slug);
               const hasVideo = Boolean(mediaAssets.videoKey);
-              // Use screenshot for projects after top 9 (index >= 9)
-              const shouldUseScreenshot = index >= 9 && !project.youtubeVideoId && !hasVideo;
+              // Use screenshot for MongoDB projects (not hardcoded) that don't have video
+              const isMongoProject = !hardcodedSlugs.has(project.slug);
+              const shouldUseScreenshot = isMongoProject && !project.youtubeVideoId && !hasVideo;
+              // Use direct public path - Vite serves public folder at root, and API route works in production
               const screenshotPath = shouldUseScreenshot 
-                ? `/api/screenshots/${project.slug}`
+                ? `/project-screenshots/${project.slug}.png`
                 : null;
 
               return (
@@ -338,6 +345,19 @@ const Projects = () => {
               );
             })}
           </div>
+
+          {/* See More Button */}
+          {hasMoreProjects && (
+            <div className="flex justify-center mt-8 sm:mt-10 md:mt-12">
+              <button
+                onClick={() => setDisplayCount(prev => prev + 30)}
+                className="text-purple-600 text-sm sm:text-base"
+                aria-label="Load more projects"
+              >
+                See More Projects
+              </button>
+            </div>
+          )}
         </div>
       </section>
 
