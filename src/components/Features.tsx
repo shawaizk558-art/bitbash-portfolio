@@ -58,7 +58,7 @@ export const Features = () => {
     <section id="features" className="py-12 sm:py-16 md:py-24 bg-white overflow-x-hidden">
       <div className="container-responsive">
         <div className="text-center max-w-7xl mx-auto mb-12 sm:mb-16 space-responsive-sm px-4 md:px-8 w-full box-border">
-          <h2 className="text-2xl sm:text-3xl md:text-2xl lg:text-4xl font-bold text-gray-900 leading-tight lg:whitespace-nowrap md:whitespace-normal px-2 sm:px-0 md:px-6 break-words overflow-wrap-anywhere">
+          <h2 className="text-2xl sm:text-3xl md:text-3xl lg:text-4xl xl:text-4xl font-bold text-gray-900 leading-tight px-2 sm:px-0 md:px-6 break-words overflow-wrap-anywhere">
             More Than Just Developers. Your Complete Product Engineering Team
           </h2>
           <p className="text-base sm:text-lg lg:text-lg text-gray-600 px-4 sm:px-0 md:px-8">
@@ -155,52 +155,52 @@ export const Features = () => {
           </div>
         </div>
 
-        {/* Card 1: Full-Stack Development - Mobile Optimized */}
+        {/* Card 1: Automation System - Mobile Optimized */}
         <div className="mt-12 sm:mt-16 md:mt-20 overflow-hidden shadow-lg bg-white border border-gray-200 rounded-2xl sm:rounded-none">
           <div className="grid grid-cols-1 lg:grid-cols-2">
             {/* Left side - Text content */}
-            <div className="bg-white px-6 sm:px-8 md:px-12 py-0 flex flex-col border-r-0 lg:border-r border-gray-200 order-2 lg:order-1 pb-4 sm:pb-0">
+            <div className="bg-white px-6 sm:px-8 md:px-10 py-0 flex flex-col pb-4 sm:pb-6 order-2 lg:order-1">
               {/* Label at the top */}
-              <div className="inline-flex items-center gap-2 pt-4 sm:pt-8 md:pt-10">
-                <Code className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
-                <span className="font-semibold text-purple-600 uppercase text-xs tracking-wide">FULL-STACK DEVELOPMENT</span>
+              <div className="inline-flex items-center gap-2 pt-4 sm:pt-6 md:pt-8">
+                <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
+                <span className="font-semibold text-purple-600 uppercase text-xs tracking-wide">AUTOMATION SYSTEM</span>
               </div>
 
               {/* Content positioned manually */}
-              <div className="flex flex-col mt-2 sm:mt-4 md:mt-6">
-                <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 md:mb-6">
-                  Complete Web & Mobile Solutions
+              <div className="flex flex-col mt-2 sm:mt-3 md:mt-4">
+                <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl font-bold text-gray-900 mb-2 sm:mb-3 md:mb-4">
+                  Custom Automation Solutions
                 </h3>
-                <div className="space-y-2 sm:space-y-4 md:space-y-5 mb-0">
+                <div className="space-y-2 sm:space-y-3 mb-0">
                   <div className="flex items-start gap-3">
-                    <Code className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 mt-1 flex-shrink-0" />
-                    <p className="text-gray-700 text-sm sm:text-base lg:text-lg">Modern web & mobile apps using Django, React, Node.js.</p>
+                    <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 mt-1 flex-shrink-0" />
+                    <p className="text-gray-700 text-sm sm:text-base">Automation & AI Bots for business workflows</p>
                   </div>
                   <div className="flex items-start gap-3">
-                    <Smartphone className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 mt-1 flex-shrink-0" />
-                    <p className="text-gray-700 text-sm sm:text-base lg:text-lg">Native iOS and Android mobile apps</p>
+                    <Globe className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 mt-1 flex-shrink-0" />
+                    <p className="text-gray-700 text-sm sm:text-base">Custom scripts and bots that streamline processes</p>
                   </div>
                   <div className="flex items-start gap-3">
-                    <Database className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 mt-1 flex-shrink-0" />
-                    <p className="text-gray-700 text-sm sm:text-base lg:text-lg">Backend APIs, databases, and cloud deployment</p>
+                    <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 mt-1 flex-shrink-0" />
+                    <p className="text-gray-700 text-sm sm:text-base">Intelligent task automation and scheduling</p>
                   </div>
                 </div>
               </div>
 
               {/* Button as separate div */}
-              <div className="mt-4 sm:mt-40 md:mt-52 lg:mt-64">
+              <div className="mt-4 sm:mt-16 md:mt-20 mb-0">
                 <button className="bg-white border border-gray-300 text-gray-900 font-bold px-3 py-2 rounded-sm shadow-sm hover:shadow-md transition-all flex items-center gap-1 text-xs sm:text-sm lg:text-sm w-fit min-h-[44px] lg:min-h-0">
-                  View Development Services →
+                  Explore Automation →
                 </button>
               </div>
             </div>
 
             {/* Right side - Visual mockups - Mobile Optimized */}
-            <div className="bg-white flex items-center justify-center order-1 lg:order-2">
+            <div className="bg-white flex items-center justify-end pl-4 pb-4 pr-0 pt-0 order-1 lg:order-2">
               <img
-                src="/stack1.png"
-                alt="Full-Stack Development Stack"
-                className="w-full h-auto object-cover"
+                src="/stack3.png"
+                alt="Automation System Stack"
+                className="w-full md:w-[105%] h-auto object-cover"
               />
             </div>
           </div>
@@ -257,52 +257,52 @@ export const Features = () => {
           </div>
         </div>
 
-        {/* Card 3: Automation System - Mobile Optimized */}
+        {/* Card 3: Full-Stack Development - Mobile Optimized */}
         <div className="mt-12 sm:mt-16 md:mt-20 overflow-hidden shadow-lg bg-white border border-gray-200 rounded-2xl sm:rounded-none">
           <div className="grid grid-cols-1 lg:grid-cols-2">
             {/* Left side - Text content */}
-            <div className="bg-white px-6 sm:px-8 md:px-10 py-0 flex flex-col pb-4 sm:pb-6 order-2 lg:order-1">
+            <div className="bg-white px-6 sm:px-8 md:px-12 py-0 flex flex-col border-r-0 lg:border-r border-gray-200 order-2 lg:order-1 pb-4 sm:pb-0">
               {/* Label at the top */}
-              <div className="inline-flex items-center gap-2 pt-4 sm:pt-6 md:pt-8">
-                <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
-                <span className="font-semibold text-purple-600 uppercase text-xs tracking-wide">AUTOMATION SYSTEM</span>
+              <div className="inline-flex items-center gap-2 pt-4 sm:pt-8 md:pt-10">
+                <Code className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
+                <span className="font-semibold text-purple-600 uppercase text-xs tracking-wide">FULL-STACK DEVELOPMENT</span>
               </div>
 
               {/* Content positioned manually */}
-              <div className="flex flex-col mt-2 sm:mt-3 md:mt-4">
-                <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl font-bold text-gray-900 mb-2 sm:mb-3 md:mb-4">
-                  Custom Automation Solutions
+              <div className="flex flex-col mt-2 sm:mt-4 md:mt-6">
+                <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 md:mb-6">
+                  Complete Web & Mobile Solutions
                 </h3>
-                <div className="space-y-2 sm:space-y-3 mb-0">
+                <div className="space-y-2 sm:space-y-4 md:space-y-5 mb-0">
                   <div className="flex items-start gap-3">
-                    <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 mt-1 flex-shrink-0" />
-                    <p className="text-gray-700 text-sm sm:text-base">Automation & AI Bots for business workflows</p>
+                    <Code className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 mt-1 flex-shrink-0" />
+                    <p className="text-gray-700 text-sm sm:text-base lg:text-lg">Modern web & mobile apps using Django, React, Node.js.</p>
                   </div>
                   <div className="flex items-start gap-3">
-                    <Globe className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 mt-1 flex-shrink-0" />
-                    <p className="text-gray-700 text-sm sm:text-base">Custom scripts and bots that streamline processes</p>
+                    <Smartphone className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 mt-1 flex-shrink-0" />
+                    <p className="text-gray-700 text-sm sm:text-base lg:text-lg">Native iOS and Android mobile apps</p>
                   </div>
                   <div className="flex items-start gap-3">
-                    <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 mt-1 flex-shrink-0" />
-                    <p className="text-gray-700 text-sm sm:text-base">Intelligent task automation and scheduling</p>
+                    <Database className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 mt-1 flex-shrink-0" />
+                    <p className="text-gray-700 text-sm sm:text-base lg:text-lg">Backend APIs, databases, and cloud deployment</p>
                   </div>
                 </div>
               </div>
 
               {/* Button as separate div */}
-              <div className="mt-4 sm:mt-16 md:mt-20 mb-0">
+              <div className="mt-4 sm:mt-40 md:mt-52 lg:mt-64">
                 <button className="bg-white border border-gray-300 text-gray-900 font-bold px-3 py-2 rounded-sm shadow-sm hover:shadow-md transition-all flex items-center gap-1 text-xs sm:text-sm lg:text-sm w-fit min-h-[44px] lg:min-h-0">
-                  Explore Automation →
+                  View Development Services →
                 </button>
               </div>
             </div>
 
             {/* Right side - Visual mockups - Mobile Optimized */}
-            <div className="bg-white flex items-center justify-end pl-4 pb-4 pr-0 pt-0 order-1 lg:order-2">
+            <div className="bg-white flex items-center justify-center order-1 lg:order-2">
               <img
-                src="/stack3.png"
-                alt="Automation System Stack"
-                className="w-full md:w-[105%] h-auto object-cover"
+                src="/stack1.png"
+                alt="Full-Stack Development Stack"
+                className="w-full h-auto object-cover"
               />
             </div>
           </div>

@@ -5,6 +5,7 @@ import { HeroBackground } from "@/components/HeroBackground";
 import { Card } from "@/components/ui/card";
 import { CheckCircle } from "@/lib/icons";
 import { ServiceCtaCard } from "@/components/ServiceCtaCard";
+import { SEO } from "@/components/SEO";
 
 const bullets = [
   "Custom AI agents and copilots tailored to your workflows",
@@ -170,6 +171,11 @@ const ServiceAiSolutions = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      <SEO
+        title="AI Solutions Services - Custom AI Agents & ML Pipelines | BitBash"
+        description="Custom AI agents and copilots tailored to your workflows. RAG pipelines, embeddings, and retrieval tuned for your data. Model integration with guardrails."
+        canonical="/services/ai-solutions"
+      />
       <Navigation />
 
       <section className="relative pt-24 pb-12 sm:pt-32 sm:pb-16 overflow-hidden">

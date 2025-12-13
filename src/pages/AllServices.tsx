@@ -7,6 +7,7 @@ import { ContactButton } from "@/components/ContactButton";
 import { Clock, Users } from "@/lib/icons";
 import { HeroBackground } from "@/components/HeroBackground";
 import { Zap, Database, Code, Bot, Rocket } from "@/lib/icons";
+import { SEO } from "@/components/SEO";
 
 const services = [
   {
@@ -49,6 +50,11 @@ const services = [
 const AllServices = () => {
   return (
     <div className="min-h-screen">
+      <SEO
+        title="All Services - Automation, Scraping, Full Stack Development & AI Solutions | BitBash"
+        description="Explore everything we offer — from automation and scraping to full-stack builds, AI solutions, and launch-ready SaaS MVPs. Get a scoped plan in 24 hours."
+        canonical="/services"
+      />
       <Navigation />
 
       <section className="relative min-h-[clamp(220px,42vh,340px)] sm:min-h-[clamp(260px,46vh,380px)] md:min-h-[clamp(300px,50vh,420px)] lg:min-h-[clamp(280px,48vh,400px)] 2xl:min-h-[clamp(300px,46vh,420px)] flex items-center justify-center overflow-hidden pt-14">

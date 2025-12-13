@@ -7,6 +7,7 @@
 
 import { MongoClient, Db, Collection } from 'mongodb';
 import type { Project } from '@/data/projects';
+import { formatName } from './utils';
 
 // MongoDB connection cache
 let client: MongoClient | null = null;
@@ -56,17 +57,6 @@ function slugify(text: string): string {
 }
 
 /**
- * Format title to a readable name
- */
-function formatName(title: string): string {
-  return title
-    .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ')
-    .trim();
-}
-
-/**
  * Extract first paragraph from markdown/plain text
  */
 function extractFirstParagraph(text: string, maxLength: number = 200): string {
@@ -91,6 +81,18 @@ function extractFirstParagraph(text: string, maxLength: number = 200): string {
   }
   
   return firstParagraph.trim();
+}
+
+/**
+ * Generate a deterministic rating between 4.5-5.0 based on mongoId
+ */
+function generateRating(mongoId: string): number {
+  if (!mongoId) return 4.75; // Default if no ID
+  
+  // Use mongoId as seed for consistent rating per project
+  const seed = mongoId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const random = (seed % 50) / 100; // 0.00 to 0.49
+  return Math.round((4.5 + random) * 10) / 10; // Round to 1 decimal: 4.5 to 4.9
 }
 
 /**
@@ -153,6 +155,9 @@ export function transformMongoDocument(doc: any, index: number = 0): Project {
   // Get video placeholder
   const videoPlaceholder = getVideoPlaceholder(category, index);
 
+  // Generate dynamic rating (4.5-5.0)
+  const rating = generateRating(mongoId);
+
   // Create base Project object
   const project: Project & { mongoId?: string; [key: string]: any } = {
     slug,
@@ -162,7 +167,7 @@ export function transformMongoDocument(doc: any, index: number = 0): Project {
     description: fullDescription || quote || 'No description available.',
     technologies,
     videoPlaceholder,
-    rating: 5,
+    rating,
     // Store MongoDB id for uniqueness tracking
     mongoId: doc.id,
   };

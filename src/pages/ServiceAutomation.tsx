@@ -5,6 +5,7 @@ import { HeroBackground } from "@/components/HeroBackground";
 import { Card } from "@/components/ui/card";
 import { CheckCircle } from "@/lib/icons";
 import { ServiceCtaCard } from "@/components/ServiceCtaCard";
+import { SEO } from "@/components/SEO";
 
 const headlineBullets = [
   "Stealth browser and mobile automation",
@@ -121,6 +122,11 @@ const ServiceAutomation = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      <SEO
+        title="Automation Services - Browser, Mobile & Workflow Automation | BitBash"
+        description="Stealth browser and mobile automation, workflow automation with retries and alerts, API orchestration and data delivery. Get a scoped plan in 24 hours."
+        canonical="/services/automation"
+      />
       <Navigation />
 
       <section className="relative pt-24 pb-12 sm:pt-32 sm:pb-16 overflow-hidden">

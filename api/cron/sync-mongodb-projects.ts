@@ -136,6 +136,18 @@ function extractFirstParagraph(text: string, maxLength: number = 200): string {
   return firstParagraph.trim();
 }
 
+/**
+ * Generate a deterministic rating between 4.5-5.0 based on mongoId
+ */
+function generateRating(mongoId: string): number {
+  if (!mongoId) return 4.75; // Default if no ID
+  
+  // Use mongoId as seed for consistent rating per project
+  const seed = mongoId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const random = (seed % 50) / 100; // 0.00 to 0.49
+  return Math.round((4.5 + random) * 10) / 10; // Round to 1 decimal: 4.5 to 4.9
+}
+
 function getVideoPlaceholder(category?: string, index: number = 0): Project['videoPlaceholder'] {
   const colors: Project['videoPlaceholder'][] = ['purple', 'blue', 'green', 'orange', 'pink', 'teal'];
   if (category) {
@@ -171,6 +183,9 @@ function transformMongoDocument(doc: any, index: number = 0): MongoProject {
   const technologies = topics.length > 0 ? topics : ['Automation', 'Data Processing'];
   const videoPlaceholder = getVideoPlaceholder(category, index);
 
+  // Generate dynamic rating (4.5-5.0)
+  const rating = generateRating(doc.id || '');
+
   // Create base Project object
   const project: MongoProject = {
     slug,
@@ -180,7 +195,7 @@ function transformMongoDocument(doc: any, index: number = 0): MongoProject {
     description: fullDescription || quote || 'No description available.',
     technologies,
     videoPlaceholder,
-    rating: 5,
+    rating,
     // Store MongoDB id for uniqueness tracking
     mongoId: doc.id,
   };

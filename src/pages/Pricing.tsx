@@ -7,6 +7,7 @@ import { HeroBackground } from "@/components/HeroBackground";
 import { useNavigate } from "react-router-dom";
 import { Showcase } from "@/components/Showcase";
 import { ContactButton } from "@/components/ContactButton";
+import { SEO } from "@/components/SEO";
 
 const Pricing = () => {
   const navigate = useNavigate();
@@ -55,6 +56,11 @@ const Pricing = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO
+        title="Pricing - Transparent Project-Based Pricing | BitBash"
+        description="Transparent project-based pricing. No hidden fees. Fixed cost projects and flexible engagement models. Hire dedicated developers on monthly or hourly basis."
+        canonical="/pricing"
+      />
       <Navigation />
 
       {/* Hero Section */}
@@ -73,69 +79,14 @@ const Pricing = () => {
       </section>
 
       {/* Pricing Cards */}
-      <section className="pb-24 px-4 sm:px-6 lg:px-8 mt-8">
+      <section className="pb-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
 
           {/* Fixed Cost Projects */}
-          <div className="relative py-24">
-            <div className="absolute inset-0 flex items-center" aria-hidden="true">
-              <div className="w-full border-t border-gray-300"></div>
-            </div>
+          <div className="relative py-6">
             <div className="relative flex justify-center">
               <span className="bg-gray-50 px-6 text-lg font-bold uppercase tracking-widest text-purple-600">
                 Fixed Cost Projects
-              </span>
-            </div>
-          </div>
-
-          {/* New Fixed Cost Card */}
-          <div className="bg-white rounded-3xl shadow-sm border border-gray-300 hover:shadow-md transition-shadow overflow-hidden">
-            <div className="flex flex-col lg:flex-row">
-              {/* Left Section */}
-              <div className="flex-1 p-8 border-b lg:border-b-0 lg:border-r border-gray-300 flex flex-col justify-center items-center">
-                <div className="text-center">
-                  <div className="flex items-center justify-center gap-2 mb-4">
-                    <Database className="w-5 h-5 text-purple-600" />
-                    <h3 className="text-xl font-bold text-gray-900">Fixed Cost Scraping Project</h3>
-                  </div>
-                  <div className="flex items-baseline justify-center flex-wrap mb-2">
-                    <span className="text-3xl sm:text-4xl font-bold text-gray-900">$400 - $1,500</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Section */}
-              <div className="flex-[2] p-8 flex flex-col lg:flex-row items-center gap-8 justify-between">
-                <div className="flex flex-col gap-3 w-full pl-8">
-                  <div className="flex items-center gap-3">
-                    <Check className="w-5 h-5 text-purple-600 flex-shrink-0" />
-                    <span className="text-gray-900 text-sm">Custom data extraction tailored to your specific requirements</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="w-5 h-5 text-purple-600 flex-shrink-0" />
-                    <span className="text-gray-900 text-sm">Advanced anti-bot handling with automatic proxy rotation included</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="w-5 h-5 text-purple-600 flex-shrink-0" />
-                    <span className="text-gray-900 text-sm">Receive clean data in CSV, JSON, or Excel</span>
-                  </div>
-                </div>
-
-                <div className="w-full lg:w-auto flex-shrink-0">
-                  <ContactButton />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Supercharge Your Workflow */}
-          <div className="relative py-24">
-            <div className="absolute inset-0 flex items-center" aria-hidden="true">
-              <div className="w-full border-t border-gray-300"></div>
-            </div>
-            <div className="relative flex justify-center">
-              <span className="bg-gray-50 px-6 text-lg font-bold uppercase tracking-widest text-purple-600">
-                Supercharge Your Workflow
               </span>
             </div>
           </div>
@@ -180,8 +131,48 @@ const Pricing = () => {
             </div>
           </div>
 
+          {/* New Fixed Cost Card */}
+          <div className="bg-white rounded-3xl shadow-sm border border-gray-300 hover:shadow-md transition-shadow overflow-hidden mt-8">
+            <div className="flex flex-col lg:flex-row">
+              {/* Left Section */}
+              <div className="flex-1 p-8 border-b lg:border-b-0 lg:border-r border-gray-300 flex flex-col justify-center items-center">
+                <div className="text-center">
+                  <div className="flex items-center justify-center gap-2 mb-4">
+                    <Database className="w-5 h-5 text-purple-600" />
+                    <h3 className="text-xl font-bold text-gray-900">Fixed Cost Scraping Project</h3>
+                  </div>
+                  <div className="flex items-baseline justify-center flex-wrap mb-2">
+                    <span className="text-3xl sm:text-4xl font-bold text-gray-900">$400 - $1,500</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Section */}
+              <div className="flex-[2] p-8 flex flex-col lg:flex-row items-center gap-8 justify-between">
+                <div className="flex flex-col gap-3 w-full pl-8">
+                  <div className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-purple-600 flex-shrink-0" />
+                    <span className="text-gray-900 text-sm">Custom data extraction tailored to your specific requirements</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-purple-600 flex-shrink-0" />
+                    <span className="text-gray-900 text-sm">Advanced anti-bot handling with automatic proxy rotation included</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-purple-600 flex-shrink-0" />
+                    <span className="text-gray-900 text-sm">Receive clean data in CSV, JSON, or Excel</span>
+                  </div>
+                </div>
+
+                <div className="w-full lg:w-auto flex-shrink-0">
+                  <ContactButton />
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Engagement Models */}
-          <div className="relative py-16">
+          <div className="relative py-12">
             <div className="absolute inset-0 flex items-center" aria-hidden="true">
               <div className="w-full border-t border-gray-300"></div>
             </div>
@@ -192,7 +183,7 @@ const Pricing = () => {
             </div>
           </div>
 
-          <div className="mt-8 mb-16 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-4 mb-16 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
             <div className="text-left max-w-2xl">
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-2">
                 {billingPeriod === "hourly" ? "Hourly Basis" : "Monthly Basis"}
@@ -699,7 +690,7 @@ const Pricing = () => {
       <Showcase
         limit={6}
         showHeader={false}
-        showTestimonials={false}
+        showTestimonials={true}
         paddingClass="pt-0 pb-16 sm:pb-24 bg-white"
       />
 

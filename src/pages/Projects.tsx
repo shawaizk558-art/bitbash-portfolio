@@ -15,6 +15,7 @@ import {
   getPosterPath,
   getVideoSources,
 } from "@/lib/mediaAssets";
+import { ProjectCard } from "@/components/ProjectCard";
 
 /**
  * Convert a string to title case (capitalize first letter of each word)
@@ -179,11 +180,18 @@ const Projects = () => {
         <div className="container-responsive">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-2 sm:px-0">
             {displayedProjects.map((project, index) => {
+              // Use new ProjectCard component for MongoDB projects (not in hardcoded set)
+              const isMongoProject = !hardcodedSlugs.has(project.slug);
+              if (isMongoProject) {
+                return <ProjectCard key={project.slug} project={project} index={index} />;
+              }
+
+              // Keep existing design for top 9 hardcoded projects
               const mediaAssets = getMediaAssets(project.slug);
               const hasVideo = Boolean(mediaAssets.videoKey);
               // Use screenshot for MongoDB projects (not hardcoded) that don't have video
-              const isMongoProject = !hardcodedSlugs.has(project.slug);
-              const shouldUseScreenshot = isMongoProject && !project.youtubeVideoId && !hasVideo;
+              // Note: isMongoProject is already false here since we're in the else branch
+              const shouldUseScreenshot = false; // Hardcoded projects don't use screenshots
               // Use direct public path - Vite serves public folder at root, and API route works in production
               const screenshotPath = shouldUseScreenshot 
                 ? `/project-screenshots/${project.slug}.png`

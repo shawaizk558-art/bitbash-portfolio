@@ -5,6 +5,7 @@ import { HeroBackground } from "@/components/HeroBackground";
 import { Card } from "@/components/ui/card";
 import { CheckCircle } from "@/lib/icons";
 import { ServiceCtaCard } from "@/components/ServiceCtaCard";
+import { SEO } from "@/components/SEO";
 
 const headlineBullets = [
   "Rapid scoping, user flows, and UX to ship fast",
@@ -114,6 +115,11 @@ const ServiceSaasMvp = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      <SEO
+        title="SaaS MVP Development Services - Launch-Ready SaaS Builds | BitBash"
+        description="Rapid scoping, user flows, and UX to ship fast. Auth, billing, subscriptions, and roles baked in. Analytics, email, notifications, and support tooling included."
+        canonical="/services/saas-mvp"
+      />
       <Navigation />
 
       <section className="relative pt-24 pb-12 sm:pt-32 sm:pb-16 overflow-hidden">

@@ -9,6 +9,7 @@ import {
   getVideoSources,
 } from "@/lib/mediaAssets";
 import { LiteYouTubeEmbed } from "@/components/LiteYouTubeEmbed";
+import { HomepagePricing } from "@/components/HomepagePricing";
 
 const gradientClasses = {
   purple: "from-purple-400 to-purple-600",
@@ -37,15 +38,19 @@ export const Showcase = ({
   const [playingVideoIndex, setPlayingVideoIndex] = useState<number | null>(null);
   const [isSyedTestimonialPlaying, setIsSyedTestimonialPlaying] = useState<boolean>(false);
   const [isOdetaTestimonialPlaying, setIsOdetaTestimonialPlaying] = useState<boolean>(false);
-  const [isHugoTestimonialPlaying, setIsHugoTestimonialPlaying] = useState<boolean>(false);
   const [isKareemTestimonialPlaying, setIsKareemTestimonialPlaying] = useState<boolean>(false);
 
-  const reorderedProjects = [...projects];
+  // Filter out Telegram Weather Alert Bot and reorder projects (swap 2nd and 3rd for homepage consistency)
+  const filteredProjects = projects.filter(
+    project => project.slug !== 'telegram-weather-alert-bot'
+  );
+  
+  const reorderedProjects = [...filteredProjects];
   if (reorderedProjects.length > 2) {
     [reorderedProjects[1], reorderedProjects[2]] = [reorderedProjects[2], reorderedProjects[1]];
   }
 
-  const projectsToDisplay = limit ? reorderedProjects.slice(0, limit) : reorderedProjects;
+  const projectsToDisplay = limit ? reorderedProjects.slice(0, limit) : reorderedProjects.slice(0, 9);
 
   const setHighPriority = useCallback((node: HTMLImageElement | null) => {
     if (node) {
@@ -212,9 +217,12 @@ export const Showcase = ({
           </div>
         )}
 
+        {/* Homepage Pricing Section - Only show on homepage (when showTestimonials is true and no limit) */}
+        {showTestimonials && !limit && <HomepagePricing />}
+
         {/* Testimonials Section Heading */}
         {showTestimonials && (
-          <div className="mt-32 sm:mt-40 mb-16 sm:mb-20">
+          <div className="mt-16 sm:mt-20 mb-16 sm:mb-20">
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 text-center">
               Stories From the People We Build For
             </h2>
@@ -285,87 +293,6 @@ export const Showcase = ({
                             onClick={(e) => {
                               e.stopPropagation();
                               setIsKareemTestimonialPlaying(true);
-                            }}
-                          >
-                            <Play className="w-4 h-4 sm:w-5 sm:h-5 text-black ml-0.5" fill="currentColor" />
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Featured Testimonial Card */}
-            <div className="mt-16 sm:mt-20">
-              <div className="bg-white rounded-3xl shadow-lg overflow-hidden min-h-[340px] sm:min-h-[400px] lg:h-[400px] border border-gray-200">
-                <div className="flex flex-col lg:grid lg:grid-cols-[63%_37%] h-full">
-                  {/* Left side - Text content */}
-                  <div className="p-8 sm:p-12 flex flex-col justify-center h-full items-center lg:items-start">
-                    <div className="max-w-[40rem] w-full lg:ml-8 text-center lg:text-left">
-                      <blockquote className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 leading-tight mb-6">
-                        "2,100+ Monthly Users in the Actuarial Niche"
-                      </blockquote>
-                      <p className="text-lg sm:text-xl lg:text-xl text-gray-600 leading-relaxed">
-                        They delivered exactly what we needed, when we needed it, with exceptional quality and support.
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Right side - Video thumbnail */}
-                  <div className="relative bg-gradient-to-br from-purple-100 to-purple-200 h-64 sm:h-72 lg:h-full rounded-3xl lg:rounded-l-3xl lg:rounded-r-none lg:rounded-br-3xl overflow-hidden mt-6 lg:mt-0 group">
-                    {/* Toggle between GIF placeholder and embedded YouTube Shorts */}
-                    {isSyedTestimonialPlaying ? (
-                      <div className="absolute inset-0 w-full h-full z-0 bg-black">
-                        <iframe
-                          src={`https://www.youtube.com/embed/6AwB5omXrIM?rel=0&modestbranding=1&autoplay=1&playsinline=1&mute=1`}
-                          className="w-full h-full"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                          allowFullScreen
-                          title="Actuary List Testimonial - Syed"
-                        ></iframe>
-                      </div>
-                    ) : (
-                      <>
-                        {/* Video placeholder with play button */}
-                        <div className="absolute inset-0">
-                          <AutoPlayVideo
-                            sources={getVideoSources("syed")}
-                            poster={getPosterPath("syed")}
-                            alt="Actuary List testimonial preview"
-                            className="w-full h-full object-cover object-[center_35%]"
-                          />
-                        </div>
-                      </>
-                    )}
-
-                    {/* Author info overlay */}
-                    {!isSyedTestimonialPlaying && (
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 sm:p-6">
-                        <div className="flex items-center justify-between gap-3">
-                          {/* Profile picture */}
-                          <div className="flex items-center gap-3 min-w-0">
-                            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-white flex items-center justify-center flex-shrink-0">
-                              <img
-                                src="/syed-pfp.png"
-                                alt="Syed profile photo"
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                            <div className="min-w-0">
-                              <p className="text-white font-bold text-sm sm:text-base truncate">Syed</p>
-                              <p className="text-white/80 text-xs sm:text-sm truncate">Founder @ActuaryList</p>
-                            </div>
-                          </div>
-                          {/* Small play button on the right */}
-                          <button
-                            type="button"
-                            className="flex items-center justify-center rounded-full bg-white/90 group-hover:bg-red-600 shadow-lg w-9 h-9 sm:w-10 sm:h-10 transition-colors duration-300 ease-out flex-shrink-0"
-                            aria-label="Play testimonial video"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setIsSyedTestimonialPlaying(true);
                             }}
                           >
                             <Play className="w-4 h-4 sm:w-5 sm:h-5 text-black ml-0.5" fill="currentColor" />
@@ -456,7 +383,7 @@ export const Showcase = ({
               </div>
             </div>
 
-            {/* Third Testimonial Card */}
+            {/* Featured Testimonial Card - Syed */}
             <div className="mt-16 sm:mt-20">
               <div className="bg-white rounded-3xl shadow-lg overflow-hidden min-h-[340px] sm:min-h-[400px] lg:h-[400px] border border-gray-200">
                 <div className="flex flex-col lg:grid lg:grid-cols-[63%_37%] h-full">
@@ -464,64 +391,80 @@ export const Showcase = ({
                   <div className="p-8 sm:p-12 flex flex-col justify-center h-full items-center lg:items-start">
                     <div className="max-w-[40rem] w-full lg:ml-8 text-center lg:text-left">
                       <blockquote className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 leading-tight mb-6">
-                        "We stopped thinking about fixing — and we started growing"
+                        "2,100+ Monthly Users in the Actuarial Niche"
                       </blockquote>
                       <p className="text-lg sm:text-xl lg:text-xl text-gray-600 leading-relaxed">
-                        BitBash made growth feel simple. They cleared the noise, moved fast,
-                        and delivered results we’d been chasing for months.
+                        They delivered exactly what we needed, when we needed it, with exceptional quality and support.
                       </p>
                     </div>
                   </div>
 
                   {/* Right side - Video thumbnail */}
-                  <div className="relative bg-gradient-to-br from-green-100 to-green-200 h-64 sm:h-72 lg:h-full rounded-3xl lg:rounded-l-3xl lg:rounded-r-none lg:rounded-br-3xl overflow-hidden mt-6 lg:mt-0 group">
-                    {/* Toggle between GIF and embedded YouTube video */}
-                    {isHugoTestimonialPlaying ? (
+                  <div className="relative bg-gradient-to-br from-purple-100 to-purple-200 h-64 sm:h-72 lg:h-full rounded-3xl lg:rounded-l-3xl lg:rounded-r-none lg:rounded-br-3xl overflow-hidden mt-6 lg:mt-0 group">
+                    {/* Toggle between GIF placeholder and embedded YouTube Shorts */}
+                    {isSyedTestimonialPlaying ? (
                       <div className="absolute inset-0 w-full h-full z-0 bg-black">
                         <iframe
-                          src={`https://www.youtube.com/embed/MLkvGB8ZZIk?rel=0&modestbranding=1&autoplay=1&playsinline=1&mute=1`}
+                          src={`https://www.youtube.com/embed/6AwB5omXrIM?rel=0&modestbranding=1&autoplay=1&playsinline=1&mute=1`}
                           className="w-full h-full"
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                           allowFullScreen
-                          title="Hugo Saunder Testimonial"
+                          title="Actuary List Testimonial - Syed"
                         ></iframe>
                       </div>
                     ) : (
-                      <div className="absolute inset-0">
-                        <AutoPlayVideo
-                          sources={getVideoSources("hugo")}
-                          poster={getPosterPath("hugo")}
-                          alt="Hugo Saunder testimonial preview"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
+                      <>
+                        {/* Blurred background video layer */}
+                        <div className="absolute inset-0 z-0" style={{ filter: 'blur(20px)', transform: 'scale(1.1)' }}>
+                          <AutoPlayVideo
+                            sources={getVideoSources("syed")}
+                            poster={getPosterPath("syed")}
+                            alt="Actuary List testimonial preview background"
+                            className="w-full h-full object-cover object-[center_35%]"
+                            loop={true}
+                          />
+                        </div>
+                        {/* Centered sharp video layer */}
+                        <div className="absolute inset-0 z-10 flex items-center justify-center">
+                          <div className="relative w-full h-full max-w-[50%] sm:max-w-[55%] lg:max-w-[60%] max-h-full">
+                            <AutoPlayVideo
+                              sources={getVideoSources("syed")}
+                              poster={getPosterPath("syed")}
+                              alt="Actuary List testimonial preview"
+                              className="w-full h-full object-contain"
+                              loop={true}
+                            />
+                          </div>
+                        </div>
+                      </>
                     )}
-                    {/* Author info overlay with small play button on the right */}
-                    {!isHugoTestimonialPlaying && (
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 sm:p-6">
+
+                    {/* Author info overlay */}
+                    {!isSyedTestimonialPlaying && (
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 sm:p-6 z-20">
                         <div className="flex items-center justify-between gap-3">
-                          {/* Profile + name */}
+                          {/* Profile picture */}
                           <div className="flex items-center gap-3 min-w-0">
                             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-white flex items-center justify-center flex-shrink-0">
                               <img
-                                src="/hugo-pfp.jpeg"
-                                alt="Hugo Saunder profile photo"
+                                src="/syed-pfp.png"
+                                alt="Syed profile photo"
                                 className="w-full h-full object-cover"
                               />
                             </div>
                             <div className="min-w-0">
-                              <p className="text-white font-bold text-sm sm:text-base truncate">Hugo Saunder</p>
-                              <p className="text-white/80 text-xs sm:text-sm truncate">UI/UX Engineer @Cruva</p>
+                              <p className="text-white font-bold text-sm sm:text-base truncate">Syed</p>
+                              <p className="text-white/80 text-xs sm:text-sm truncate">Founder @ActuaryList</p>
                             </div>
                           </div>
-                          {/* Small play button */}
+                          {/* Small play button on the right */}
                           <button
                             type="button"
                             className="flex items-center justify-center rounded-full bg-white/90 group-hover:bg-red-600 shadow-lg w-9 h-9 sm:w-10 sm:h-10 transition-colors duration-300 ease-out flex-shrink-0"
                             aria-label="Play testimonial video"
                             onClick={(e) => {
                               e.stopPropagation();
-                              setIsHugoTestimonialPlaying(true);
+                              setIsSyedTestimonialPlaying(true);
                             }}
                           >
                             <Play className="w-4 h-4 sm:w-5 sm:h-5 text-black ml-0.5" fill="currentColor" />

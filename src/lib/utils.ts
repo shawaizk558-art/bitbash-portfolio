@@ -60,3 +60,20 @@ export function truncateDescription(description: string, maxLines: number = 2): 
   
   return result.trim();
 }
+
+/**
+ * Format title to a readable name
+ * Converts "linkedin-python-auto-outreach-bot" to "Linkedin Python Auto Outreach Bot"
+ * Removes dashes and capitalizes the first letter of each word
+ */
+export function formatName(title: string): string {
+  if (!title) return '';
+  return title
+    .split('-')
+    .map(word => {
+      if (!word) return word;
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    })
+    .join(' ')
+    .trim();
+}

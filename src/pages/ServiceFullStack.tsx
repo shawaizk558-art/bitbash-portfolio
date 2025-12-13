@@ -5,6 +5,7 @@ import { HeroBackground } from "@/components/HeroBackground";
 import { Card } from "@/components/ui/card";
 import { CheckCircle } from "@/lib/icons";
 import { ServiceCtaCard } from "@/components/ServiceCtaCard";
+import { SEO } from "@/components/SEO";
 
 const bullets = [
   "Product discovery, UX, and architecture design",
@@ -105,6 +106,11 @@ const ServiceFullStack = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      <SEO
+        title="Full Stack Development Services - Web & Mobile Apps | BitBash"
+        description="Product discovery, UX, and architecture design. Frontend + backend + infrastructure shipped together. APIs, auth, billing, analytics, and observability included."
+        canonical="/services/full-stack"
+      />
       <Navigation />
 
       <section className="relative pt-24 pb-12 sm:pt-32 sm:pb-16 overflow-hidden">
