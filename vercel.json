@@ -70,10 +70,6 @@
     {
       "path": "/api/cron/sync-mongodb-projects",
       "schedule": "30 8 * * *"
-    },
-    {
-      "path": "/api/cron/generate-screenshots",
-      "schedule": "0 9 * * *"
     }
   ]
 }
