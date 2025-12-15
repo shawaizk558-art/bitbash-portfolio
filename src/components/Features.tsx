@@ -2,6 +2,7 @@
 import { Globe, Smartphone, Database, Zap, Shield, Code, Cloud, Bot, Target, BarChart3, TrendingUp } from "@/lib/icons";
 import { coreServices } from "@/data/services";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 export const Features = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -189,9 +190,12 @@ export const Features = () => {
 
               {/* Button as separate div */}
               <div className="mt-4 sm:mt-16 md:mt-20 mb-0">
-                <button className="bg-white border border-gray-300 text-gray-900 font-bold px-3 py-2 rounded-sm shadow-sm hover:shadow-md transition-all flex items-center gap-1 text-xs sm:text-sm lg:text-sm w-fit min-h-[44px] lg:min-h-0">
+                <Link
+                  to="/services/automation"
+                  className="bg-white border border-gray-300 text-gray-900 font-bold px-3 py-2 rounded-sm shadow-sm hover:shadow-md transition-all flex items-center gap-1 text-xs sm:text-sm lg:text-sm w-fit min-h-[44px] lg:min-h-0 inline-block"
+                >
                   Explore Automation →
-                </button>
+                </Link>
               </div>
             </div>
 
@@ -249,9 +253,12 @@ export const Features = () => {
 
               {/* Button as separate div */}
               <div className="mt-4 sm:mt-20 md:mt-28 mb-0">
-                <button className="bg-white border border-gray-300 text-gray-900 font-bold px-3 py-2 rounded-sm shadow-sm hover:shadow-md transition-all flex items-center gap-1 text-xs sm:text-sm lg:text-sm w-fit min-h-[44px] lg:min-h-0">
+                <Link
+                  to="/services/ai-solutions"
+                  className="bg-white border border-gray-300 text-gray-900 font-bold px-3 py-2 rounded-sm shadow-sm hover:shadow-md transition-all flex items-center gap-1 text-xs sm:text-sm lg:text-sm w-fit min-h-[44px] lg:min-h-0 inline-block"
+                >
                   Explore AI Solutions →
-                </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -261,7 +268,7 @@ export const Features = () => {
         <div className="mt-12 sm:mt-16 md:mt-20 overflow-hidden shadow-lg bg-white border border-gray-200 rounded-2xl sm:rounded-none">
           <div className="grid grid-cols-1 lg:grid-cols-2">
             {/* Left side - Text content */}
-            <div className="bg-white px-6 sm:px-8 md:px-12 py-0 flex flex-col border-r-0 lg:border-r border-gray-200 order-2 lg:order-1 pb-4 sm:pb-0">
+            <div className="bg-white px-6 sm:px-8 md:px-12 py-0 flex flex-col border-r-0 lg:border-r border-gray-200 order-2 lg:order-1 pb-4 sm:pb-4 md:pb-6">
               {/* Label at the top */}
               <div className="inline-flex items-center gap-2 pt-4 sm:pt-8 md:pt-10">
                 <Code className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
@@ -291,19 +298,73 @@ export const Features = () => {
 
               {/* Button as separate div */}
               <div className="mt-4 sm:mt-40 md:mt-52 lg:mt-64">
-                <button className="bg-white border border-gray-300 text-gray-900 font-bold px-3 py-2 rounded-sm shadow-sm hover:shadow-md transition-all flex items-center gap-1 text-xs sm:text-sm lg:text-sm w-fit min-h-[44px] lg:min-h-0">
+                <Link
+                  to="/services/full-stack"
+                  className="bg-white border border-gray-300 text-gray-900 font-bold px-3 py-2 rounded-sm shadow-sm hover:shadow-md transition-all flex items-center gap-1 text-xs sm:text-sm lg:text-sm w-fit min-h-[44px] lg:min-h-0 inline-block"
+                >
                   View Development Services →
-                </button>
+                </Link>
               </div>
             </div>
 
-            {/* Right side - Visual mockups - Mobile Optimized */}
-            <div className="bg-white flex items-center justify-center order-1 lg:order-2">
-              <img
-                src="/stack1.png"
-                alt="Full-Stack Development Stack"
-                className="w-full h-auto object-cover"
-              />
+            {/* Right side - Code Snippet - Mobile Optimized */}
+            <div className="bg-white flex items-center justify-center p-4 sm:p-6 md:p-8 order-1 lg:order-2">
+              <div className="w-full max-w-lg">
+                <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl overflow-hidden shadow-lg border border-gray-200">
+                  {/* Code Editor Header */}
+                  <div className="flex items-center justify-between px-4 py-2.5 bg-white border-b border-gray-200">
+                    <div className="flex items-center gap-2">
+                      <div className="flex gap-1.5">
+                        <div className="w-2.5 h-2.5 rounded-full bg-red-400"></div>
+                        <div className="w-2.5 h-2.5 rounded-full bg-yellow-400"></div>
+                        <div className="w-2.5 h-2.5 rounded-full bg-green-400"></div>
+                      </div>
+                      <span className="text-xs font-medium text-gray-600 ml-2">full-stack-development.js</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-1 h-1 rounded-full bg-gray-300"></div>
+                      <div className="w-1 h-1 rounded-full bg-gray-300"></div>
+                      <div className="w-1 h-1 rounded-full bg-gray-300"></div>
+                    </div>
+                  </div>
+                  {/* Code Content */}
+                  <div className="p-5 sm:p-6 font-mono text-xs sm:text-sm leading-relaxed bg-white overflow-x-auto">
+                    <div className="space-y-1.5">
+                      <div>
+                        <span className="text-purple-600 font-semibold">async</span>{' '}
+                        <span className="text-purple-600 font-semibold">function</span>{' '}
+                        <span className="text-blue-600 font-semibold">handleRequest</span>(<span className="text-blue-600">request</span>) {'{'}
+                      </div>
+                      <div className="pl-5">
+                        <span className="text-purple-600 font-semibold">const</span>{' '}
+                        <span className="text-blue-600">backend</span> ={' '}
+                        <span className="text-purple-600 font-semibold">await</span>{' '}
+                        <span className="text-blue-600 font-semibold">processBackend</span>(<span className="text-blue-600">request</span>)
+                      </div>
+                      <div className="pl-5">
+                        <span className="text-purple-600 font-semibold">const</span>{' '}
+                        <span className="text-blue-600">stored</span> ={' '}
+                        <span className="text-purple-600 font-semibold">await</span>{' '}
+                        <span className="text-blue-600 font-semibold">saveToDatabase</span>(<span className="text-blue-600">backend</span>)
+                      </div>
+                      <div className="pl-5">
+                        <span className="text-purple-600 font-semibold">const</span>{' '}
+                        <span className="text-blue-600">formatted</span> ={' '}
+                        <span className="text-blue-600 font-semibold">formatForFrontend</span>(<span className="text-blue-600">stored</span>)
+                      </div>
+                      <div className="pl-5">
+                        <span className="text-purple-600 font-semibold">await</span>{' '}
+                        <span className="text-blue-600 font-semibold">deployToCloud</span>(<span className="text-blue-600">formatted</span>)
+                      </div>
+                      <div className="pl-5">
+                        <span className="text-purple-600 font-semibold">return</span>{' '}
+                        <span className="text-blue-600">formatted</span>
+                      </div>
+                      <div>{'}'}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -350,10 +411,13 @@ export const Features = () => {
               </div>
 
               {/* Button as separate div */}
-              <div className="mt-4 sm:mt-40 md:mt-52 lg:mt-64">
-                <button className="bg-white border border-gray-300 text-gray-900 font-bold px-3 py-2 rounded-sm shadow-sm hover:shadow-md transition-all flex items-center gap-1 text-xs sm:text-sm lg:text-sm w-fit min-h-[44px] lg:min-h-0">
+              <div className="mt-4 sm:mt-56 md:mt-72 lg:mt-80">
+                <Link
+                  to="/services/scraping"
+                  className="bg-white border border-gray-300 text-gray-900 font-bold px-3 py-2 rounded-sm shadow-sm hover:shadow-md transition-all flex items-center gap-1 text-xs sm:text-sm lg:text-sm w-fit min-h-[44px] lg:min-h-0 inline-block"
+                >
                   Learn More →
-                </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -393,9 +457,12 @@ export const Features = () => {
 
               {/* Button as separate div */}
               <div className="mt-4 sm:mt-20 md:mt-24 mb-0">
-                <button className="bg-white border border-gray-300 text-gray-900 font-bold px-3 py-2 rounded-sm shadow-sm hover:shadow-md transition-all flex items-center gap-1 text-xs sm:text-sm lg:text-sm w-fit min-h-[44px] lg:min-h-0">
+                <Link
+                  to="/services/saas-mvp"
+                  className="bg-white border border-gray-300 text-gray-900 font-bold px-3 py-2 rounded-sm shadow-sm hover:shadow-md transition-all flex items-center gap-1 text-xs sm:text-sm lg:text-sm w-fit min-h-[44px] lg:min-h-0 inline-block"
+                >
                   View SaaS Solutions →
-                </button>
+                </Link>
               </div>
             </div>
 

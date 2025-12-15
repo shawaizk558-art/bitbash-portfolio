@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom';
 import type { Project } from '@/data/projects';
 import { detectProjectLogo } from '@/lib/dynamicLogos';
 import { formatName } from '@/lib/utils';
-import { StarRating } from './StarRating';
+import { Star, Users } from 'lucide-react';
+import { useMemo } from 'react';
 
 interface ProjectCardProps {
   project: Project;
@@ -18,6 +19,22 @@ const gradientClasses = {
   teal: 'from-teal-400 to-teal-600',
 };
 
+/**
+ * Generate a deterministic random number between min and max based on a seed string
+ * This ensures the same slug always produces the same values
+ */
+function seededRandom(seed: string, min: number, max: number): number {
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    const char = seed.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  // Normalize to 0-1 range
+  const normalized = Math.abs(hash) / 2147483647;
+  return min + (normalized * (max - min));
+}
+
 export const ProjectCard = ({ project, index }: ProjectCardProps) => {
   const logoResult = detectProjectLogo(project);
   // Format the project name: remove dashes and capitalize each word
@@ -26,6 +43,14 @@ export const ProjectCard = ({ project, index }: ProjectCardProps) => {
   const category = ((project as any).category || project.role || '').toLowerCase();
   const provider = category ? category.charAt(0).toUpperCase() + category.slice(1) : 'Project';
   const categoryPath = category ? `${category}/${project.slug}` : project.slug;
+  
+  // Generate deterministic random rating (4.1-5.0) and user count (20-150) based on slug
+  const { rating, userCount } = useMemo(() => {
+    const slug = project.slug || '';
+    const rating = Math.round(seededRandom(slug + '_rating', 4.1, 5.0) * 10) / 10;
+    const userCount = Math.round(seededRandom(slug + '_users', 20, 150));
+    return { rating, userCount };
+  }, [project.slug]);
   
   // Get description - extract opening paragraph from readme (same logic as ProjectDetail)
   const getDescription = () => {
@@ -142,13 +167,27 @@ export const ProjectCard = ({ project, index }: ProjectCardProps) => {
         </p>
       </div>
 
-      {/* Footer: Provider and Rating */}
+      {/* Footer: Provider, Rating, and User Count */}
       <div className="w-full h-7 flex justify-between items-center">
         <p className="text-base leading-7 font-semibold text-[#3f475d] m-0">
           {provider}
         </p>
-        <div className="flex items-center">
-          <StarRating rating={project.rating || 4.5} size="sm" />
+        <div className="flex items-center gap-4">
+          {/* Users Icon with Count */}
+          <div className="flex items-center gap-1.5">
+            <Users className="w-4 h-4 text-black" />
+            <span className="text-sm text-black font-medium">
+              {userCount >= 1000 ? `${(userCount / 1000).toFixed(1)}K` : userCount}
+            </span>
+          </div>
+          
+          {/* Single Star with Rating */}
+          <div className="flex items-center gap-1.5">
+            <Star className="w-4 h-4 text-black" />
+            <span className="text-sm text-black font-medium">
+              {rating.toFixed(1)}
+            </span>
+          </div>
         </div>
       </div>
     </Link>

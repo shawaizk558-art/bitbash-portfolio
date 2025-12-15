@@ -38,5 +38,7 @@ export {
   BarChart3,
   Target,
   Award,
-  Video
+  Video,
+  ExternalLink,
+  Handshake
 } from "lucide-react";

@@ -4,7 +4,7 @@ import { Footer } from "@/components/Footer";
 import { getMongoProjects } from "@/lib/strapi";
 import { Play, Star, X } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import type { Project } from "@/data/projects";
 import { projects as hardcodedProjects } from "@/data/projects";
 import { HeroBackground } from "@/components/HeroBackground";
@@ -82,6 +82,8 @@ const Projects = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [playingVideoIndex, setPlayingVideoIndex] = useState<number | null>(null);
   const [displayCount, setDisplayCount] = useState(30); // Show 30 projects initially
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const observerTarget = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     async function fetchDynamicProjects() {
@@ -125,6 +127,36 @@ const Projects = () => {
   // Get projects to display (first N projects based on displayCount)
   const displayedProjects = allProjects.slice(0, displayCount);
   const hasMoreProjects = allProjects.length > displayCount;
+
+  // Infinite scroll using Intersection Observer
+  useEffect(() => {
+    if (!hasMoreProjects || isLoadingMore) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMoreProjects && !isLoadingMore) {
+          setIsLoadingMore(true);
+          // Small delay to prevent too rapid loading
+          setTimeout(() => {
+            setDisplayCount((prev) => prev + 30);
+            setIsLoadingMore(false);
+          }, 300);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const currentTarget = observerTarget.current;
+    if (currentTarget) {
+      observer.observe(currentTarget);
+    }
+
+    return () => {
+      if (currentTarget) {
+        observer.unobserve(currentTarget);
+      }
+    };
+  }, [displayCount, hasMoreProjects, isLoadingMore]);
 
   const setHighPriority = useCallback((node: HTMLImageElement | null) => {
     if (node) {
@@ -354,16 +386,12 @@ const Projects = () => {
             })}
           </div>
 
-          {/* See More Button */}
+          {/* Infinite Scroll Sentinel - triggers loading more projects when scrolled into view */}
           {hasMoreProjects && (
-            <div className="flex justify-center mt-8 sm:mt-10 md:mt-12">
-              <button
-                onClick={() => setDisplayCount(prev => prev + 30)}
-                className="text-purple-600 text-sm sm:text-base"
-                aria-label="Load more projects"
-              >
-                See More Projects
-              </button>
+            <div ref={observerTarget} className="h-20 flex items-center justify-center mt-8 sm:mt-10 md:mt-12">
+              {isLoadingMore && (
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+              )}
             </div>
           )}
         </div>

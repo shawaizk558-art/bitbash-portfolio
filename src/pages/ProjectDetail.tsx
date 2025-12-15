@@ -187,9 +187,84 @@ const ProjectDetail = () => {
   }
 
   const mediaAssets = getMediaAssets(project.slug);
+  
+  // Helper function to detect project category - reads from category field primarily
+  const detectProjectCategory = () => {
+    // Read category directly from project's category field
+    const category = String((project as any).category || '').toLowerCase().trim();
+    
+    // If category field exists and is "automation", return automation
+    if (category === 'automation') {
+      return 'automation';
+    }
+    
+    // If category field exists and is "scraper" or "scraping", return scraping
+    if (category === 'scraper' || category === 'scraping') {
+      return 'scraping';
+    }
+    
+    // Fallback: check other fields if category field is not set
+    // Check for automation indicators (bot, automation keywords)
+    const role = String(project.role || '').toLowerCase().trim();
+    const name = String(project.name || '').toLowerCase().trim();
+    const slug = String(project.slug || '').toLowerCase().trim();
+    const allText = `${category} ${role} ${name} ${slug}`.toLowerCase();
+    
+    // Check for "bot" keyword (automation indicator)
+    const hasBot = /\bbot\b/.test(allText) || 
+                   name.includes(' bot') || 
+                   name.endsWith('bot') ||
+                   slug.includes('-bot') ||
+                   slug.endsWith('-bot') ||
+                   role.includes('bot');
+    
+    // Check for automation keywords
+    const hasAutomation = category.includes('automation') ||
+                         role.includes('automation') ||
+                         name.includes('automation') ||
+                         slug.includes('automation');
+    
+    if (hasBot || hasAutomation) {
+      return 'automation';
+    }
+    
+    // Default to scraping if category is not automation
+    return 'scraping';
+  };
+
+  // Determine pricing based on category - works for all projects (hardcoded and MongoDB)
+  const getCategoryBasedPricing = () => {
+    // Check if project has explicit pricing
+    if (project.pricing) {
+      return project.pricing;
+    }
+
+    const detectedCategory = detectProjectCategory();
+
+    if (detectedCategory === 'scraping') {
+      return "$100-$300 (one-time fee)";
+    }
+
+    // Automation category
+    return "$500-$1,500 (one-time fee)";
+  };
+
+  // Determine timeline based on category - works for all projects
+  // Always use category-based timeline (ignore explicit timeline to ensure dynamic behavior)
+  const getCategoryBasedTimeline = () => {
+    const detectedCategory = detectProjectCategory();
+
+    if (detectedCategory === 'scraping') {
+      return "7–10 days for delivery";
+    }
+
+    // Automation category
+    return "15–20 days for delivery";
+  };
+
   const defaultSidebarContent = {
-    pricing: "$300–700 (one-time fee)",
-    timeline: "7–10 days for delivery",
+    pricing: getCategoryBasedPricing(),
+    timeline: getCategoryBasedTimeline(),
     postDeliverySupport: "Available at $4/hr",
     paymentMethods: "Wise, Payoneer, Bank Transfer (USD/EUR/GBP), and Crypto (USDT TRC20/ERC20)",
     moreDetails: "Schedule a quick demo anytime.",
@@ -198,12 +273,16 @@ const ProjectDetail = () => {
 
   const sidebarContent = {
     pricing: project.pricing ?? defaultSidebarContent.pricing,
-    timeline: project.timeline ?? defaultSidebarContent.timeline,
+    // Always use category-based timeline for dynamic behavior
+    timeline: defaultSidebarContent.timeline,
     postDeliverySupport: project.postDeliverySupport ?? defaultSidebarContent.postDeliverySupport,
     paymentMethods: project.paymentMethods ?? defaultSidebarContent.paymentMethods,
     moreDetails: project.moreDetails ?? defaultSidebarContent.moreDetails,
     developer: project.developer ?? defaultSidebarContent.developer
   };
+
+  // Check if this is a hardcoded (top 9) project - exclude floating icons for these
+  const isHardcodedProject = slug ? Boolean(getHardcodedProject(slug)) : false;
 
   return (
     <div className="min-h-screen bg-white">
@@ -245,7 +324,8 @@ const ProjectDetail = () => {
       {slug === "telegram-weather-alert-bot" ? (
         // Special case: render full markdown from content/projects/project1.md
         <section className="container-responsive pb-12 sm:pb-16 md:pb-20 lg:pb-24">
-          <div className="max-w-5xl lg:max-w-6xl xl:max-w-7xl mx-auto grid lg:grid-cols-[320px,minmax(0,1fr)] gap-10">
+          <div className={`max-w-5xl lg:max-w-6xl xl:max-w-7xl mx-auto ${!isHardcodedProject ? 'grid lg:grid-cols-[320px,minmax(0,1fr)] gap-10' : ''}`}>
+            {!isHardcodedProject && (
             <aside className="order-1">
               <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 sm:p-7 lg:p-8 space-y-6 lg:space-y-7 lg:sticky lg:top-28">
                 <div className="flex items-center justify-between">
@@ -254,7 +334,7 @@ const ProjectDetail = () => {
                 <div className="space-y-4">
                   <div className="flex justify-between gap-4">
                     <span className="text-gray-600 font-medium">Pricing</span>
-                    <span className="text-gray-900 font-semibold text-right">{sidebarContent.pricing}</span>
+                    <span className="text-gray-900 font-semibold text-right whitespace-nowrap">{sidebarContent.pricing}</span>
                   </div>
                   <div className="flex justify-between gap-4">
                     <span className="text-gray-600 font-medium">Timeline</span>
@@ -285,12 +365,20 @@ const ProjectDetail = () => {
                   </div>
                   <div>
                     <p className="text-gray-600 font-medium">More Details</p>
-                    <p className="text-gray-900 font-semibold">{sidebarContent.moreDetails}</p>
+                    <a
+                      href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ29FECFRffucAqab3OFhlt5h5AeB8cs4irUQoDWTF3ZqfZs4pUaNRvWa8GYpRbm7RjV_1z8ldeR"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-900 font-semibold hover:text-purple-600 transition-colors cursor-pointer"
+                    >
+                      {sidebarContent.moreDetails}
+                    </a>
                   </div>
                 </div>
               </div>
             </aside>
-            <div className="order-2">
+            )}
+            <div className={!isHardcodedProject ? "order-2" : ""}>
               <article className="prose prose-slate max-w-none">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                   {telegramWeatherMarkdown}
@@ -301,7 +389,8 @@ const ProjectDetail = () => {
         </section>
       ) : (
         <section className="container-responsive pb-12 sm:pb-16 md:pb-20 lg:pb-24">
-          <div className="max-w-5xl lg:max-w-6xl xl:max-w-7xl mx-auto grid lg:grid-cols-[320px,minmax(0,1fr)] gap-10">
+          <div className={`max-w-5xl lg:max-w-6xl xl:max-w-7xl mx-auto ${!isHardcodedProject ? 'grid lg:grid-cols-[320px,minmax(0,1fr)] gap-10' : ''}`}>
+            {!isHardcodedProject && (
             <aside className="order-first lg:order-none">
               <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 sm:p-7 lg:p-8 space-y-6 lg:space-y-7 lg:sticky lg:top-28">
                 <div className="flex items-center justify-between">
@@ -310,7 +399,7 @@ const ProjectDetail = () => {
                 <div className="space-y-4">
                   <div className="flex justify-between gap-4">
                     <span className="text-gray-600 font-medium">Pricing</span>
-                    <span className="text-gray-900 font-semibold text-right">{sidebarContent.pricing}</span>
+                    <span className="text-gray-900 font-semibold text-right whitespace-nowrap">{sidebarContent.pricing}</span>
                   </div>
                   <div className="flex justify-between gap-4">
                     <span className="text-gray-600 font-medium">Timeline</span>
@@ -341,12 +430,20 @@ const ProjectDetail = () => {
                   </div>
                   <div>
                     <p className="text-gray-600 font-medium">More Details</p>
-                    <p className="text-gray-900 font-semibold">{sidebarContent.moreDetails}</p>
+                    <a
+                      href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ29FECFRffucAqab3OFhlt5h5AeB8cs4irUQoDWTF3ZqfZs4pUaNRvWa8GYpRbm7RjV_1z8ldeR"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-900 font-semibold hover:text-purple-600 transition-colors cursor-pointer"
+                    >
+                      {sidebarContent.moreDetails}
+                    </a>
                   </div>
                 </div>
               </div>
             </aside>
-            <div className="space-y-8 sm:space-y-10 md:space-y-12 lg:space-y-14">
+            )}
+            <div className={`space-y-8 sm:space-y-10 md:space-y-12 lg:space-y-14 ${!isHardcodedProject ? '' : ''}`}>
               {/* Description - Use readme from MongoDB if available, otherwise use description */}
               <div className="-mt-8 sm:-mt-10 md:-mt-12 lg:-mt-14">
                 <div className="prose prose-lg lg:prose-lg max-w-none [&>h2:first-child]:mt-0">
@@ -449,6 +546,43 @@ const ProjectDetail = () => {
       )}
 
       <Footer isHomepage={false} />
+
+      {/* Floating Social Icons - Bottom Right (only for non-hardcoded projects) */}
+      {!isHardcodedProject && (
+        <div className="fixed bottom-6 right-6 z-40 flex flex-col gap-3">
+          {/* WhatsApp Icon */}
+          <a
+            href="https://api.whatsapp.com/send/?phone=923249868488&text=Hi+Zeeshan%2C+I%27m+interested+in+automation.&type=phone_number&app_absent=0"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-14 h-14 bg-[#25D366] rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
+            aria-label="Contact us on WhatsApp"
+          >
+            <img 
+              src="/logos/whatsapp.svg" 
+              alt="WhatsApp" 
+              className="w-9 h-9 brightness-0 invert"
+            />
+          </a>
+
+          {/* Telegram Icon */}
+          <a
+            href="https://t.me/Bitbash333"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-14 h-14 bg-[#26A5E4] rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
+            aria-label="Contact us on Telegram"
+          >
+            <svg 
+              viewBox="0 0 24 24" 
+              className="w-11 h-11 fill-white"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M16.906 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+            </svg>
+          </a>
+        </div>
+      )}
     </div>
   );
 };

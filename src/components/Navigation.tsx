@@ -173,13 +173,13 @@ export const Navigation = () => {
           <div
             className="hidden lg:flex items-center space-x-1 xl:space-x-2 absolute left-1/2 transform -translate-x-1/2"
           >
-            {/* Blog */}
+            {/* Our Partners */}
             <Link
-              to="/blog"
+              to="/partners"
               className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0"
               onClick={scrollToTopImmediate}
             >
-              <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Blog</span>
+              <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Our Partners</span>
             </Link>
 
             {/* Services Dropdown */}
@@ -306,14 +306,14 @@ export const Navigation = () => {
                   <span>Home</span>
                 </Link>
                 <Link 
-                  to="/blog" 
+                  to="/partners" 
                   className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
                   onClick={() => {
                     scrollToTopImmediate();
                     closeMobileMenu();
                   }}
                 >
-                  <span>Blog</span>
+                  <span>Our Partners</span>
                 </Link>
                 <div className="flex flex-col gap-2 py-3 px-2 text-base sm:text-lg font-medium text-white min-h-[44px] rounded-lg">
                   <div className="flex items-center justify-between">
