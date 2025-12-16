@@ -88,11 +88,9 @@ const Projects = () => {
   useEffect(() => {
     async function fetchDynamicProjects() {
       try {
-        // Fetch MongoDB projects only (no Strapi projects below top 9)
         const mongoProjectsData = await getMongoProjects();
         setMongoProjects(mongoProjectsData);
       } catch (error) {
-        console.error('Error fetching MongoDB projects:', error);
         setMongoProjects([]);
       } finally {
         setIsLoading(false);
@@ -136,7 +134,6 @@ const Projects = () => {
       (entries) => {
         if (entries[0].isIntersecting && hasMoreProjects && !isLoadingMore) {
           setIsLoadingMore(true);
-          // Small delay to prevent too rapid loading
           setTimeout(() => {
             setDisplayCount((prev) => prev + 30);
             setIsLoadingMore(false);
@@ -214,6 +211,7 @@ const Projects = () => {
             {displayedProjects.map((project, index) => {
               // Use new ProjectCard component for MongoDB projects (not in hardcoded set)
               const isMongoProject = !hardcodedSlugs.has(project.slug);
+              
               if (isMongoProject) {
                 return <ProjectCard key={project.slug} project={project} index={index} />;
               }

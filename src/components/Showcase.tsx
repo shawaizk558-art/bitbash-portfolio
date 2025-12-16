@@ -39,6 +39,8 @@ export const Showcase = ({
   const [isSyedTestimonialPlaying, setIsSyedTestimonialPlaying] = useState<boolean>(false);
   const [isOdetaTestimonialPlaying, setIsOdetaTestimonialPlaying] = useState<boolean>(false);
   const [isKareemTestimonialPlaying, setIsKareemTestimonialPlaying] = useState<boolean>(false);
+  const [isFourthTestimonialPlaying, setIsFourthTestimonialPlaying] = useState<boolean>(false);
+
 
   // Filter out Telegram Weather Alert Bot and reorder projects (swap 2nd and 3rd for homepage consistency)
   const filteredProjects = projects.filter(
@@ -465,6 +467,81 @@ export const Showcase = ({
                             onClick={(e) => {
                               e.stopPropagation();
                               setIsSyedTestimonialPlaying(true);
+                            }}
+                          >
+                            <Play className="w-4 h-4 sm:w-5 sm:h-5 text-black ml-0.5" fill="currentColor" />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Fourth Testimonial Card */}
+            <div className="mt-16 sm:mt-20">
+              <div className="bg-white rounded-3xl shadow-lg overflow-hidden min-h-[340px] sm:min-h-[400px] lg:h-[400px] border border-gray-200">
+                <div className="flex flex-col lg:grid lg:grid-cols-[63%_37%] h-full">
+                  {/* Left side - Text content */}
+                  <div className="p-8 sm:p-12 flex flex-col justify-center h-full items-center lg:items-start">
+                    <div className="max-w-[40rem] w-full lg:ml-8 text-center lg:text-left">
+                      <blockquote className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 leading-tight mb-6">
+                        "Outstanding quality and professionalism"
+                      </blockquote>
+                      <p className="text-lg sm:text-xl lg:text-xl text-gray-600 leading-relaxed">
+                        The team delivered exceptional results with great attention to detail and clear communication throughout the project.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Right side - Video thumbnail */}
+                  <div className="relative bg-gradient-to-br from-green-100 to-teal-100 h-64 sm:h-72 lg:h-full rounded-3xl lg:rounded-l-3xl lg:rounded-r-none lg:rounded-br-3xl overflow-hidden mt-6 lg:mt-0 group">
+                    {isFourthTestimonialPlaying ? (
+                      <div className="absolute inset-0 w-full h-full z-0 bg-black">
+                        <iframe
+                          src={`https://www.youtube.com/embed/MLkvGB8ZZIk?rel=0&modestbranding=1&autoplay=1&playsinline=1&mute=1`}
+                          className="w-full h-full"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowFullScreen
+                          title="Hugo Sanders Testimonial"
+                        ></iframe>
+                      </div>
+                    ) : (
+                      <div className="absolute inset-0">
+                        <AutoPlayVideo
+                          sources={getVideoSources("hugo")}
+                          poster={getPosterPath("hugo")}
+                          alt="Hugo Sanders testimonial preview"
+                          className="w-full h-full object-cover"
+                          loop={true}
+                        />
+                      </div>
+                    )}
+
+                    {!isFourthTestimonialPlaying && (
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 sm:p-6">
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-white flex items-center justify-center flex-shrink-0">
+                              <img
+                                src="/hugo-pfp.jpeg"
+                                alt="Hugo Sanders profile photo"
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-white font-bold text-sm sm:text-base truncate">Hugo Sanders</p>
+                              <p className="text-white/80 text-xs sm:text-sm truncate">CTO @Krov Tech</p>
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            className="flex items-center justify-center rounded-full bg-white/90 group-hover:bg-red-600 shadow-lg w-9 h-9 sm:w-10 sm:h-10 transition-colors duration-300 ease-out flex-shrink-0"
+                            aria-label="Play testimonial video"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setIsFourthTestimonialPlaying(true);
                             }}
                           >
                             <Play className="w-4 h-4 sm:w-5 sm:h-5 text-black ml-0.5" fill="currentColor" />

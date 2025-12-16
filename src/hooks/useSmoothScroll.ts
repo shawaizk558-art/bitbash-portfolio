@@ -3,7 +3,7 @@ import Lenis from 'lenis';
 
 export const useSmoothScroll = () => {
   useEffect(() => {
-    // Initialize Lenis with configuration
+    // Initialize Lenis with configuration - optimized for performance
     const lenis = new Lenis({
       duration: 1.2,        // How long scroll animations take (in seconds)
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Easing curve (exponential ease-out)
@@ -13,10 +13,13 @@ export const useSmoothScroll = () => {
       wheelMultiplier: 1,   // Adjust scroll speed (1 = normal)
       touchMultiplier: 2,   // Touch scroll multiplier
       infinite: false,      // Don't loop scroll (no infinite scroll)
+      syncTouch: false,     // Disable touch sync for better performance
     });
 
     function raf(time: number) {
-      lenis.raf(time); // Update Lenis scroll position
+      // Update Lenis scroll position
+      lenis.raf(time);
+      
       requestAnimationFrame(raf); // Schedule next frame
     }
 

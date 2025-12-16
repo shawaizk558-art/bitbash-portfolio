@@ -53,7 +53,10 @@ export const AutoPlayVideo = ({
     );
 
     observer.observe(node);
-    return () => observer.disconnect();
+    
+    return () => {
+      observer.disconnect();
+    };
   }, [prefersReducedMotion]);
 
   if (prefersReducedMotion) {

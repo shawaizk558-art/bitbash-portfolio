@@ -78,7 +78,7 @@ async function getDatabase(): Promise<Db> {
     return db;
   }
   const mongoClient = await getMongoClient();
-  db = mongoClient.db('github_automation_UTP');
+  db = mongoClient.db('github_automation');
   return db;
 }
 
@@ -136,6 +136,30 @@ function extractFirstParagraph(text: string, maxLength: number = 200): string {
   return firstParagraph.trim();
 }
 
+function extractOpeningParagraph(text: string, maxLength: number = 200): string {
+  if (!text) return '';
+  // Extract content between title (with or without #) and ## Introduction
+  // Handles both markdown headings (# Title) and plain text titles
+  const openingMatch = text.match(/^(?:#\s+)?[^\n]+\n\n([\s\S]*?)(?=\n##\s+Introduction)/i);
+  if (openingMatch && openingMatch[1]) {
+    let extracted = openingMatch[1].trim();
+    // Clean up markdown formatting
+    extracted = extracted
+      .replace(/```[\s\S]*?```/g, '')
+      .replace(/`[^`]+`/g, '')
+      .replace(/\*\*([^*]+)\*\*/g, '$1')
+      .replace(/\*([^*]+)\*/g, '$1')
+      .replace(/\n+/g, ' ')
+      .trim();
+    if (extracted.length > maxLength) {
+      return extracted.substring(0, maxLength).trim() + '...';
+    }
+    return extracted;
+  }
+  // Fallback to extractFirstParagraph if no Introduction section found
+  return extractFirstParagraph(text, maxLength);
+}
+
 /**
  * Generate a deterministic rating between 4.5-5.0 based on mongoId
  */
@@ -176,9 +200,11 @@ function transformMongoDocument(doc: any, index: number = 0): MongoProject {
   const role = category 
     ? category.charAt(0).toUpperCase() + category.slice(1)
     : name.split(' ').slice(0, 2).join(' ');
-  const quote = description || extractFirstParagraph(readme, 150);
+  // Extract opening paragraph (between title and ## Introduction) for quote
+  const quote = description || extractOpeningParagraph(readme, 150);
+  // For full description, use opening paragraph if readme is long, otherwise use full readme
   const fullDescription = readme 
-    ? (readme.length > 500 ? extractFirstParagraph(readme, 500) : readme)
+    ? (readme.length > 500 ? extractOpeningParagraph(readme, 500) : readme)
     : description || quote;
   const technologies = topics.length > 0 ? topics : ['Automation', 'Data Processing'];
   const videoPlaceholder = getVideoPlaceholder(category, index);

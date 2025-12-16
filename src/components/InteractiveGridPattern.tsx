@@ -11,7 +11,11 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
         const canvas = canvasRef.current;
         if (!canvas) return;
 
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext('2d', {
+            alpha: true,
+            desynchronized: false,
+            willReadFrequently: false
+        });
         if (!ctx) return;
 
         let animationFrameId: number | null = null;
@@ -25,7 +29,7 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
         const gap = 42; // Distance between lines (larger gap reduces density)
         const lineWidth = 1;
         const flowSpeed = 0.5;
-        const FRAME_INTERVAL = 1000 / 30;
+        const FRAME_INTERVAL = 1000 / 20; // Reduced to 20fps for background pattern
         let offset = 0;
 
         const isDesktop = () => window.innerWidth >= 1024;
@@ -45,7 +49,7 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
         const clearCanvas = () => {
             ctx.clearRect(0, 0, width, height);
         };
-
+        
         const draw = () => {
             if (!isDesktop() || document.hidden) {
                 animationFrameId = null;
@@ -58,6 +62,7 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
                 animationFrameId = requestAnimationFrame(draw);
                 return;
             }
+            
             lastFrameTime = now;
 
             clearCanvas();
@@ -67,29 +72,43 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
             const cols = Math.ceil(width / gap) + 2;
             const rows = Math.ceil(height / gap) + 2;
 
+            // Cache shimmer calculation (only once per frame - reuse 'now' from above)
+            const shimmer = Math.sin(now / 900);
+            
+            // Pre-calculate constants to avoid repeated calculations
+            const baseAlpha = 0.08;
+            const alphaRange = 0.04;
+            const colorR = 139;
+            const colorG = 92;
+            const colorB = 246;
+
+            // Optimize canvas operations
+            ctx.save();
             ctx.lineWidth = lineWidth;
 
-            const shimmer = Math.sin(performance.now() / 900);
-
+            // Draw vertical lines - optimized with cached calculations
             for (let i = -1; i < cols; i++) {
                 const baseX = i * gap + offset;
-                const alpha = 0.08 + 0.04 * Math.sin(i * 0.5 + shimmer);
-                ctx.strokeStyle = `rgba(139, 92, 246, ${alpha})`;
+                const alpha = baseAlpha + alphaRange * Math.sin(i * 0.5 + shimmer);
+                ctx.strokeStyle = `rgba(${colorR}, ${colorG}, ${colorB}, ${alpha})`;
                 ctx.beginPath();
                 ctx.moveTo(baseX, -gap);
                 ctx.lineTo(baseX, height + gap);
                 ctx.stroke();
             }
 
+            // Draw horizontal lines - optimized with cached calculations
             for (let j = -1; j < rows; j++) {
                 const baseY = j * gap + offset;
-                const alpha = 0.08 + 0.04 * Math.cos(j * 0.5 + shimmer);
-                ctx.strokeStyle = `rgba(139, 92, 246, ${alpha})`;
+                const alpha = baseAlpha + alphaRange * Math.cos(j * 0.5 + shimmer);
+                ctx.strokeStyle = `rgba(${colorR}, ${colorG}, ${colorB}, ${alpha})`;
                 ctx.beginPath();
                 ctx.moveTo(-gap, baseY);
                 ctx.lineTo(width + gap, baseY);
                 ctx.stroke();
             }
+            
+            ctx.restore();
 
             animationFrameId = requestAnimationFrame(draw);
         };
@@ -125,14 +144,16 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
         handleVisibility();
         window.addEventListener('resize', handleResize);
         
-        // Throttle scroll updates to avoid jank
-        let scrollTimeout: number | null = null;
+        // Throttle scroll updates to avoid jank - use requestAnimationFrame for smoother updates
+        let scrollRafId: number | null = null;
+        
         const throttledScroll = () => {
-            if (scrollTimeout) return;
-            scrollTimeout = window.setTimeout(() => {
+            if (scrollRafId !== null) return;
+            
+            scrollRafId = requestAnimationFrame(() => {
                 updateCanvasRect();
-                scrollTimeout = null;
-            }, 16); // ~60fps
+                scrollRafId = null;
+            });
         };
         window.addEventListener('scroll', throttledScroll, { passive: true });
         document.addEventListener('visibilitychange', handleVisibility);
@@ -153,6 +174,9 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
                 resizeObserver.disconnect();
             }
             window.removeEventListener('scroll', throttledScroll);
+            if (scrollRafId !== null) {
+                cancelAnimationFrame(scrollRafId);
+            }
             document.removeEventListener('visibilitychange', handleVisibility);
         };
     }, []);

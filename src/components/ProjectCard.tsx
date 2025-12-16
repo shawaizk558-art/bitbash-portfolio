@@ -2,8 +2,8 @@ import { Link } from 'react-router-dom';
 import type { Project } from '@/data/projects';
 import { detectProjectLogo } from '@/lib/dynamicLogos';
 import { formatName } from '@/lib/utils';
-import { Star, Users } from 'lucide-react';
-import { useMemo } from 'react';
+import { Star, Users, Zap, Database, Bot, Cog, Settings, Workflow, FileSearch, Network, Download, FileCode } from 'lucide-react';
+import { useMemo, useState } from 'react';
 
 interface ProjectCardProps {
   project: Project;
@@ -35,7 +35,54 @@ function seededRandom(seed: string, min: number, max: number): number {
   return min + (normalized * (max - min));
 }
 
+/**
+ * Generate a deterministic random number between 0 and max based on a seed string
+ */
+function seededRandomIndex(seed: string, max: number): number {
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    const char = seed.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  const normalized = Math.abs(hash) / 2147483647;
+  return Math.floor(normalized * max);
+}
+
+/**
+ * Extract initials from project name
+ */
+function getInitials(name: string): string {
+  const words = name.split(/\s+/).filter(w => w.length > 0);
+  if (words.length === 0) return '?';
+  if (words.length === 1) return words[0].substring(0, 2).toUpperCase();
+  return (words[0][0] + words[words.length - 1][0]).toUpperCase();
+}
+
+/**
+ * Fallback automation icons (for category-based fallback)
+ */
+const AUTOMATION_FALLBACK_ICONS = [
+  { component: Zap, color: '#9333ea', name: 'Zap' }, // Purple
+  { component: Bot, color: '#3b82f6', name: 'Bot' }, // Blue
+  { component: Cog, color: '#10b981', name: 'Cog' }, // Green
+  { component: Settings, color: '#f59e0b', name: 'Settings' }, // Orange
+  { component: Workflow, color: '#ec4899', name: 'Workflow' }, // Pink
+];
+
+/**
+ * Fallback scraping icons (for category-based fallback)
+ */
+const SCRAPING_FALLBACK_ICONS = [
+  { component: Database, color: '#6366f1', name: 'Database' }, // Indigo
+  { component: FileSearch, color: '#14b8a6', name: 'FileSearch' }, // Teal
+  { component: Network, color: '#06b6d4', name: 'Network' }, // Cyan
+  { component: Download, color: '#8b5cf6', name: 'Download' }, // Violet
+  { component: FileCode, color: '#f97316', name: 'FileCode' }, // Orange
+];
+
 export const ProjectCard = ({ project, index }: ProjectCardProps) => {
+  const [imageError, setImageError] = useState(false);
   const logoResult = detectProjectLogo(project);
   // Format the project name: remove dashes and capitalize each word
   const rawName = (project as any).title || project.name || '';
@@ -43,6 +90,40 @@ export const ProjectCard = ({ project, index }: ProjectCardProps) => {
   const category = ((project as any).category || project.role || '').toLowerCase();
   const provider = category ? category.charAt(0).toUpperCase() + category.slice(1) : 'Project';
   const categoryPath = category ? `${category}/${project.slug}` : project.slug;
+  
+  // Get topics/technologies for category detection
+  const technologies = Array.isArray(project.technologies) ? project.technologies : [];
+  const topics = Array.isArray((project as any).topics) ? (project as any).topics : [];
+  const allTopics = [...technologies, ...topics];
+  const normalizedTopics = allTopics.map(t => String(t).toLowerCase().trim());
+  const normalizedCategory = category.toLowerCase();
+  
+  // Check if project is automation or scraping category (for fallback)
+  const isAutomation = normalizedCategory.includes('automation') || 
+                       normalizedTopics.some(t => t.includes('automation')) ||
+                       rawName.toLowerCase().includes('automation');
+  
+  const isScraping = normalizedCategory.includes('scraping') || 
+                     normalizedCategory.includes('scraper') ||
+                     normalizedTopics.some(t => t.includes('scraping') || t.includes('scraper')) ||
+                     rawName.toLowerCase().includes('scraping') || rawName.toLowerCase().includes('scraper');
+  
+  // Get category-based fallback icon if image fails
+  const getCategoryFallbackIcon = () => {
+    const seed = (project as any).slug || rawName || 'default';
+    if (isAutomation) {
+      const iconIndex = seededRandomIndex(seed, AUTOMATION_FALLBACK_ICONS.length);
+      return AUTOMATION_FALLBACK_ICONS[iconIndex];
+    }
+    if (isScraping) {
+      const iconIndex = seededRandomIndex(seed, SCRAPING_FALLBACK_ICONS.length);
+      return SCRAPING_FALLBACK_ICONS[iconIndex];
+    }
+    return null;
+  };
+  
+  // Calculate initials for fallback
+  const initials = logoResult.initials || getInitials(rawName);
   
   // Generate deterministic random rating (4.1-5.0) and user count (20-150) based on slug
   const { rating, userCount } = useMemo(() => {
@@ -56,8 +137,10 @@ export const ProjectCard = ({ project, index }: ProjectCardProps) => {
   const getDescription = () => {
     if ((project as any).readme) {
       // Extract opening paragraph from readme (between main title and ## Introduction)
+      // Handles both markdown headings (# Title) and plain text titles
       const readme = (project as any).readme;
-      const openingMatch = readme.match(/^#\s+[^\n]+\n\n([\s\S]*?)(?=\n##\s+Introduction)/i);
+      // Try to match content after title (with or without #) and before ## Introduction
+      const openingMatch = readme.match(/^(?:#\s+)?[^\n]+\n\n([\s\S]*?)(?=\n##\s+Introduction)/i);
       if (openingMatch && openingMatch[1]) {
         let text = openingMatch[1].trim();
         // Clean up markdown formatting for plain text display
@@ -79,40 +162,43 @@ export const ProjectCard = ({ project, index }: ProjectCardProps) => {
   const renderLogo = () => {
     const logoSize = 'h-9 w-9'; // Fixed size for all logos (slightly smaller)
     
-    if (logoResult.type === 'simple-icon' && logoResult.url) {
-      const iconColor = logoResult.color ? `#${logoResult.color}` : '#000000';
+    // If image failed to load, show category-based fallback or gradient
+    if (imageError) {
+      const categoryIcon = getCategoryFallbackIcon();
+      if (categoryIcon) {
+        const IconComponent = categoryIcon.component;
+        return <IconComponent className={`${logoSize} object-contain`} style={{ color: categoryIcon.color }} />;
+      }
+      // Fallback to gradient with initials
+      const gradientClass = gradientClasses[project.videoPlaceholder] || gradientClasses.purple;
       return (
-        <>
-          <img
-            src={logoResult.url}
-            alt={logoResult.alt}
-            className={`${logoSize} object-contain rounded-none border-none`}
-            style={{ 
-              // Apply brand color to SVG using CSS filter (Simple Icons SVGs are black by default)
-              // This is a simplified approach - for better color accuracy, consider using inline SVGs
-            }}
-            loading="lazy"
-            onError={(e) => {
-              // Fallback to gradient if image fails to load
-              const target = e.currentTarget as HTMLImageElement;
-              target.style.display = 'none';
-              const fallback = target.nextElementSibling as HTMLElement | null;
-              if (fallback) fallback.style.display = 'flex';
-            }}
-          />
-          {/* Gradient fallback (hidden by default) */}
-          <div className="hidden" style={{ display: 'none' }}>
-            <div className={`h-9 w-9 rounded-lg bg-gradient-to-br ${gradientClasses[project.videoPlaceholder] || gradientClasses.purple} flex items-center justify-center`}>
-              <span className="text-white font-bold text-sm">
-                {logoResult.initials || '?'}
-              </span>
-            </div>
-          </div>
-        </>
+        <div className={`${logoSize} rounded-lg bg-gradient-to-br ${gradientClass} flex items-center justify-center`}>
+          <span className="text-white font-bold text-sm">
+            {initials}
+          </span>
+        </div>
+      );
+    }
+    
+    if (logoResult.type === 'simple-icon' && logoResult.url) {
+      return (
+        <img
+          src={logoResult.url}
+          alt={logoResult.alt}
+          className={`${logoSize} object-contain rounded-none border-none`}
+          loading="lazy"
+          onError={() => {
+            // Set error state to trigger fallback
+            setImageError(true);
+          }}
+        />
       );
     } else if (logoResult.type === 'lucide-icon' && logoResult.component) {
       const IconComponent = logoResult.component;
-      const iconColor = logoResult.color === 'purple' ? '#9333ea' : '#4b5563';
+      // Use the color directly if it's a hex color, otherwise use default
+      const iconColor = logoResult.color && logoResult.color.startsWith('#') 
+        ? logoResult.color 
+        : (logoResult.color === 'purple' ? '#9333ea' : '#4b5563');
       return <IconComponent className={`${logoSize} object-contain`} style={{ color: iconColor }} />;
     } else {
       // Gradient fallback with initials
@@ -120,7 +206,7 @@ export const ProjectCard = ({ project, index }: ProjectCardProps) => {
       return (
         <div className={`${logoSize} rounded-lg bg-gradient-to-br ${gradientClass} flex items-center justify-center`}>
           <span className="text-white font-bold text-sm">
-            {logoResult.initials || '?'}
+            {initials}
           </span>
         </div>
       );
@@ -137,16 +223,6 @@ export const ProjectCard = ({ project, index }: ProjectCardProps) => {
         {/* Logo - fixed size with equal top/bottom spacing */}
         <div className="flex-shrink-0 h-9 w-9 flex items-center justify-center">
           {renderLogo()}
-          {/* Gradient fallback (hidden by default, shown on image error) */}
-          {logoResult.type === 'simple-icon' && (
-            <div 
-              className="h-9 w-9 rounded-lg bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center hidden"
-            >
-              <span className="text-white font-bold text-sm">
-                {logoResult.initials || '?'}
-              </span>
-            </div>
-          )}
         </div>
 
         {/* Title and Path */}

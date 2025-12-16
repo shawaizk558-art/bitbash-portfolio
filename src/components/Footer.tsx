@@ -269,8 +269,26 @@ export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
             >
               <Logo size="lg" variant="white" />
             </Link>
-            {/* Certification Badges - aligned with logo */}
-            <div className="flex items-center gap-3 sm:gap-4">
+            {/* Trusted Partner and Certification Badges - aligned with logo */}
+            <div className="flex items-center gap-3 sm:gap-4 flex-wrap justify-center">
+              {/* Trusted Partner Separator and Logo */}
+              <div className="flex flex-col items-center gap-2 pr-3 sm:pr-4 border-r border-gray-700">
+                <span className="text-[10px] sm:text-xs text-gray-500 font-medium uppercase tracking-wider whitespace-nowrap">Trusted Partner</span>
+                <a
+                  href="https://tradeproxy.net/?utm_source=bitbash"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center hover:opacity-80 transition-opacity"
+                  title="TradeProxy - Residential and Mobile Proxies"
+                >
+                  <img
+                    src="/trade-proxy.svg"
+                    alt="TradeProxy"
+                    className="h-10 sm:h-12 w-auto"
+                  />
+                </a>
+              </div>
+              {/* Certification Badges */}
               <img
                 src="/badges/ssl-secured.png"
                 alt="SSL Secured"
