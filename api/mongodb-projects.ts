@@ -44,8 +44,10 @@ export default async function handler(
           const content = await response.text();
           const projects = JSON.parse(content);
           
-          // Set cache headers (5 minutes cache)
-          res.status(200).json(projects);
+          // Set cache headers (1 hour cache for production, revalidate)
+          res.status(200)
+            .setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400')
+            .json(projects);
           return;
         }
       }
@@ -57,7 +59,9 @@ export default async function handler(
         const filePath = path.join(process.cwd(), 'public', 'data', 'mongodb-projects.json');
         const content = await fs.readFile(filePath, 'utf-8');
         const projects = JSON.parse(content);
-        return res.status(200).json(projects);
+        return res.status(200)
+          .setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400')
+          .json(projects);
       } catch (fileError: any) {
         // File doesn't exist either
         return res.status(200).json([]);
