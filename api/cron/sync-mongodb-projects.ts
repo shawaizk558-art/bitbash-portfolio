@@ -10,7 +10,7 @@
 
 import { promises as fs } from 'fs';
 import path from 'path';
-import { MongoClient, Db, Collection } from 'mongodb';
+import { MongoClient, Db, Collection, MongoClientOptions } from 'mongodb';
 import { put, list } from '@vercel/blob';
 
 // Inline types for Vercel request/response
@@ -56,7 +56,16 @@ let db: Db | null = null;
 
 async function getMongoClient(): Promise<MongoClient> {
   if (client) {
-    return client;
+    // Check if connection is still alive
+    try {
+      await client.db('admin').command({ ping: 1 });
+      return client;
+    } catch (error) {
+      // Connection is dead, reset it
+      console.log('⚠️  Existing MongoDB connection is dead, creating new one...');
+      client = null;
+      db = null;
+    }
   }
   const uri = process.env.MONGODB_URI;
   if (!uri) {
@@ -68,7 +77,23 @@ async function getMongoClient(): Promise<MongoClient> {
     console.error('All env vars starting with MONGO:', JSON.stringify(mongoVars, null, 2));
     throw new Error('MONGODB_URI environment variable is not set');
   }
-  client = new MongoClient(uri);
+  
+  // Connection options optimized for serverless environments
+  // Using very high timeouts to allow queries to take as long as needed
+  const options: MongoClientOptions = {
+    connectTimeoutMS: 60000, // 60 seconds to establish connection
+    serverSelectionTimeoutMS: 60000, // 60 seconds to select server
+    socketTimeoutMS: 0, // 0 = no timeout - allow operations to take as long as needed
+    maxPoolSize: 1, // Single connection for serverless
+    minPoolSize: 1,
+    maxIdleTimeMS: 60000, // Close idle connections after 60 seconds
+    retryWrites: true,
+    retryReads: true,
+    // Heartbeat frequency to keep connection alive
+    heartbeatFrequencyMS: 10000,
+  };
+  
+  client = new MongoClient(uri, options);
   await client.connect();
   return client;
 }
@@ -83,15 +108,46 @@ async function getDatabase(): Promise<Db> {
 }
 
 async function fetchMongoProjects(): Promise<any[]> {
-  try {
-    const database = await getDatabase();
-    const collection: Collection = database.collection('dataToExport');
-    const documents = await collection.find({}).toArray();
-    return documents;
-  } catch (error) {
-    console.error('Error fetching MongoDB projects:', error);
-    throw error;
+  const maxRetries = 3;
+  let lastError: any;
+  
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      // Reset connection on retry to get a fresh connection
+      if (attempt > 1) {
+        console.log(`🔄 Retry attempt ${attempt}/${maxRetries}...`);
+        await closeMongoConnection();
+        // Wait a bit before retrying
+        await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+      }
+      
+      const database = await getDatabase();
+      const collection: Collection = database.collection('dataToExport');
+      
+      // Fetch all documents - no timeout, let it take as long as needed
+      // The socket timeout is set to 0 (unlimited) in connection options
+      const documents = await collection.find({}).toArray();
+      return documents;
+    } catch (error: any) {
+      lastError = error;
+      console.error(`Error fetching MongoDB projects (attempt ${attempt}/${maxRetries}):`, error.message);
+      
+      // If it's a network error and we have retries left, continue
+      if (attempt < maxRetries && (
+        error.name === 'MongoNetworkTimeoutError' ||
+        error.name === 'PoolClearedOnNetworkError' ||
+        error.message?.includes('timeout') ||
+        error.message?.includes('timed out')
+      )) {
+        continue;
+      }
+      
+      // If it's not a retryable error or we're out of retries, throw
+      throw error;
+    }
   }
+  
+  throw lastError;
 }
 
 async function closeMongoConnection(): Promise<void> {
