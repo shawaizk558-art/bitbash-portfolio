@@ -3,7 +3,7 @@ import type { Project } from '@/data/projects';
 import { detectProjectLogo } from '@/lib/dynamicLogos';
 import { formatName } from '@/lib/utils';
 import { Star, Users, Zap, Database, Bot, Cog, Settings, Workflow, FileSearch, Network, Download, FileCode } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, memo } from 'react';
 
 interface ProjectCardProps {
   project: Project;
@@ -81,7 +81,7 @@ const SCRAPING_FALLBACK_ICONS = [
   { component: FileCode, color: '#f97316', name: 'FileCode' }, // Orange
 ];
 
-export const ProjectCard = ({ project, index }: ProjectCardProps) => {
+export const ProjectCard = memo(({ project, index }: ProjectCardProps) => {
   const [imageError, setImageError] = useState(false);
   const logoResult = detectProjectLogo(project);
   // Format the project name: remove dashes and capitalize each word
@@ -268,6 +268,13 @@ export const ProjectCard = ({ project, index }: ProjectCardProps) => {
       </div>
     </Link>
   );
-};
+}, (prevProps, nextProps) => {
+  // Custom comparison function for React.memo
+  // Only re-render if project slug or index changes
+  return prevProps.project.slug === nextProps.project.slug && 
+         prevProps.index === nextProps.index;
+});
+
+ProjectCard.displayName = 'ProjectCard';
 
 

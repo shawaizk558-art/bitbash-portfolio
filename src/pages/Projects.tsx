@@ -4,7 +4,7 @@ import { Footer } from "@/components/Footer";
 import { getMongoProjects } from "@/lib/strapi";
 import { Play, Star, X } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import type { Project } from "@/data/projects";
 import { projects as hardcodedProjects } from "@/data/projects";
 import { HeroBackground } from "@/components/HeroBackground";
@@ -16,6 +16,7 @@ import {
   getVideoSources,
 } from "@/lib/mediaAssets";
 import { ProjectCard } from "@/components/ProjectCard";
+import { measurePageLoad } from "@/lib/performance";
 
 /**
  * Convert a string to title case (capitalize first letter of each word)
@@ -86,6 +87,9 @@ const Projects = () => {
   const observerTarget = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Track page load performance
+    measurePageLoad('projects');
+
     async function fetchDynamicProjects() {
       try {
         const mongoProjectsData = await getMongoProjects();
@@ -100,31 +104,48 @@ const Projects = () => {
     fetchDynamicProjects();
   }, []);
 
+  // OPTIMIZED: Memoize expensive project processing operations
   // Filter out Telegram Weather Alert Bot and reorder projects (swap 2nd and 3rd for homepage consistency)
-  const filteredHardcodedProjects = hardcodedProjects.filter(
-    project => project.slug !== 'telegram-weather-alert-bot'
-  );
-  const reorderedHardcodedProjects = [...filteredHardcodedProjects];
-  if (reorderedHardcodedProjects.length > 2) {
-    [reorderedHardcodedProjects[1], reorderedHardcodedProjects[2]] = [reorderedHardcodedProjects[2], reorderedHardcodedProjects[1]];
-  }
+  const { filteredHardcodedProjects, reorderedHardcodedProjects, hardcodedSlugs, filteredMongoProjects, allProjects } = useMemo(() => {
+    const filtered = hardcodedProjects.filter(
+      project => project.slug !== 'telegram-weather-alert-bot'
+    );
+    const reordered = [...filtered];
+    if (reordered.length > 2) {
+      [reordered[1], reordered[2]] = [reordered[2], reordered[1]];
+    }
 
-  // Combine all projects: hardcoded first, then MongoDB only
-  // Filter out duplicates by slug (hardcoded takes precedence)
-  const hardcodedSlugs = new Set(reorderedHardcodedProjects.map(p => p.slug));
-  
-  const filteredMongoProjects = mongoProjects.filter(
-    project => !hardcodedSlugs.has(project.slug)
-  );
-  
-  const allProjects = [
-    ...reorderedHardcodedProjects, 
-    ...filteredMongoProjects
-  ];
+    // Combine all projects: hardcoded first, then MongoDB only
+    // Filter out duplicates by slug (hardcoded takes precedence)
+    const slugs = new Set(reordered.map(p => p.slug));
+    
+    const filteredMongo = mongoProjects.filter(
+      project => !slugs.has(project.slug)
+    );
+    
+    const all = [
+      ...reordered, 
+      ...filteredMongo
+    ];
+
+    return {
+      filteredHardcodedProjects: filtered,
+      reorderedHardcodedProjects: reordered,
+      hardcodedSlugs: slugs,
+      filteredMongoProjects: filteredMongo,
+      allProjects: all,
+    };
+  }, [mongoProjects]); // Only recalculate when mongoProjects changes
 
   // Get projects to display (first N projects based on displayCount)
-  const displayedProjects = allProjects.slice(0, displayCount);
-  const hasMoreProjects = allProjects.length > displayCount;
+  // OPTIMIZED: Memoize displayed projects calculation
+  const displayedProjects = useMemo(() => {
+    return allProjects.slice(0, displayCount);
+  }, [allProjects, displayCount]);
+  
+  const hasMoreProjects = useMemo(() => {
+    return allProjects.length > displayCount;
+  }, [allProjects.length, displayCount]);
 
   // Infinite scroll using Intersection Observer
   useEffect(() => {

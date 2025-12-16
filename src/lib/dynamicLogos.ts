@@ -481,17 +481,45 @@ export function getProjectColor(seed: string): string {
   return PROFESSIONAL_COLORS[index];
 }
 
+// Logo detection cache - keyed by project slug for fast lookups
+const logoCache = new Map<string, LogoResult>();
+
+// Pre-built lookup Maps for O(1) access instead of O(n) iteration
+const LOGO_KEYWORDS_MAP = new Map<string, { icon: string; color: string; fallback?: 'lucide' }>();
+for (const [key, value] of Object.entries(LOGO_KEYWORDS)) {
+  LOGO_KEYWORDS_MAP.set(key.toLowerCase(), value);
+}
+
+// Pre-built Set for excluded words for O(1) lookup
+const EXCLUDED_GENERIC_WORDS = new Set([
+  'scraper', 'scraping', 'automation', 'data', 'api', 'bot', 'tool', 'script', 'python', 'javascript', 'node', 'js', 'web',
+  'json', 'html', 'http', 'https', 'url', 'email', 'product', 'price', 'review', 'blog', 'news', 'job', 'listing',
+  'property', 'real', 'estate', 'market', 'analysis', 'research', 'extraction', 'monitoring', 'tracking', 'generator',
+  'checker', 'downloader', 'converter', 'parser', 'crawler', 'crawling', 'mining', 'processing', 'analytics', 'insights',
+  'intelligence', 'lead', 'leads', 'company', 'business', 'social', 'media', 'content', 'article', 'post', 'profile',
+  'page', 'store', 'shop', 'retail', 'ecommerce', 'e-commerce', 'marketplace', 'rental', 'hotel', 'travel', 'seo',
+  'the', 'and', 'for', 'with', 'from', 'to', 'of', 'a', 'an', 'by', 'per', 'get', 'result', 'example', 'public',
+  'people', 'details', 'location', 'quotes', 'bulk', 'stock', 'crypto', 'trending', 'text', 'image', 'video', 'game',
+  'daily', 'stats', 'pro', 'com', 'de', 'us', 'jp', 'kr', 'ip', 'pay', 'castnet', 'coronavirus', 'nlp', 'ai', 'actor',
+  'agent', 'creator', 'extractor', 'scrapper', 'httpx', 'axios', 'requests', 'beautifulsoup', 'scrapy', 'playwright',
+  'puppeteer', 'selenium', 'cheerio', 'crawlee', 'typescript', 'markdown', 'pdf', 'csv', 'rest', 'proxy', 'proxies',
+  'hash', 'tag', 'browserautomation', 'nodejs', 'node-js', 'website', 'sentiment'
+]);
+
+// E-commerce keywords Set for fast lookup
+const ECOMMERCE_KEYWORDS = new Set(['shop', 'store', 'e-commerce', 'ecommerce', 'retail', 'product', 'cart', 'invoice']);
+
 /**
- * Check if a string contains any of the keywords (case-insensitive)
+ * Check if a string contains any of the keywords (case-insensitive) - optimized with Set
  */
-function containsKeyword(text: string, keywords: string[]): string | null {
+function containsKeyword(text: string, keywords: Set<string>): boolean {
   const lowerText = text.toLowerCase();
   for (const keyword of keywords) {
     if (lowerText.includes(keyword.toLowerCase())) {
-      return keyword;
+      return true;
     }
   }
-  return null;
+  return false;
 }
 
 /**
@@ -502,8 +530,15 @@ function containsKeyword(text: string, keywords: string[]): string | null {
  * 1. Local file (if available) - fastest, no network
  * 2. Iconify API with brand color - colored logos
  * 3. Iconify API without color - fallback
+ * 
+ * PERFORMANCE: Results are memoized by project slug for instant subsequent lookups
  */
 export function detectProjectLogo(project: Project): LogoResult {
+  // Check cache first - instant return for cached results
+  const cacheKey = (project as any).slug || project.name || '';
+  if (cacheKey && logoCache.has(cacheKey)) {
+    return logoCache.get(cacheKey)!;
+  }
   const projectName = (project as any).title || project.name || '';
   // Check both technologies and topics arrays (MongoDB projects use topics)
   const technologies = Array.isArray(project.technologies) ? project.technologies : [];
@@ -522,155 +557,195 @@ export function detectProjectLogo(project: Project): LogoResult {
     if (!topic) continue;
     
     // Check exact match first (highest priority)
-    if (LOGO_KEYWORDS[topic]) {
-      const config = LOGO_KEYWORDS[topic];
+    // OPTIMIZED: Use Map lookup instead of object property access
+    const config = LOGO_KEYWORDS_MAP.get(topic);
+    if (config) {
       // If fallback is specified, use Lucide icon directly
       if (config.fallback === 'lucide') {
         const fallbackIcon = FALLBACK_ICONS[topic];
         if (fallbackIcon) {
-          return {
+          const result: LogoResult = {
             type: 'lucide-icon',
             component: fallbackIcon.component,
             alt: `${topic} icon`,
             color: fallbackIcon.color,
           };
+          // Cache result before returning
+          if (cacheKey) logoCache.set(cacheKey, result);
+          return result;
         }
       }
       // Use smart URL strategy: local first, then Iconify with color
-      return {
+      const result: LogoResult = {
         type: 'simple-icon',
         url: getLogoUrl(config.icon, config.color),
         alt: `${config.icon} logo`,
         color: config.color,
       };
+      // Cache result before returning
+      if (cacheKey) logoCache.set(cacheKey, result);
+      return result;
     }
     
     // Check if topic contains any keyword (for compound topics like "linkedin-scraper", "sales-navigator")
     // Split topic by common separators and check each part
+    // OPTIMIZED: Use Map lookup instead of object property access
     const topicParts = topic.split(/[\s\-_]+/);
     for (const part of topicParts) {
-      if (part && LOGO_KEYWORDS[part]) {
-        const config = LOGO_KEYWORDS[part];
-        if (config.fallback === 'lucide') {
-          const fallbackIcon = FALLBACK_ICONS[part];
-          if (fallbackIcon) {
-            return {
-              type: 'lucide-icon',
-              component: fallbackIcon.component,
-              alt: `${part} icon`,
-              color: fallbackIcon.color,
-            };
+      if (part) {
+        const config = LOGO_KEYWORDS_MAP.get(part);
+        if (config) {
+          if (config.fallback === 'lucide') {
+            const fallbackIcon = FALLBACK_ICONS[part];
+            if (fallbackIcon) {
+              const result: LogoResult = {
+                type: 'lucide-icon',
+                component: fallbackIcon.component,
+                alt: `${part} icon`,
+                color: fallbackIcon.color,
+              };
+              // Cache result before returning
+              if (cacheKey) logoCache.set(cacheKey, result);
+              return result;
+            }
           }
+          const result: LogoResult = {
+            type: 'simple-icon',
+            url: getLogoUrl(config.icon, config.color),
+            alt: `${config.icon} logo`,
+            color: config.color,
+          };
+          // Cache result before returning
+          if (cacheKey) logoCache.set(cacheKey, result);
+          return result;
         }
-        return {
-          type: 'simple-icon',
-          url: getLogoUrl(config.icon, config.color),
-          alt: `${config.icon} logo`,
-          color: config.color,
-        };
       }
     }
     
     // Also check if any keyword is contained in the topic (for cases like "linkedin-automation", "pipedrive-crm-lead-scraper")
     // This handles cases where the keyword is part of a compound word
-    for (const [keyword, config] of Object.entries(LOGO_KEYWORDS)) {
+    // OPTIMIZED: Use Map iteration instead of Object.entries for better performance
+    for (const [keyword, config] of LOGO_KEYWORDS_MAP) {
       // Check if topic contains the keyword (case-insensitive, minimum 3 chars to avoid false positives)
-      // topic is already normalized to lowercase, and keyword is already lowercase in LOGO_KEYWORDS
+      // topic is already normalized to lowercase, and keyword is already lowercase in LOGO_KEYWORDS_MAP
       if (keyword.length >= 3 && topic.includes(keyword)) {
         if (config.fallback === 'lucide') {
           const fallbackIcon = FALLBACK_ICONS[keyword];
           if (fallbackIcon) {
-            return {
+            const result: LogoResult = {
               type: 'lucide-icon',
               component: fallbackIcon.component,
               alt: `${keyword} icon`,
               color: fallbackIcon.color,
             };
+            // Cache result before returning
+            if (cacheKey) logoCache.set(cacheKey, result);
+            return result;
           }
         }
-        return {
+        const result: LogoResult = {
           type: 'simple-icon',
           url: getLogoUrl(config.icon, config.color),
           alt: `${config.icon} logo`,
           color: config.color,
         };
+        // Cache result before returning
+        if (cacheKey) logoCache.set(cacheKey, result);
+        return result;
       }
     }
     
     // NEW: Try using the topic directly as a Simple Icons icon name (for unmapped brands)
     // This is KEY to catching all brands - try ANY topic that looks like a brand name
-    const excludedGenericWords = /^(scraper|scraping|automation|data|api|bot|tool|script|python|javascript|node|js|web|json|html|http|https|url|email|product|price|review|blog|news|job|listing|property|real|estate|market|analysis|research|extraction|monitoring|tracking|generator|checker|downloader|converter|parser|crawler|crawling|mining|processing|analytics|insights|intelligence|lead|leads|company|business|social|media|content|article|post|profile|page|store|shop|retail|ecommerce|e-commerce|marketplace|rental|hotel|travel|seo|the|and|for|with|from|to|of|a|an|by|per|get|result|example|public|people|details|location|quotes|bulk|stock|crypto|trending|text|image|video|game|daily|stats|pro|com|de|us|jp|kr|ip|pay|castnet|coronavirus|nlp|ai|actor|agent|creator|extractor|scrapper|httpx|axios|requests|beautifulsoup|scrapy|playwright|puppeteer|selenium|cheerio|crawlee|typescript|markdown|pdf|csv|rest|proxy|proxies|hash|tag|browserautomation|nodejs|node-js|web-scraping|ecommerce-scraping|data-scraping|data-extraction|product-data|price-monitoring|product-price|product-pricing|product-tracking|product-monitoring|product-scraping|product-scraper|product-catalog|ecommerce-data|ecommerce-analytics|ecommerce-product|data-mining|data-processing|data-scraper|web-crawling|web-crawler|web-automation|browser-automation|automation-tools|automation-script|lead-generation|email-scraping|blog-scraping|blog-data|news-scraping|article-extraction|content-extraction|content-analysis|job-listings|job-scraping|property-listings|rental-listings|real-estate-data|real-estate-leads|price-tracking|product-price-monitoring|product-price-tracking|product-pricing-data|sentiment-analysis|social-media-analytics|media-monitoring|travel-analytics|retail-analytics|ecommerce-analytics|hiring-intelligence|market-research|competitor-analysis|competitor-research|competitive-analysis|dataset|better|land|www|website|sentiment)$/i;
-    
+    // OPTIMIZED: Use Set lookup instead of regex for O(1) performance
     // Try topic as-is if it looks like a brand (not excluded, reasonable length)
-    if (topic.length >= 2 && topic.length <= 30 && /^[a-z0-9\-]+$/.test(topic) && !excludedGenericWords.test(topic)) {
+    if (topic.length >= 2 && topic.length <= 30 && /^[a-z0-9\-]+$/.test(topic) && !EXCLUDED_GENERIC_WORDS.has(topic)) {
       // Try the topic directly as a Simple Icons name - this catches ALL brands in Simple Icons!
-      return {
+      const result: LogoResult = {
         type: 'simple-icon',
         url: getLogoUrl(topic), // Will check local first, then Iconify
         alt: `${topic} logo`,
         color: '000000', // Default color, Iconify will use brand color
       };
+      // Cache result before returning
+      if (cacheKey) logoCache.set(cacheKey, result);
+      return result;
     }
   }
   
   // Step 2: Check project name (second priority)
   // Split name into words and check each word
+  // OPTIMIZED: Use Map lookup instead of object property access
   const nameWords = normalizedName.split(/[\s\-_]+/);
   for (const word of nameWords) {
-    if (word && LOGO_KEYWORDS[word]) {
-      const config = LOGO_KEYWORDS[word];
-      if (config.fallback === 'lucide') {
-        const fallbackIcon = FALLBACK_ICONS[word];
-        if (fallbackIcon) {
-          return {
-            type: 'lucide-icon',
-            component: fallbackIcon.component,
-            alt: `${word} icon`,
-            color: fallbackIcon.color,
-          };
+    if (word) {
+      const config = LOGO_KEYWORDS_MAP.get(word);
+      if (config) {
+        if (config.fallback === 'lucide') {
+          const fallbackIcon = FALLBACK_ICONS[word];
+          if (fallbackIcon) {
+            const result: LogoResult = {
+              type: 'lucide-icon',
+              component: fallbackIcon.component,
+              alt: `${word} icon`,
+              color: fallbackIcon.color,
+            };
+            // Cache result before returning
+            if (cacheKey) logoCache.set(cacheKey, result);
+            return result;
+          }
         }
+        const result: LogoResult = {
+          type: 'simple-icon',
+          url: getLogoUrl(config.icon, config.color),
+          alt: `${config.icon} logo`,
+          color: config.color,
+        };
+        // Cache result before returning
+        if (cacheKey) logoCache.set(cacheKey, result);
+        return result;
       }
-      return {
-        type: 'simple-icon',
-        url: getLogoUrl(config.icon, config.color),
-        alt: `${config.icon} logo`,
-        color: config.color,
-      };
     }
   }
   
   // Also check if name contains any keyword
-  for (const [keyword, config] of Object.entries(LOGO_KEYWORDS)) {
+  // OPTIMIZED: Use Map iteration instead of Object.entries
+  for (const [keyword, config] of LOGO_KEYWORDS_MAP) {
     if (normalizedName.includes(keyword) && keyword.length >= 3) {
       if (config.fallback === 'lucide') {
         const fallbackIcon = FALLBACK_ICONS[keyword];
         if (fallbackIcon) {
-          return {
+          const result: LogoResult = {
             type: 'lucide-icon',
             component: fallbackIcon.component,
             alt: `${keyword} icon`,
             color: fallbackIcon.color,
           };
+          // Cache result before returning
+          if (cacheKey) logoCache.set(cacheKey, result);
+          return result;
         }
       }
-      return {
+      const result: LogoResult = {
         type: 'simple-icon',
         url: getLogoUrl(config.icon, config.color),
         alt: `${config.icon} logo`,
         color: config.color,
       };
+      // Cache result before returning
+      if (cacheKey) logoCache.set(cacheKey, result);
+      return result;
     }
   }
   
   // NEW: Try using project name words directly as Simple Icons (for unmapped brands)
   // Extract potential brand names from project name
-  const excludedNameWords = /^(scraper|scraping|automation|data|api|bot|tool|script|python|javascript|node|js|web|the|and|for|with|from|to|of|a|an|by|per|get|result|example|public|people|details|location|quotes|bulk|stock|crypto|trending|text|image|video|game|daily|stats|pro|com|de|us|jp|kr|ip|pay|castnet|coronavirus|nlp|ai|review|blog|news|job|listing|property|real|estate|market|analysis|research|extraction|monitoring|tracking|generator|checker|downloader|converter|parser|crawler|crawling|mining|processing|analytics|insights|intelligence|lead|leads|company|business|social|media|content|article|post|profile|page|store|shop|retail|ecommerce|e-commerce|marketplace|rental|hotel|travel|seo|price|product|email|http|https|url|json|html)$/i;
-  
+  // OPTIMIZED: Use Set lookup instead of regex
   const potentialBrandWords = normalizedName.split(/[\s\-_]+/).filter(w => 
     w.length >= 2 && 
     w.length <= 20 && 
     /^[a-z0-9\-]+$/.test(w) && 
-    !excludedNameWords.test(w)
+    !EXCLUDED_GENERIC_WORDS.has(w)
   );
   
   // Try each word as a potential brand name (try longest first)
@@ -678,62 +753,74 @@ export function detectProjectLogo(project: Project): LogoResult {
   for (const word of sortedWords) {
     if (word.length >= 2) {
       // Iconify API will automatically use the brand's default color from Simple Icons metadata
-      return {
+      const result: LogoResult = {
         type: 'simple-icon',
         url: getLogoUrl(word), // Will check local first, then Iconify (Iconify uses brand color automatically)
         alt: `${word} logo`,
         color: undefined, // Let Iconify use brand's default color
       };
+      // Cache result before returning
+      if (cacheKey) logoCache.set(cacheKey, result);
+      return result;
     }
   }
   
   // Step 3: Check for e-commerce keywords (use ShoppingCart icon)
-  const ecommerceKeywords = ['shop', 'store', 'e-commerce', 'ecommerce', 'retail', 'product', 'cart', 'invoice'];
+  // OPTIMIZED: Use Set for fast lookup
   const allText = [normalizedName, ...normalizedTopics, normalizedCategory].join(' ');
-  if (containsKeyword(allText, ecommerceKeywords)) {
-    return {
+  if (containsKeyword(allText, ECOMMERCE_KEYWORDS)) {
+    const result: LogoResult = {
       type: 'lucide-icon',
       component: ShoppingCart,
       alt: 'Shopping cart icon',
       color: 'purple',
     };
+    // Cache result before returning
+    if (cacheKey) logoCache.set(cacheKey, result);
+    return result;
   }
 
   // Step 4: Try ANY topic as a Simple Icons name (only for unmapped brands, not generic words)
   // Exclude generic/scraping/automation words to avoid 404s
-  const excludedGenericWords = /^(scraper|scraping|automation|data|api|bot|tool|script|python|javascript|node|js|web|json|html|http|https|url|email|product|price|review|blog|news|job|listing|property|real|estate|market|analysis|research|extraction|monitoring|tracking|generator|checker|downloader|converter|parser|crawler|crawling|mining|processing|analytics|insights|intelligence|lead|leads|company|business|social|media|content|article|post|profile|page|store|shop|retail|ecommerce|e-commerce|marketplace|rental|hotel|travel|seo|the|and|for|with|from|to|of|a|an|by|per|get|result|example|public|people|details|location|quotes|bulk|stock|crypto|trending|text|image|video|game|daily|stats|pro|com|de|us|jp|kr|ip|pay|castnet|coronavirus|nlp|ai|actor|agent|creator|extractor|scrapper|httpx|axios|requests|beautifulsoup|scrapy|playwright|puppeteer|selenium|cheerio|crawlee|typescript|markdown|pdf|csv|rest|proxy|proxies|hash|tag|browserautomation|nodejs|node-js|web-scraping|ecommerce-scraping|data-scraping|data-extraction|product-data|price-monitoring|product-price|product-pricing|product-tracking|product-monitoring|product-scraping|product-scraper|product-catalog|ecommerce-data|ecommerce-analytics|ecommerce-product|data-mining|data-processing|data-scraper|web-crawling|web-crawler|web-automation|browser-automation|automation-tools|automation-script|lead-generation|email-scraping|blog-scraping|blog-data|news-scraping|article-extraction|content-extraction|content-analysis|job-listings|job-scraping|property-listings|rental-listings|real-estate-data|real-estate-leads|price-tracking|product-price-monitoring|product-price-tracking|product-pricing-data|sentiment-analysis|social-media-analytics|media-monitoring|travel-analytics|retail-analytics|ecommerce-analytics|hiring-intelligence|market-research|competitor-analysis|competitor-research|competitive-analysis|dataset|better|land|www|website|sentiment)$/i;
-  
+  // OPTIMIZED: Use Set lookup instead of regex
   for (const topic of normalizedTopics) {
     if (!topic || topic.length < 2 || topic.length > 30) continue;
     // Only try topics that look like brand names (exclude generic words)
-    if (/^[a-z0-9\-]+$/.test(topic) && !excludedGenericWords.test(topic)) {
-      return {
+    if (/^[a-z0-9\-]+$/.test(topic) && !EXCLUDED_GENERIC_WORDS.has(topic)) {
+      const result: LogoResult = {
         type: 'simple-icon',
         url: getLogoUrl(topic), // Will try Iconify API
         alt: `${topic} logo`,
         color: undefined,
       };
+      // Cache result before returning
+      if (cacheKey) logoCache.set(cacheKey, result);
+      return result;
     }
   }
   
   // Step 5: Try ANY word from project name as Simple Icons name (exclude generic words)
+  // OPTIMIZED: Use Set lookup instead of regex
   const fallbackNameWords = normalizedName.split(/[\s\-_]+/).filter(w => 
     w.length >= 2 && 
     w.length <= 20 && 
     /^[a-z0-9\-]+$/.test(w) &&
-    !excludedGenericWords.test(w)
+    !EXCLUDED_GENERIC_WORDS.has(w)
   );
   
   if (fallbackNameWords.length > 0) {
     // Try longest word first (most likely to be a brand name)
     const sortedFallbackWords = fallbackNameWords.sort((a, b) => b.length - a.length);
     for (const word of sortedFallbackWords) {
-      return {
+      const result: LogoResult = {
         type: 'simple-icon',
         url: getLogoUrl(word), // Will try Iconify API
         alt: `${word} logo`,
         color: undefined,
       };
+      // Cache result before returning
+      if (cacheKey) logoCache.set(cacheKey, result);
+      return result;
     }
   }
 
@@ -755,32 +842,41 @@ export function detectProjectLogo(project: Project): LogoResult {
   if (isAutomation) {
     const iconIndex = seededRandom(seed, AUTOMATION_FALLBACK_ICONS.length);
     const selectedIcon = AUTOMATION_FALLBACK_ICONS[iconIndex];
-    return {
+    const result: LogoResult = {
       type: 'lucide-icon',
       component: selectedIcon.component,
       alt: `Automation icon (${selectedIcon.name})`,
       color: 'purple',
     };
+    // Cache result before returning
+    if (cacheKey) logoCache.set(cacheKey, result);
+    return result;
   }
   
   if (isScraping) {
     const iconIndex = seededRandom(seed, SCRAPING_FALLBACK_ICONS.length);
     const selectedIcon = SCRAPING_FALLBACK_ICONS[iconIndex];
-    return {
+    const result: LogoResult = {
       type: 'lucide-icon',
       component: selectedIcon.component,
       alt: `Scraping icon (${selectedIcon.name})`,
       color: 'purple',
     };
+    // Cache result before returning
+    if (cacheKey) logoCache.set(cacheKey, result);
+    return result;
   }
 
   // Step 7: Final fallback to gradient with initials (ONLY if nothing else worked)
   const initials = getInitials(projectName);
-  return {
+  const result: LogoResult = {
     type: 'gradient',
     alt: `${projectName} logo`,
     initials: initials || '?',
   };
+  // Cache result before returning
+  if (cacheKey) logoCache.set(cacheKey, result);
+  return result;
 }
 
 /**

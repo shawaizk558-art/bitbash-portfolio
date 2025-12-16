@@ -453,26 +453,52 @@ export default async function handler(
     const mongoDocuments = await fetchMongoProjects();
     console.log(`Fetched ${mongoDocuments.length} documents from MongoDB`);
 
-    // Transform and filter new documents
+    // OPTIMIZED: Transform and filter new documents in batches for parallel processing
     const newProjects: MongoProject[] = [];
     let skippedCount = 0;
 
-    for (let i = 0; i < mongoDocuments.length; i++) {
-      const doc = mongoDocuments[i];
+    // Filter out documents that are already processed first (more efficient)
+    const documentsToProcess = mongoDocuments.filter((doc, i) => {
       const mongoId = doc.id;
-
-      // Skip if already processed
       if (mongoId && existingIds.has(mongoId)) {
         skippedCount++;
-        continue;
+        return false;
+      }
+      return true;
+    });
+
+    console.log(`Processing ${documentsToProcess.length} new documents (skipped ${skippedCount} duplicates)`);
+
+    // Process documents in batches of 15 for parallel execution
+    const BATCH_SIZE = 15;
+    for (let i = 0; i < documentsToProcess.length; i += BATCH_SIZE) {
+      const batch = documentsToProcess.slice(i, i + BATCH_SIZE);
+      
+      // Process batch in parallel
+      const batchResults = await Promise.all(
+        batch.map(async (doc, batchIndex) => {
+          try {
+            const globalIndex = i + batchIndex;
+            const transformed = transformMongoDocument(doc, globalIndex);
+            return { success: true, project: transformed };
+          } catch (error) {
+            const mongoId = doc.id || 'unknown';
+            console.warn(`Error transforming document ${mongoId}:`, error);
+            return { success: false, project: null };
+          }
+        })
+      );
+
+      // Collect successful transformations
+      for (const result of batchResults) {
+        if (result.success && result.project) {
+          newProjects.push(result.project);
+        }
       }
 
-      try {
-        const transformed = transformMongoDocument(doc, i);
-        newProjects.push(transformed);
-      } catch (error) {
-        console.warn(`Error transforming document ${mongoId}:`, error);
-        // Continue with next document
+      // Log progress for large batches
+      if (documentsToProcess.length > 50 && (i + BATCH_SIZE) % 50 === 0) {
+        console.log(`Processed ${Math.min(i + BATCH_SIZE, documentsToProcess.length)}/${documentsToProcess.length} documents...`);
       }
     }
 

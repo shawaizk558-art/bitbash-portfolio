@@ -13,6 +13,7 @@ import { truncateDescription } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import telegramWeatherMarkdown from "../../content/projects/project1.md?raw";
+import { measurePageLoad, measureNavigation } from "@/lib/performance";
 
 /**
  * Convert a string to title case (capitalize first letter of each word)
@@ -116,6 +117,11 @@ const ProjectDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Track page load performance
+    measurePageLoad(`project-${slug || 'unknown'}`);
+
+    const navigationStartTime = performance.now();
+
     async function loadProject() {
       if (!slug) {
         setIsLoading(false);
@@ -127,6 +133,7 @@ const ProjectDetail = () => {
       if (hardcodedProject) {
         setProject(hardcodedProject);
         setIsLoading(false);
+        measureNavigation('projects', `project-${slug}`, navigationStartTime);
         return;
       }
 
@@ -136,6 +143,7 @@ const ProjectDetail = () => {
         if (mongoProject) {
           setProject(mongoProject);
           setIsLoading(false);
+          measureNavigation('projects', `project-${slug}`, navigationStartTime);
           return;
         }
       } catch (error) {
@@ -146,6 +154,7 @@ const ProjectDetail = () => {
       try {
         const strapiProject = await getStrapiProject(slug);
         setProject(strapiProject);
+        measureNavigation('projects', `project-${slug}`, navigationStartTime);
       } catch (error) {
         console.error('Error loading project from Strapi:', error);
         setProject(null);
