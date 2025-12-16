@@ -530,7 +530,7 @@ const ProjectDetail = () => {
                   Rating:
                 </span>
                 <div className="flex gap-1 lg:gap-1.5">
-                  {[...Array(project.rating)].map((_, i) => (
+                  {[...Array(Math.floor(Number(project.rating) || 5))].map((_, i) => (
                     <span
                       key={i}
                       className="text-yellow-400 text-xl lg:text-xl xl:text-2xl"
