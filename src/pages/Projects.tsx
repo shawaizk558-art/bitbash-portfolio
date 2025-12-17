@@ -158,6 +158,13 @@ const Projects = () => {
     setDisplayCount(30);
   }, [searchQuery]);
 
+  // Scroll to top when user starts searching
+  useEffect(() => {
+    if (searchQuery.trim()) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [searchQuery]);
+
   // Get projects to display (first N projects based on displayCount)
   // OPTIMIZED: Memoize displayed projects calculation
   const displayedProjects = useMemo(() => {
