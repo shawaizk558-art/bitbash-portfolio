@@ -17,6 +17,7 @@ export default defineConfig(({ mode }) => ({
     react(),
     reactGrab(),
     mode === "development" && componentTagger(),
+    mode === "development" && sitemapDevMiddleware(),
     mode === "production" && inlineCriticalCss(),
     mode === "production" && visualizer({
       filename: "dist/stats.html",
@@ -115,6 +116,170 @@ function inlineCriticalCss(): Plugin {
       const html = await fs.readFile(htmlPath, "utf8");
       const inlined = await critters.process(html);
       await fs.writeFile(htmlPath, inlined, "utf8");
+    },
+  };
+}
+
+/**
+ * Vite middleware plugin to handle sitemap.xml in development
+ * This allows testing the sitemap locally without needing Vercel CLI
+ */
+function sitemapDevMiddleware(): Plugin {
+  return {
+    name: "vite-sitemap-dev-middleware",
+    apply: "serve",
+    configureServer(server) {
+      // Insert middleware early, before Vite's history API fallback
+      server.middlewares.use(async (req, res, next) => {
+        const url = req.url?.split('?')[0]; // Remove query params
+        const isSitemap = url === "/sitemap.xml" || url === "/api/sitemap.xml";
+        
+        if (!isSitemap) {
+          next();
+          return;
+        }
+        
+        console.log(`[Sitemap Dev Middleware] Handling ${url}`);
+        
+        try {
+          // Import projects directly using resolved paths (avoid alias issues)
+          const projectsPath = path.resolve(__dirname, "./src/data/projects.ts");
+          const { projects: hardcodedProjects } = await import(projectsPath);
+          
+          // Try to fetch MongoDB projects from API route (same as production)
+          // This works if vercel dev is running, or falls back gracefully
+          let mongoProjects: any[] = [];
+          try {
+            // Try fetching from the API route (works if vercel dev is running)
+            const apiUrl = req.headers.host 
+              ? `http://${req.headers.host}/api/mongodb-projects`
+              : 'http://localhost:8080/api/mongodb-projects';
+            
+            const response = await fetch(apiUrl, {
+              headers: {
+                'Accept': 'application/json',
+              },
+            });
+            
+            if (response.ok) {
+              const data = await response.json() as any;
+              // Handle paginated response (new format) or array response (old format)
+              if (data && typeof data === 'object') {
+                if (data.projects && Array.isArray(data.projects)) {
+                  mongoProjects = data.projects;
+                } else if (Array.isArray(data)) {
+                  mongoProjects = data;
+                }
+              }
+              console.log(`[Sitemap Dev] Fetched ${mongoProjects.length} MongoDB projects from API`);
+            } else {
+              console.log(`[Sitemap Dev] API route not available (${response.status}), using hardcoded projects only`);
+            }
+          } catch (apiError) {
+            // API route not available - that's okay, just use hardcoded projects
+            console.log("[Sitemap Dev] MongoDB projects API not available, using hardcoded projects only");
+          }
+          
+          const SITE_URL = 'http://localhost:8080';
+          
+          const staticPages = [
+            { path: '/', priority: '1.00', changefreq: 'weekly' },
+            { path: '/services', priority: '0.90', changefreq: 'monthly' },
+            { path: '/services/automation', priority: '0.85', changefreq: 'monthly' },
+            { path: '/services/scraping', priority: '0.85', changefreq: 'monthly' },
+            { path: '/services/full-stack', priority: '0.85', changefreq: 'monthly' },
+            { path: '/services/ai-solutions', priority: '0.85', changefreq: 'monthly' },
+            { path: '/services/saas-mvp', priority: '0.85', changefreq: 'monthly' },
+            { path: '/pricing', priority: '0.75', changefreq: 'monthly' },
+            { path: '/contact', priority: '0.75', changefreq: 'monthly' },
+            { path: '/blog', priority: '0.70', changefreq: 'weekly' },
+            { path: '/projects', priority: '0.70', changefreq: 'monthly' },
+            { path: '/how-we-work', priority: '0.60', changefreq: 'monthly' },
+          ];
+          
+          function formatDate(date: Date): string {
+            return date.toISOString().split('T')[0] + 'T00:00:00+00:00';
+          }
+          
+          function generateUrlEntry(path: string, priority: string, changefreq: string, lastmod?: string): string {
+            const url = `${SITE_URL}${path}`;
+            const lastmodDate = lastmod || formatDate(new Date());
+            
+            return `  <url>
+    <loc>${url}</loc>
+    <lastmod>${lastmodDate}</lastmod>
+    <changefreq>${changefreq}</changefreq>
+    <priority>${priority}</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="${url}" />
+  </url>`;
+          }
+          
+          // Get all projects (hardcoded + MongoDB)
+          let allProjects = [...hardcodedProjects];
+          console.log(`[Sitemap Dev] Starting with ${hardcodedProjects.length} hardcoded projects`);
+          console.log(`[Sitemap Dev] Found ${mongoProjects.length} MongoDB projects`);
+          
+          // Filter out MongoDB projects that have same slug as hardcoded
+          const hardcodedSlugs = new Set(hardcodedProjects.map((p: any) => p.slug));
+          const filteredMongoProjects = mongoProjects.filter(
+            (project: any) => project.slug && !hardcodedSlugs.has(project.slug)
+          );
+          
+          console.log(`[Sitemap Dev] Adding ${filteredMongoProjects.length} unique MongoDB projects`);
+          allProjects = [...hardcodedProjects, ...filteredMongoProjects];
+          
+          console.log(`[Sitemap Dev] Total projects: ${allProjects.length}`);
+          
+          // Generate XML
+          let xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml"
+  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+`;
+          
+          // Add static pages
+          for (const page of staticPages) {
+            xml += generateUrlEntry(page.path, page.priority, page.changefreq) + '\n';
+          }
+          
+          // Add project detail pages
+          const today = formatDate(new Date());
+          let projectCount = 0;
+          for (const project of allProjects) {
+            if (project && (project as any).slug) {
+              xml += generateUrlEntry(
+                `/project/${(project as any).slug}`,
+                '0.80',
+                'monthly',
+                today
+              ) + '\n';
+              projectCount++;
+            }
+          }
+          
+          console.log(`[Sitemap Dev] Added ${projectCount} project URLs to sitemap`);
+          
+          xml += `</urlset>`;
+          
+          // Send response
+          res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+          res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
+          res.statusCode = 200;
+          res.end(xml);
+        } catch (error: any) {
+          console.error("[Sitemap Dev Middleware] Error:", error);
+          if (!res.headersSent && !res.writableEnded) {
+            res.statusCode = 500;
+            res.setHeader("Content-Type", "application/json");
+            res.end(JSON.stringify({ 
+              error: "Failed to generate sitemap", 
+              details: error?.message || String(error),
+              stack: error?.stack
+            }));
+          }
+        }
+      });
     },
   };
 }

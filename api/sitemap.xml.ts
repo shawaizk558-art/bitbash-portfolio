@@ -1,6 +1,18 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { projects as hardcodedProjects } from '../src/data/projects';
 import { getMongoProjects } from '../src/lib/strapi';
+
+type VercelRequest = {
+  method?: string;
+  url?: string;
+  headers: Record<string, string | string[] | undefined>;
+};
+
+type VercelResponse = {
+  status: (code: number) => VercelResponse;
+  setHeader: (name: string, value: string) => void;
+  send: (body: string) => void;
+  json: (obj: any) => void;
+};
 
 const SITE_URL = 'https://bitbash.dev';
 
@@ -48,19 +60,26 @@ export default async function handler(
 
     // Get all projects (hardcoded + MongoDB)
     let allProjects = [...hardcodedProjects];
+    console.log(`[Sitemap] Starting with ${hardcodedProjects.length} hardcoded projects`);
     
     try {
       const mongoProjects = await getMongoProjects();
+      console.log(`[Sitemap] Fetched ${mongoProjects.length} MongoDB projects`);
+      
       // Filter out MongoDB projects that have same slug as hardcoded (hardcoded take precedence)
       const hardcodedSlugs = new Set(hardcodedProjects.map(p => p.slug));
       const filteredMongoProjects = mongoProjects.filter(
-        project => !hardcodedSlugs.has(project.slug)
+        project => project.slug && !hardcodedSlugs.has(project.slug)
       );
+      
+      console.log(`[Sitemap] Adding ${filteredMongoProjects.length} unique MongoDB projects`);
       allProjects = [...hardcodedProjects, ...filteredMongoProjects];
     } catch (error) {
-      console.error('Error fetching MongoDB projects for sitemap:', error);
+      console.error('[Sitemap] Error fetching MongoDB projects:', error);
       // Continue with just hardcoded projects if MongoDB fetch fails
     }
+
+    console.log(`[Sitemap] Total projects: ${allProjects.length}`);
 
     // Generate XML
     let xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -78,20 +97,27 @@ export default async function handler(
 
     // Add project detail pages
     const today = formatDate(new Date());
+    let projectCount = 0;
     for (const project of allProjects) {
-      xml += generateUrlEntry(
-        `/project/${project.slug}`,
-        '0.80',
-        'monthly',
-        today
-      ) + '\n';
+      // Ensure project has a valid slug
+      if (project && project.slug) {
+        xml += generateUrlEntry(
+          `/project/${project.slug}`,
+          '0.80',
+          'monthly',
+          today
+        ) + '\n';
+        projectCount++;
+      }
     }
+
+    console.log(`[Sitemap] Added ${projectCount} project URLs to sitemap`);
 
     xml += `</urlset>`;
 
     return res.status(200).send(xml);
   } catch (error) {
-    console.error('Error generating sitemap:', error);
+    console.error('[Sitemap] Error generating sitemap:', error);
     return res.status(500).json({ error: 'Failed to generate sitemap' });
   }
 }

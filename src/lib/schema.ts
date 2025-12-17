@@ -117,3 +117,109 @@ export const buildFAQSchema = (faqs: FAQEntry[]) => ({
   }))
 });
 
+/**
+ * Build SoftwareApplication schema for a project
+ * 
+ * @param project - Project object with name, description, technologies, etc.
+ * @param projectUrl - Full URL to the project page
+ * @returns SoftwareApplication schema object
+ */
+export const buildProjectSchema = (project: {
+  name: string;
+  description: string;
+  technologies?: string[];
+  pricing?: string;
+  role?: string;
+  rating?: number;
+  developer?: string;
+}, projectUrl: string) => {
+  const schema: any = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": project.name,
+    "description": project.description.substring(0, 500), // Limit description length
+    "url": projectUrl,
+    "applicationCategory": project.role || "WebApplication",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "availability": "https://schema.org/InStock",
+      "url": projectUrl
+    }
+  };
+
+  // Add keywords from technologies
+  if (project.technologies && project.technologies.length > 0) {
+    schema.keywords = project.technologies.join(", ");
+  }
+
+  // Add pricing if available
+  if (project.pricing) {
+    // Try to extract price from pricing string (e.g., "$100-$300")
+    const priceMatch = project.pricing.match(/\$?(\d+)/);
+    if (priceMatch) {
+      schema.offers.price = priceMatch[1];
+      schema.offers.priceCurrency = "USD";
+    }
+    schema.offers.priceSpecification = {
+      "@type": "PriceSpecification",
+      "price": project.pricing
+    };
+  }
+
+  // Add aggregate rating if rating exists
+  if (project.rating) {
+    schema.aggregateRating = {
+      "@type": "AggregateRating",
+      "ratingValue": project.rating,
+      "bestRating": 5,
+      "worstRating": 1,
+      "ratingCount": 1
+    };
+  }
+
+  // Add author/developer if available
+  if (project.developer) {
+    schema.author = {
+      "@type": "Person",
+      "name": project.developer
+    };
+  }
+
+  return schema;
+};
+
+/**
+ * Build breadcrumb schema for a project page
+ * 
+ * @param projectName - Name of the project
+ * @param projectSlug - Slug of the project
+ * @returns BreadcrumbList schema object
+ */
+export const buildProjectBreadcrumbSchema = (projectName: string, projectSlug: string) => {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": `${SITE_URL}/`
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Projects",
+        "item": `${SITE_URL}/projects`
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": projectName,
+        "item": `${SITE_URL}/project/${projectSlug}`
+      }
+    ]
+  };
+};
+

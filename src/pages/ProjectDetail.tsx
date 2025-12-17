@@ -3,13 +3,15 @@ import { SEO } from "@/components/SEO";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Hero } from "@/components/Hero";
-import { ArrowLeft } from "lucide-react";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { getProjectBySlug as getHardcodedProject } from "@/data/projects";
 import { getProjectBySlug as getStrapiProject, getMongoProjectBySlug } from "@/lib/strapi";
 import { useState, useEffect } from "react";
 import type { Project } from "@/data/projects";
 import { getMediaAssets } from "@/lib/mediaAssets";
 import { truncateDescription } from "@/lib/utils";
+import { formatTagsAsKeywords, getPrimaryTags } from "@/lib/seoUtils";
+import { buildProjectSchema, buildProjectBreadcrumbSchema } from "@/lib/schema";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import telegramWeatherMarkdown from "../../content/projects/project1.md?raw";
@@ -284,25 +286,52 @@ const ProjectDetail = () => {
   // Check if this is a hardcoded (top 9) project - exclude floating icons for these
   const isHardcodedProject = slug ? Boolean(getHardcodedProject(slug)) : false;
 
+  // Process technologies for SEO
+  const technologies = project.technologies || [];
+  const primaryTags = getPrimaryTags(technologies, 15);
+  const keywordsString = formatTagsAsKeywords(primaryTags);
+
+  // Build structured data schemas
+  const projectUrl = `https://bitbash.dev/project/${project.slug}`;
+  const projectName = toTitleCase((project as any).title || project.name);
+  const projectDescription = ((project as any).description || project.description).substring(0, 160);
+  
+  const projectSchema = buildProjectSchema({
+    name: projectName,
+    description: projectDescription,
+    technologies: primaryTags,
+    pricing: sidebarContent.pricing,
+    role: project.role,
+    rating: project.rating,
+    developer: sidebarContent.developer
+  }, projectUrl);
+
+  const breadcrumbSchema = buildProjectBreadcrumbSchema(projectName, project.slug);
+
+  // Combine schemas for structured data
+  const structuredData = [projectSchema, breadcrumbSchema];
+
   return (
     <div className="min-h-screen bg-white">
       <SEO
-        title={`${toTitleCase((project as any).title || project.name)} - BitBash Project`}
-        description={((project as any).description || project.description).substring(0, 160)}
+        title={`${projectName} - BitBash Project`}
+        description={projectDescription}
         canonical={`/project/${project.slug}`}
         image={mediaAssets.avatarSrc}
+        keywords={keywordsString}
+        structuredData={structuredData}
       />
       <Navigation />
 
-      {/* Back Button */}
+      {/* Breadcrumbs */}
       <div className="container-responsive pt-6 pb-4">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 text-gray-600 hover:text-purple-600 transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Back to Home</span>
-        </Link>
+        <Breadcrumbs
+          items={[
+            { name: "Home", href: "/" },
+            { name: "Projects", href: "/projects" },
+            { name: projectName, href: `/project/${project.slug}` }
+          ]}
+        />
       </div>
 
       {/* Hero Section with Project Name and Description */}
