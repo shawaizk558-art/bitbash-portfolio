@@ -1,5 +1,5 @@
 import { projects as hardcodedProjects } from '../src/data/projects';
-import { getMongoProjects } from '../src/lib/strapi';
+import { list } from '@vercel/blob';
 
 type VercelRequest = {
   method?: string;
@@ -10,12 +10,13 @@ type VercelRequest = {
 type VercelResponse = {
   status: (code: number) => VercelResponse;
   setHeader: (name: string, value: string) => VercelResponse;
-  send: (body: string) => void;
+  send: (body: string | Buffer) => void;
   json: (obj: any) => void;
   end: () => void;
 };
 
 const SITE_URL = 'https://bitbash.dev';
+const BLOB_FILE_NAME = 'mongodb-projects.json';
 
 // Static pages with their priorities and change frequencies
 const staticPages = [
@@ -56,28 +57,55 @@ export default async function handler(
 ) {
   try {
     // Get all projects (hardcoded + MongoDB)
-    let allProjects = [...hardcodedProjects];
-    console.log(`[Sitemap] Starting with ${hardcodedProjects.length} hardcoded projects`);
+    let allProjects: any[] = [];
     
+    // Always start with hardcoded projects
     try {
-      const mongoProjects = await getMongoProjects();
-      if (Array.isArray(mongoProjects) && mongoProjects.length > 0) {
-        console.log(`[Sitemap] Fetched ${mongoProjects.length} MongoDB projects`);
-        
-        // Filter out MongoDB projects that have same slug as hardcoded (hardcoded take precedence)
-        const hardcodedSlugs = new Set(hardcodedProjects.map(p => p.slug));
-        const filteredMongoProjects = mongoProjects.filter(
-          (project: any) => project && project.slug && !hardcodedSlugs.has(project.slug)
-        );
-        
-        console.log(`[Sitemap] Adding ${filteredMongoProjects.length} unique MongoDB projects`);
-        allProjects = [...hardcodedProjects, ...filteredMongoProjects];
+      allProjects = [...hardcodedProjects];
+      console.log(`[Sitemap] Loaded ${hardcodedProjects.length} hardcoded projects`);
+    } catch (error: any) {
+      console.error('[Sitemap] Error loading hardcoded projects:', error?.message || error);
+      // If hardcoded projects fail, we can't continue - return error
+      res.status(500).json({ error: 'Failed to load projects', details: error?.message });
+      return;
+    }
+    
+    // Try to add MongoDB projects from Blob Storage (optional - sitemap works without them)
+    try {
+      const { blobs } = await list({ prefix: BLOB_FILE_NAME });
+      const blob = blobs.find(b => b.pathname === BLOB_FILE_NAME);
+      
+      if (blob && blob.url) {
+        // Fetch the blob content using the URL
+        const response = await fetch(blob.url);
+        if (response.ok) {
+          const content = await response.text();
+          const mongoProjects = JSON.parse(content);
+          
+          if (Array.isArray(mongoProjects) && mongoProjects.length > 0) {
+            console.log(`[Sitemap] Fetched ${mongoProjects.length} MongoDB projects from Blob Storage`);
+            
+            // Filter out MongoDB projects that have same slug as hardcoded (hardcoded take precedence)
+            const hardcodedSlugs = new Set(hardcodedProjects.map(p => p.slug));
+            const filteredMongoProjects = mongoProjects.filter(
+              (project: any) => project && project.slug && !hardcodedSlugs.has(project.slug)
+            );
+            
+            console.log(`[Sitemap] Adding ${filteredMongoProjects.length} unique MongoDB projects`);
+            allProjects = [...hardcodedProjects, ...filteredMongoProjects];
+          } else {
+            console.log(`[Sitemap] MongoDB projects array is empty, using hardcoded projects only`);
+          }
+        } else {
+          console.warn(`[Sitemap] Failed to fetch blob content: ${response.status} ${response.statusText}`);
+        }
       } else {
-        console.log(`[Sitemap] No MongoDB projects available, using hardcoded projects only`);
+        console.log(`[Sitemap] Blob not found in storage, using hardcoded projects only`);
       }
     } catch (error: any) {
-      console.error('[Sitemap] Error fetching MongoDB projects:', error?.message || error);
-      // Continue with just hardcoded projects if MongoDB fetch fails
+      // MongoDB projects are optional - log but continue
+      console.warn('[Sitemap] MongoDB projects unavailable (this is OK):', error?.message || String(error));
+      // Continue with just hardcoded projects
     }
 
     console.log(`[Sitemap] Total projects: ${allProjects.length}`);
