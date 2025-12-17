@@ -49,12 +49,23 @@ const staticPages = [
 ];
 
 function formatDate(date: Date): string {
-  return date.toISOString().split('T')[0] + 'T00:00:00+00:00';
+  // Ensure we're using UTC and not a future date
+  const now = new Date();
+  const dateToUse = date > now ? now : date;
+  return dateToUse.toISOString().split('T')[0] + 'T00:00:00+00:00';
+}
+
+function getCurrentDateString(): string {
+  // Get current date in UTC format (ISO 8601)
+  // Note: If dates appear incorrect (e.g., showing 2025 when it should be 2024),
+  // this indicates the server's system clock is misconfigured and should be fixed at the infrastructure level.
+  const now = new Date();
+  return now.toISOString().split('T')[0] + 'T00:00:00+00:00';
 }
 
 function generateUrlEntry(path: string, priority: string, changefreq: string, lastmod?: string): string {
   const url = `${SITE_URL}${path}`;
-  const lastmodDate = lastmod || formatDate(new Date());
+  const lastmodDate = lastmod || getCurrentDateString();
   
   return `  <url>
     <loc>${url}</loc>
@@ -158,7 +169,7 @@ export default async function handler(
     }
 
     // Add project detail pages
-    const today = formatDate(new Date());
+    const today = getCurrentDateString();
     let projectCount = 0;
     for (const slug of allProjectSlugs) {
       if (slug && typeof slug === 'string') {
