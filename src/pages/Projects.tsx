@@ -16,7 +16,6 @@ import {
   getVideoSources,
 } from "@/lib/mediaAssets";
 import { ProjectCard } from "@/components/ProjectCard";
-import { measurePageLoad } from "@/lib/performance";
 
 /**
  * Convert a string to title case (capitalize first letter of each word)
@@ -87,9 +86,6 @@ const Projects = () => {
   const observerTarget = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Track page load performance
-    measurePageLoad('projects');
-
     async function fetchDynamicProjects() {
       try {
         const mongoProjectsData = await getMongoProjects();

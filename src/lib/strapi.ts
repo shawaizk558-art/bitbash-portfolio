@@ -8,7 +8,6 @@
  */
 
 import type { Project } from '@/data/projects';
-import { measureAPIRequest } from './performance';
 import { cache, CACHE_KEYS, requestDeduplicator } from './cache';
 // Use import attribute for NodeNext compatibility (Vercel type checking)
 // Vite bundler mode will handle this correctly
@@ -189,7 +188,7 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
           }
         } catch (blobError: any) {
           // Blob doesn't exist or error - fall back to local file
-          console.log('Could not read from Blob Storage, trying local file');
+          // Silently fallback to local file
         }
       }
       
@@ -206,7 +205,7 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
         return [];
       } catch (fileError: any) {
         if (fileError.code === 'ENOENT') {
-          console.log('MongoDB projects file not found, returning empty array');
+          // MongoDB projects file not found, returning empty array
           return [];
         }
         throw fileError;
@@ -226,13 +225,11 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
       try {
         // Try fetching from API route that serves from Blob Storage
         const apiUrl = '/api/mongodb-projects';
-        const response = await measureAPIRequest(apiUrl, () => 
-          fetch(apiUrl, {
-            // OPTIMIZED: Use force-cache with revalidation instead of no-store
-            // This enables browser caching while still allowing revalidation
-            cache: 'force-cache',
-          })
-        );
+        const response = await fetch(apiUrl, {
+          // OPTIMIZED: Use force-cache with revalidation instead of no-store
+          // This enables browser caching while still allowing revalidation
+          cache: 'force-cache',
+        });
         
       if (response.ok) {
         const data = await response.json();
@@ -260,12 +257,10 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
       }
       
       // Fallback: Fetch from public directory (local file)
-      const response = await measureAPIRequest('/data/mongodb-projects.json', () =>
-        fetch('/data/mongodb-projects.json', {
-          // OPTIMIZED: Use force-cache with revalidation instead of no-store
-          cache: 'force-cache',
-        })
-      );
+      const response = await fetch('/data/mongodb-projects.json', {
+        // OPTIMIZED: Use force-cache with revalidation instead of no-store
+        cache: 'force-cache',
+      });
 
       if (!response.ok) {
         // File doesn't exist yet or error - return empty array
@@ -288,7 +283,7 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
       return [];
     });
   } catch (error) {
-    console.error('Error fetching MongoDB projects:', error);
+    // Silently handle error
     // Return empty array on error (graceful degradation)
     return [];
   }
@@ -315,12 +310,10 @@ export async function getMongoProjectBySlug(slug: string): Promise<(Project & { 
       try {
         const project = await requestDeduplicator.getOrCreate(cacheKey, async () => {
           const apiUrl = `/api/mongodb-projects/${slug}`;
-          const response = await measureAPIRequest(apiUrl, () =>
-            fetch(apiUrl, {
-              // OPTIMIZED: Use force-cache with revalidation instead of no-store
-              cache: 'force-cache',
-            })
-          );
+          const response = await fetch(apiUrl, {
+            // OPTIMIZED: Use force-cache with revalidation instead of no-store
+            cache: 'force-cache',
+          });
           
           if (response.ok) {
             const projectData = await response.json();
@@ -342,7 +335,7 @@ export async function getMongoProjectBySlug(slug: string): Promise<(Project & { 
         return project;
       } catch (apiError) {
         // Fallback to loading all projects if API route fails
-        console.log('Single project API route failed, falling back to loading all projects');
+        // Single project API route failed, falling back to loading all projects
       }
     }
     
@@ -353,7 +346,7 @@ export async function getMongoProjectBySlug(slug: string): Promise<(Project & { 
     cache.set(cacheKey, project, project ? 3600000 : 300000);
     return project;
   } catch (error) {
-    console.error('Error fetching MongoDB project by slug:', error);
+    // Silently handle error
     return null;
   }
 }

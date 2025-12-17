@@ -1,12 +1,8 @@
 /**
- * Performance Monitoring Utility
+ * Performance Monitoring Library
  * 
- * Tracks and logs performance metrics for:
- * - API response times
- * - Data transfer sizes
- * - Cache hit rates
- * - Page load times
- * - Navigation times
+ * Tracks API response times, page load times, navigation times, and cache metrics.
+ * Works in both development (console logs) and production (Google Analytics).
  */
 
 interface PerformanceMetric {
@@ -19,37 +15,122 @@ interface PerformanceMetric {
 
 class PerformanceMonitor {
   private metrics: PerformanceMetric[] = [];
-  private enabled: boolean = true;
+  private pageLoadStartTimes: Map<string, number> = new Map();
+  private navigationStartTimes: Map<string, number> = new Map();
 
-  constructor() {
-    // Enable in both development and production
-    // In development, it logs to console; in production, also sends to analytics
-    this.enabled = typeof window !== 'undefined';
+  /**
+   * Track an API request
+   */
+  async measureAPIRequest<T extends Response>(
+    endpoint: string,
+    requestFn: () => Promise<T>
+  ): Promise<T> {
+    const startTime = performance.now();
+    const startTimestamp = Date.now();
+
+    try {
+      const response = await requestFn();
+      const endTime = performance.now();
+      const duration = endTime - startTime;
+
+      // Get response size if available
+      const contentLength = response.headers.get('content-length');
+      const dataSize = contentLength ? parseInt(contentLength, 10) : 0;
+      const sizeKB = (dataSize / 1024).toFixed(2);
+
+      // Check if response was cached
+      const cached = response.headers.get('x-cache') === 'HIT' || 
+                     response.status === 304 ||
+                     (response as any).fromCache === true;
+
+      const metric: PerformanceMetric = {
+        name: `api.${endpoint}`,
+        value: Math.round(duration),
+        unit: 'ms',
+        timestamp: startTimestamp,
+        metadata: {
+          endpoint,
+          dataSize,
+          sizeKB,
+          cached,
+          status: response.status,
+        },
+      };
+
+      this.metrics.push(metric);
+      this.logMetric(metric);
+
+      // Send to Google Analytics if available
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        (window as any).gtag('event', 'api_performance', {
+          endpoint,
+          duration: Math.round(duration),
+          sizeKB,
+          cached: cached ? 'true' : 'false',
+          status: response.status,
+        });
+      }
+
+      return response;
+    } catch (error) {
+      const endTime = performance.now();
+      const duration = endTime - startTime;
+
+      const metric: PerformanceMetric = {
+        name: `api.${endpoint}`,
+        value: Math.round(duration),
+        unit: 'ms',
+        timestamp: startTimestamp,
+        metadata: {
+          endpoint,
+          error: true,
+          errorMessage: error instanceof Error ? error.message : String(error),
+        },
+      };
+
+      this.metrics.push(metric);
+      this.logMetric(metric);
+
+      throw error;
+    }
   }
 
   /**
-   * Track API request performance
+   * Start tracking page load time
    */
-  trackAPIRequest(
-    endpoint: string,
-    startTime: number,
-    endTime: number,
-    dataSize?: number,
-    cached?: boolean
-  ) {
-    if (!this.enabled) return;
+  measurePageLoad(pageName: string): void {
+    const startTime = performance.now();
+    this.pageLoadStartTimes.set(pageName, startTime);
 
+    // Track when page becomes interactive
+    if (typeof window !== 'undefined') {
+      if (document.readyState === 'complete') {
+        this.finishPageLoad(pageName);
+      } else {
+        window.addEventListener('load', () => {
+          this.finishPageLoad(pageName);
+        }, { once: true });
+      }
+    }
+  }
+
+  /**
+   * Finish tracking page load time
+   */
+  private finishPageLoad(pageName: string): void {
+    const startTime = this.pageLoadStartTimes.get(pageName);
+    if (!startTime) return;
+
+    const endTime = performance.now();
     const duration = endTime - startTime;
+
     const metric: PerformanceMetric = {
-      name: `api.${endpoint}`,
-      value: duration,
+      name: `page_load.${pageName}`,
+      value: Math.round(duration),
       unit: 'ms',
       timestamp: Date.now(),
       metadata: {
-        endpoint,
-        dataSize: dataSize || 0,
-        cached: cached || false,
-        sizeKB: dataSize ? (dataSize / 1024).toFixed(2) : 0,
+        pageName,
       },
     };
 
@@ -58,247 +139,171 @@ class PerformanceMonitor {
 
     // Send to Google Analytics if available
     if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'api_performance', {
-        endpoint,
-        duration_ms: Math.round(duration),
-        data_size_kb: dataSize ? Math.round(dataSize / 1024) : 0,
-        cached: cached || false,
-      });
-    }
-  }
-
-  /**
-   * Track page load performance
-   */
-  trackPageLoad(pageName: string, loadTime: number) {
-    if (!this.enabled) return;
-
-    const metric: PerformanceMetric = {
-      name: `page.${pageName}.load`,
-      value: loadTime,
-      unit: 'ms',
-      timestamp: Date.now(),
-    };
-
-    this.metrics.push(metric);
-    this.logMetric(metric);
-
-    if (typeof window !== 'undefined' && (window as any).gtag) {
       (window as any).gtag('event', 'page_load', {
         page_name: pageName,
-        load_time_ms: Math.round(loadTime),
+        duration: Math.round(duration),
       });
+    }
+
+    this.pageLoadStartTimes.delete(pageName);
+  }
+
+  /**
+   * Start tracking navigation time
+   */
+  measureNavigation(from: string, to: string, startTime: number): void {
+    const navigationKey = `${from}->${to}`;
+    this.navigationStartTimes.set(navigationKey, startTime);
+
+    // Finish tracking when page is ready
+    if (typeof window !== 'undefined') {
+      if (document.readyState === 'complete') {
+        this.finishNavigation(navigationKey, startTime);
+      } else {
+        window.addEventListener('load', () => {
+          this.finishNavigation(navigationKey, startTime);
+        }, { once: true });
+      }
     }
   }
 
   /**
-   * Track navigation performance (click to page ready)
+   * Finish tracking navigation time
    */
-  trackNavigation(from: string, to: string, duration: number) {
-    if (!this.enabled) return;
+  private finishNavigation(navigationKey: string, startTime: number): void {
+    const endTime = performance.now();
+    const duration = endTime - startTime;
+
+    const [from, to] = navigationKey.split('->');
 
     const metric: PerformanceMetric = {
-      name: 'navigation',
-      value: duration,
+      name: `navigation.${navigationKey}`,
+      value: Math.round(duration),
       unit: 'ms',
       timestamp: Date.now(),
-      metadata: { from, to },
+      metadata: {
+        from,
+        to,
+      },
     };
 
     this.metrics.push(metric);
     this.logMetric(metric);
 
+    // Send to Google Analytics if available
     if (typeof window !== 'undefined' && (window as any).gtag) {
       (window as any).gtag('event', 'navigation', {
         from,
         to,
-        duration_ms: Math.round(duration),
+        duration: Math.round(duration),
       });
     }
+
+    this.navigationStartTimes.delete(navigationKey);
   }
 
   /**
-   * Track cache hit/miss
+   * Log metric to console (development only)
+   * Suppressed to avoid console noise
    */
-  trackCacheEvent(type: 'hit' | 'miss', endpoint: string) {
-    if (!this.enabled) return;
+  private logMetric(metric: PerformanceMetric): void {
+    // Suppressed - no console logging
+  }
 
-    const metric: PerformanceMetric = {
-      name: `cache.${type}`,
-      value: 1,
-      unit: 'count',
-      timestamp: Date.now(),
-      metadata: { endpoint },
-    };
-
-    this.metrics.push(metric);
-
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'cache_event', {
-        cache_type: type,
-        endpoint,
-      });
-    }
+  /**
+   * Get all metrics
+   */
+  getMetrics(): PerformanceMetric[] {
+    return [...this.metrics];
   }
 
   /**
    * Get performance summary
    */
-  getSummary() {
-    const summary = {
+  getSummary(): {
+    averageAPITime: number;
+    averagePageLoad: number;
+    cacheHitRate: number;
+    totalMetrics: number;
+    cacheHits: number;
+    cacheMisses: number;
+  } {
+    const apiMetrics = this.metrics.filter(m => m.name.startsWith('api.'));
+    const pageLoadMetrics = this.metrics.filter(m => m.name.startsWith('page_load.'));
+    const cacheMetrics = this.metrics.filter(m => m.metadata?.cached !== undefined);
+
+    const averageAPITime =
+      apiMetrics.length > 0
+        ? apiMetrics.reduce((sum, m) => sum + m.value, 0) / apiMetrics.length
+        : 0;
+
+    const averagePageLoad =
+      pageLoadMetrics.length > 0
+        ? pageLoadMetrics.reduce((sum, m) => sum + m.value, 0) / pageLoadMetrics.length
+        : 0;
+
+    const cacheHits = cacheMetrics.filter(m => m.metadata?.cached === true).length;
+    const cacheMisses = cacheMetrics.filter(m => m.metadata?.cached === false).length;
+    const cacheHitRate =
+      cacheMetrics.length > 0 ? (cacheHits / cacheMetrics.length) * 100 : 0;
+
+    return {
+      averageAPITime: Math.round(averageAPITime),
+      averagePageLoad: Math.round(averagePageLoad),
+      cacheHitRate: Math.round(cacheHitRate * 100) / 100,
       totalMetrics: this.metrics.length,
-      apiMetrics: this.metrics.filter(m => m.name.startsWith('api.')),
-      pageMetrics: this.metrics.filter(m => m.name.startsWith('page.')),
-      cacheHits: this.metrics.filter(m => m.name === 'cache.hit').length,
-      cacheMisses: this.metrics.filter(m => m.name === 'cache.miss').length,
-      averageAPITime: 0,
-      averagePageLoad: 0,
-      cacheHitRate: 0,
+      cacheHits,
+      cacheMisses,
     };
-
-    const apiTimes = summary.apiMetrics.map(m => m.value);
-    const pageTimes = summary.pageMetrics.map(m => m.value);
-
-    if (apiTimes.length > 0) {
-      summary.averageAPITime = apiTimes.reduce((a, b) => a + b, 0) / apiTimes.length;
-    }
-
-    if (pageTimes.length > 0) {
-      summary.averagePageLoad = pageTimes.reduce((a, b) => a + b, 0) / pageTimes.length;
-    }
-
-    const totalCacheEvents = summary.cacheHits + summary.cacheMisses;
-    if (totalCacheEvents > 0) {
-      summary.cacheHitRate = (summary.cacheHits / totalCacheEvents) * 100;
-    }
-
-    return summary;
   }
 
   /**
    * Export metrics as JSON
    */
-  exportMetrics() {
-    return JSON.stringify({
-      metrics: this.metrics,
+  exportMetrics(): { metrics: PerformanceMetric[]; summary: ReturnType<typeof this.getSummary> } {
+    return {
+      metrics: this.getMetrics(),
       summary: this.getSummary(),
-      timestamp: Date.now(),
-    }, null, 2);
+    };
   }
 
   /**
    * Clear all metrics
    */
-  clearMetrics() {
+  clear(): void {
     this.metrics = [];
-  }
-
-  /**
-   * Log metric to console (always in development, optionally in production)
-   */
-  private logMetric(metric: PerformanceMetric) {
-    // Always log in development, or if explicitly enabled in production
-    const shouldLog = process.env.NODE_ENV === 'development' || 
-                     localStorage.getItem('perf-logging') === 'true';
-    
-    if (shouldLog) {
-      console.log(`[Performance] ${metric.name}: ${metric.value}${metric.unit}`, metric.metadata || '');
-    }
+    this.pageLoadStartTimes.clear();
+    this.navigationStartTimes.clear();
   }
 }
 
 // Singleton instance
-export const performanceMonitor = new PerformanceMonitor();
+const performanceMonitor = new PerformanceMonitor();
 
-// Expose to window for easy access in browser console
+// Export functions that use the singleton
+export function measureAPIRequest<T extends Response>(
+  endpoint: string,
+  requestFn: () => Promise<T>
+): Promise<T> {
+  return performanceMonitor.measureAPIRequest(endpoint, requestFn);
+}
+
+export function measurePageLoad(pageName: string): void {
+  performanceMonitor.measurePageLoad(pageName);
+}
+
+export function measureNavigation(from: string, to: string, startTime: number): void {
+  performanceMonitor.measureNavigation(from, to, startTime);
+}
+
+// Export utility functions for console access
 if (typeof window !== 'undefined') {
-  (window as any).performanceMonitor = performanceMonitor;
   (window as any).getPerformanceMetrics = () => {
     const summary = performanceMonitor.getSummary();
-    console.table({
-      'Average API Time': `${summary.averageAPITime.toFixed(2)}ms`,
-      'Average Page Load': `${summary.averagePageLoad.toFixed(2)}ms`,
-      'Cache Hit Rate': `${summary.cacheHitRate.toFixed(2)}%`,
-      'Total Metrics': summary.totalMetrics,
-      'Cache Hits': summary.cacheHits,
-      'Cache Misses': summary.cacheMisses,
-    });
-    console.log('Full metrics:', performanceMonitor.exportMetrics());
+    console.table(summary);
     return summary;
   };
-}
 
-/**
- * Helper function to measure API request performance
- */
-export async function measureAPIRequest<T>(
-  endpoint: string,
-  requestFn: () => Promise<Response>
-): Promise<Response> {
-  const startTime = performance.now();
-  let cached = false;
-  let dataSize = 0;
-
-  try {
-    const response = await requestFn();
-    const endTime = performance.now();
-
-    // Check if response was cached
-    cached = response.headers.get('x-cache') === 'HIT' || 
-             response.headers.get('cf-cache-status') === 'HIT';
-
-    // Try to get content length
-    const contentLength = response.headers.get('content-length');
-    if (contentLength) {
-      dataSize = parseInt(contentLength, 10);
-    } else {
-      // If no content-length, clone and measure
-      const clonedResponse = response.clone();
-      const blob = await clonedResponse.blob();
-      dataSize = blob.size;
-    }
-
-    performanceMonitor.trackAPIRequest(
-      endpoint,
-      startTime,
-      endTime,
-      dataSize,
-      cached
-    );
-
-    if (cached) {
-      performanceMonitor.trackCacheEvent('hit', endpoint);
-    } else {
-      performanceMonitor.trackCacheEvent('miss', endpoint);
-    }
-
-    return response;
-  } catch (error) {
-    const endTime = performance.now();
-    performanceMonitor.trackAPIRequest(endpoint, startTime, endTime, 0, false);
-    throw error;
-  }
-}
-
-/**
- * Helper to measure page load time
- */
-export function measurePageLoad(pageName: string) {
-  if (typeof window === 'undefined') return;
-
-  window.addEventListener('load', () => {
-    const loadTime = performance.now();
-    performanceMonitor.trackPageLoad(pageName, loadTime);
-  });
-}
-
-/**
- * Helper to measure navigation time
- */
-export function measureNavigation(from: string, to: string, startTime: number) {
-  if (typeof window === 'undefined') return;
-
-  const endTime = performance.now();
-  performanceMonitor.trackNavigation(from, to, endTime - startTime);
+  (window as any).performanceMonitor = performanceMonitor;
 }
 

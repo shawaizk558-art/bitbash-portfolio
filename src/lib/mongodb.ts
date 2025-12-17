@@ -245,7 +245,7 @@ export async function fetchMongoProjects(): Promise<any[]> {
     const documents = await collection.find({}).toArray();
     return documents;
   } catch (error) {
-    console.error('Error fetching MongoDB projects:', error);
+    // Silently handle error
     throw error;
   }
 }
