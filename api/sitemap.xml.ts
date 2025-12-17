@@ -9,9 +9,10 @@ type VercelRequest = {
 
 type VercelResponse = {
   status: (code: number) => VercelResponse;
-  setHeader: (name: string, value: string) => void;
+  setHeader: (name: string, value: string) => VercelResponse;
   send: (body: string) => void;
   json: (obj: any) => void;
+  end: () => void;
 };
 
 const SITE_URL = 'https://bitbash.dev';
@@ -54,28 +55,28 @@ export default async function handler(
   res: VercelResponse
 ) {
   try {
-    // Set proper headers for XML
-    res.setHeader('Content-Type', 'application/xml; charset=utf-8');
-    res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
-
     // Get all projects (hardcoded + MongoDB)
     let allProjects = [...hardcodedProjects];
     console.log(`[Sitemap] Starting with ${hardcodedProjects.length} hardcoded projects`);
     
     try {
       const mongoProjects = await getMongoProjects();
-      console.log(`[Sitemap] Fetched ${mongoProjects.length} MongoDB projects`);
-      
-      // Filter out MongoDB projects that have same slug as hardcoded (hardcoded take precedence)
-      const hardcodedSlugs = new Set(hardcodedProjects.map(p => p.slug));
-      const filteredMongoProjects = mongoProjects.filter(
-        project => project.slug && !hardcodedSlugs.has(project.slug)
-      );
-      
-      console.log(`[Sitemap] Adding ${filteredMongoProjects.length} unique MongoDB projects`);
-      allProjects = [...hardcodedProjects, ...filteredMongoProjects];
-    } catch (error) {
-      console.error('[Sitemap] Error fetching MongoDB projects:', error);
+      if (Array.isArray(mongoProjects) && mongoProjects.length > 0) {
+        console.log(`[Sitemap] Fetched ${mongoProjects.length} MongoDB projects`);
+        
+        // Filter out MongoDB projects that have same slug as hardcoded (hardcoded take precedence)
+        const hardcodedSlugs = new Set(hardcodedProjects.map(p => p.slug));
+        const filteredMongoProjects = mongoProjects.filter(
+          (project: any) => project && project.slug && !hardcodedSlugs.has(project.slug)
+        );
+        
+        console.log(`[Sitemap] Adding ${filteredMongoProjects.length} unique MongoDB projects`);
+        allProjects = [...hardcodedProjects, ...filteredMongoProjects];
+      } else {
+        console.log(`[Sitemap] No MongoDB projects available, using hardcoded projects only`);
+      }
+    } catch (error: any) {
+      console.error('[Sitemap] Error fetching MongoDB projects:', error?.message || error);
       // Continue with just hardcoded projects if MongoDB fetch fails
     }
 
@@ -115,10 +116,15 @@ export default async function handler(
 
     xml += `</urlset>`;
 
-    return res.status(200).send(xml);
-  } catch (error) {
+    // Send XML response with proper headers
+    res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+    res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
+    res.status(200).send(xml);
+    return;
+  } catch (error: any) {
     console.error('[Sitemap] Error generating sitemap:', error);
-    return res.status(500).json({ error: 'Failed to generate sitemap' });
+    res.status(500).json({ error: 'Failed to generate sitemap', details: error?.message });
+    return;
   }
 }
 
