@@ -1,4 +1,3 @@
-import { projects as hardcodedProjects } from '../src/data/projects';
 import { list } from '@vercel/blob';
 
 type VercelRequest = {
@@ -17,6 +16,21 @@ type VercelResponse = {
 
 const SITE_URL = 'https://bitbash.dev';
 const BLOB_FILE_NAME = 'mongodb-projects.json';
+
+// Hardcoded project slugs (from src/data/projects.ts)
+// This ensures the sitemap always works even if imports fail
+const HARDCODED_PROJECT_SLUGS = [
+  'petla',
+  'scraper-glass',
+  'actuary-list',
+  'threads-scraper',
+  'ttinit',
+  'purepeak',
+  'facebook-scraper',
+  'linkedin-automation',
+  'api-scraper',
+  'telegram-weather-alert-bot',
+];
 
 // Static pages with their priorities and change frequencies
 const staticPages = [
@@ -55,22 +69,9 @@ export default async function handler(
   req: VercelRequest,
   res: VercelResponse
 ) {
-  // Initialize with hardcoded projects - these should always work
-  let allProjects: any[] = [];
-  
-  try {
-    // Load hardcoded projects first (these must always work)
-    if (Array.isArray(hardcodedProjects) && hardcodedProjects.length > 0) {
-      allProjects = [...hardcodedProjects];
-      console.log(`[Sitemap] Loaded ${hardcodedProjects.length} hardcoded projects`);
-    } else {
-      console.error('[Sitemap] Hardcoded projects array is invalid');
-      // Still continue - we'll generate sitemap with static pages only
-    }
-  } catch (error: any) {
-    console.error('[Sitemap] Error loading hardcoded projects:', error?.message || error);
-    // Continue anyway - we can still generate sitemap with static pages
-  }
+  // Start with hardcoded project slugs - these always work
+  let allProjectSlugs: string[] = [...HARDCODED_PROJECT_SLUGS];
+  console.log(`[Sitemap] Starting with ${HARDCODED_PROJECT_SLUGS.length} hardcoded project slugs`);
   
   // Try to add MongoDB projects from Blob Storage (completely optional)
   // If this fails, we continue with just hardcoded projects
@@ -107,15 +108,18 @@ export default async function handler(
           if (mongoProjects.length > 0) {
             console.log(`[Sitemap] Fetched ${mongoProjects.length} MongoDB projects from Blob Storage`);
             
-            // Filter out MongoDB projects that have same slug as hardcoded (hardcoded take precedence)
-            const hardcodedSlugs = new Set(allProjects.map((p: any) => p?.slug).filter(Boolean));
-            const filteredMongoProjects = mongoProjects.filter(
-              (project: any) => project && project.slug && typeof project.slug === 'string' && !hardcodedSlugs.has(project.slug)
-            );
+            // Extract slugs from MongoDB projects and filter out duplicates
+            const mongoSlugs = mongoProjects
+              .map((project: any) => project?.slug)
+              .filter((slug: any): slug is string => typeof slug === 'string' && slug.length > 0);
             
-            if (filteredMongoProjects.length > 0) {
-              console.log(`[Sitemap] Adding ${filteredMongoProjects.length} unique MongoDB projects`);
-              allProjects = [...allProjects, ...filteredMongoProjects];
+            // Filter out MongoDB slugs that match hardcoded slugs (hardcoded take precedence)
+            const hardcodedSlugSet = new Set(HARDCODED_PROJECT_SLUGS);
+            const uniqueMongoSlugs = mongoSlugs.filter(slug => !hardcodedSlugSet.has(slug));
+            
+            if (uniqueMongoSlugs.length > 0) {
+              console.log(`[Sitemap] Adding ${uniqueMongoSlugs.length} unique MongoDB project slugs`);
+              allProjectSlugs = [...HARDCODED_PROJECT_SLUGS, ...uniqueMongoSlugs];
             }
           }
         } else {
@@ -139,7 +143,7 @@ export default async function handler(
 
   // Generate XML - this should always work
   try {
-    console.log(`[Sitemap] Generating sitemap with ${allProjects.length} total projects`);
+    console.log(`[Sitemap] Generating sitemap with ${allProjectSlugs.length} total project slugs`);
 
     let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset
@@ -156,11 +160,10 @@ export default async function handler(
     // Add project detail pages
     const today = formatDate(new Date());
     let projectCount = 0;
-    for (const project of allProjects) {
-      // Ensure project has a valid slug
-      if (project && project.slug && typeof project.slug === 'string') {
+    for (const slug of allProjectSlugs) {
+      if (slug && typeof slug === 'string') {
         xml += generateUrlEntry(
-          `/project/${project.slug}`,
+          `/project/${slug}`,
           '0.80',
           'monthly',
           today
