@@ -16,6 +16,7 @@ import {
   getVideoSources,
 } from "@/lib/mediaAssets";
 import { ProjectCard } from "@/components/ProjectCard";
+import { useProjectsSearch } from "@/contexts/ProjectsSearchContext";
 
 /**
  * Convert a string to title case (capitalize first letter of each word)
@@ -83,6 +84,7 @@ const Projects = () => {
   const [playingVideoIndex, setPlayingVideoIndex] = useState<number | null>(null);
   const [displayCount, setDisplayCount] = useState(30); // Show 30 projects initially
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const { searchQuery, setSearchQuery, setFilteredCount, setTotalCount } = useProjectsSearch();
   const observerTarget = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -133,15 +135,38 @@ const Projects = () => {
     };
   }, [mongoProjects]); // Only recalculate when mongoProjects changes
 
+  // Filter projects based on search query
+  const filteredProjects = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return allProjects;
+    }
+    const query = searchQuery.toLowerCase().trim();
+    return allProjects.filter(project => {
+      const title = ((project as any).title || project.name || '').toLowerCase();
+      return title.includes(query);
+    });
+  }, [allProjects, searchQuery]);
+
+  // Update filtered count and total count in context
+  useEffect(() => {
+    setFilteredCount(filteredProjects.length);
+    setTotalCount(allProjects.length);
+  }, [filteredProjects.length, allProjects.length, setFilteredCount, setTotalCount]);
+
+  // Reset display count when search query changes
+  useEffect(() => {
+    setDisplayCount(30);
+  }, [searchQuery]);
+
   // Get projects to display (first N projects based on displayCount)
   // OPTIMIZED: Memoize displayed projects calculation
   const displayedProjects = useMemo(() => {
-    return allProjects.slice(0, displayCount);
-  }, [allProjects, displayCount]);
+    return filteredProjects.slice(0, displayCount);
+  }, [filteredProjects, displayCount]);
   
   const hasMoreProjects = useMemo(() => {
-    return allProjects.length > displayCount;
-  }, [allProjects.length, displayCount]);
+    return filteredProjects.length > displayCount;
+  }, [filteredProjects.length, displayCount]);
 
   // Infinite scroll using Intersection Observer
   useEffect(() => {
@@ -224,7 +249,14 @@ const Projects = () => {
       {/* All Projects - Unified Grid */}
       <section className="pt-0 sm:pt-2 md:pt-4 pb-12 sm:pb-16 md:pb-20">
         <div className="container-responsive">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-2 sm:px-0">
+          {displayedProjects.length === 0 && !isLoading ? (
+            <div className="text-center py-12 sm:py-16 md:py-20">
+              <p className="text-gray-600 text-base sm:text-lg">
+                No projects found matching "{searchQuery}"
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-2 sm:px-0">
             {displayedProjects.map((project, index) => {
               // Use new ProjectCard component for MongoDB projects (not in hardcoded set)
               const isMongoProject = !hardcodedSlugs.has(project.slug);
@@ -399,7 +431,8 @@ const Projects = () => {
                 </div>
               );
             })}
-          </div>
+            </div>
+          )}
 
           {/* Infinite Scroll Sentinel - triggers loading more projects when scrolled into view */}
           {hasMoreProjects && (

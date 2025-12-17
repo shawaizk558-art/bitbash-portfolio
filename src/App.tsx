@@ -7,6 +7,7 @@ import { Toaster as ToastContainer } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 import { HelmetProvider } from "react-helmet-async";
+import { ProjectsSearchProvider } from "@/contexts/ProjectsSearchContext";
 
 // Lazy load pages for better performance
 const Index = lazy(() => import("./pages/Index"));
@@ -44,42 +45,44 @@ const App = () => {
   return (
     <HelmetProvider>
       <TooltipProvider>
-        <Suspense fallback={null}>
-          <MobileViewport />
-          <MobileOptimizations />
-        </Suspense>
-        <ToastContainer />
-        <SonnerToaster />
-        <BrowserRouter>
-          <ScrollToTop />
-          <RoutePreloader />
-          <Suspense
-            fallback={
-              <div className="flex min-h-screen items-center justify-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
-              </div>
-            }
-          >
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/services" element={<AllServices />} />
-              <Route path="/services/automation" element={<ServiceAutomation />} />
-              <Route path="/services/scraping" element={<ServiceScraping />} />
-              <Route path="/services/full-stack" element={<ServiceFullStack />} />
-              <Route path="/services/ai-solutions" element={<ServiceAiSolutions />} />
-              <Route path="/services/saas-mvp" element={<ServiceSaasMvp />} />
-              <Route path="/pricing" element={<Pricing />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/partners" element={<Partners />} />
-              <Route path="/projects" element={<Projects />} />
-              <Route path="/how-we-work" element={<HowWeWork />} />
-              <Route path="/project/:slug" element={<ProjectDetail />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+        <ProjectsSearchProvider>
+          <Suspense fallback={null}>
+            <MobileViewport />
+            <MobileOptimizations />
           </Suspense>
-        </BrowserRouter>
+          <ToastContainer />
+          <SonnerToaster />
+          <BrowserRouter>
+            <ScrollToTop />
+            <RoutePreloader />
+            <Suspense
+              fallback={
+                <div className="flex min-h-screen items-center justify-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+                </div>
+              }
+            >
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/services" element={<AllServices />} />
+                <Route path="/services/automation" element={<ServiceAutomation />} />
+                <Route path="/services/scraping" element={<ServiceScraping />} />
+                <Route path="/services/full-stack" element={<ServiceFullStack />} />
+                <Route path="/services/ai-solutions" element={<ServiceAiSolutions />} />
+                <Route path="/services/saas-mvp" element={<ServiceSaasMvp />} />
+                <Route path="/pricing" element={<Pricing />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/partners" element={<Partners />} />
+                <Route path="/projects" element={<Projects />} />
+                <Route path="/how-we-work" element={<HowWeWork />} />
+                <Route path="/project/:slug" element={<ProjectDetail />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </BrowserRouter>
+        </ProjectsSearchProvider>
       </TooltipProvider>
     </HelmetProvider>
   );

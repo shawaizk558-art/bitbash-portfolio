@@ -1,17 +1,38 @@
 import { Button } from "@/components/ui/button";
-import { ChevronDown, Code, Smartphone, Palette, Zap, Database, Globe, Cloud, Github, Building2, ShoppingCart, Rocket, Bot, GitBranch, Shield, Menu, X } from "@/lib/icons";
+import { ChevronDown, Code, Smartphone, Palette, Zap, Database, Globe, Cloud, Github, Building2, ShoppingCart, Rocket, Bot, GitBranch, Shield, Menu, X, Search } from "@/lib/icons";
 import { useEffect, useRef, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Logo } from "@/components/Logo";
 import { ContactButton } from "@/components/ContactButton";
 import { scrollToTopImmediate } from "@/lib/scrollToTop";
+import { useProjectsSearch } from "@/contexts/ProjectsSearchContext";
 
 export const Navigation = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const isMobile = useIsMobile();
   const location = useLocation();
+  const isProjectsPage = location.pathname === "/projects";
+  const { searchQuery, setSearchQuery, filteredCount, totalCount } = useProjectsSearch();
+
+  // Track scroll position to show search bar only when scrolled on Projects page
+  useEffect(() => {
+    if (!isProjectsPage) return;
+
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      setIsScrolled(scrollY > 50); // Show search after scrolling 50px
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll(); // Check initial scroll position
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [isProjectsPage]);
 
   const menuToggleRef = useRef<HTMLButtonElement | null>(null);
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
@@ -169,82 +190,120 @@ export const Navigation = () => {
             )}
           </button>
           
-          {/* Desktop Navigation Links with Dropdowns - Centered */}
+          {/* Desktop Navigation Links with Dropdowns - Centered OR Search Bar on Projects Page when scrolled or when searching */}
           <div
-            className="hidden lg:flex items-center space-x-1 xl:space-x-2 absolute left-1/2 transform -translate-x-1/2"
+            className="hidden lg:flex items-center space-x-1 xl:space-x-2 absolute left-1/2 transform -translate-x-1/2 transition-all duration-300"
           >
-            {/* Services Dropdown */}
-            <div className="relative" ref={servicesRef}>
-              <div 
-                onClick={() => toggleDropdown('services')}
-                className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0"
-              >
-                <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Services</span>
-                <ChevronDown className={`w-4 h-4 text-gray-900 transition-transform duration-200 ${openDropdown === 'services' ? 'rotate-180' : ''}`} />
-              </div>
-              
-              {openDropdown === 'services' && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[90vw] max-w-[520px] bg-white rounded-2xl shadow-2xl border border-gray-200 p-3.5 sm:p-4 opacity-0 animate-fadeIn">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
-                    {servicesMenuItems.map(({ title, description, icon: Icon, href }) => (
-                      <Link
-                        key={title}
-                        to={href}
-                        onClick={() => {
-                          scrollToTopImmediate();
-                          setOpenDropdown(null);
-                        }}
-                        className="flex items-start gap-2.5 p-3 sm:p-3 rounded-xl border border-transparent hover:border-purple-100 hover:bg-purple-50/60 transition-all"
+            {isProjectsPage && (isScrolled || searchQuery.trim()) ? (
+              /* Search Bar - Only on Projects Page when scrolled */
+              <div className="w-[400px] max-w-[90vw]">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 z-10" />
+                  <input
+                    type="text"
+                    placeholder="Search projects..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className={`w-full pl-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm bg-white/95 backdrop-blur-md shadow-sm ${
+                      searchQuery.trim() ? 'pr-28' : 'pr-20'
+                    }`}
+                  />
+                  {searchQuery.trim() && (
+                    <>
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-xs text-gray-500 font-medium">
+                        {filteredCount} {filteredCount === 1 ? 'project' : 'projects'}
+                      </div>
+                      <button
+                        onClick={() => setSearchQuery("")}
+                        className="absolute right-20 top-1/2 transform -translate-y-1/2 p-1 hover:bg-gray-100 rounded-full transition-colors"
+                        aria-label="Clear search"
                       >
-                        <div className="mt-0.5">
-                          <Icon className="w-5 h-5 text-purple-600" />
-                        </div>
-                        <div className="space-y-1">
-                          <div className="font-semibold text-gray-900 text-sm sm:text-sm">{title}</div>
-                          <p className="text-[11px] sm:text-xs text-gray-500 leading-snug">{description}</p>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                  <div className="mt-3.5 pt-3.5 border-t border-gray-200 flex justify-center">
-                    <a
-                      href="/services"
-                      onClick={scrollToTopImmediate}
-                      className="text-sm font-semibold text-purple-600 hover:text-purple-700 flex items-center gap-1.5 leading-tight"
-                    >
-                      View all services
-                      <span className="text-base leading-none translate-y-[1px]">→</span>
-                    </a>
-                  </div>
+                        <X className="w-4 h-4 text-gray-400 hover:text-gray-600" />
+                      </button>
+                    </>
+                  )}
+                  {!searchQuery.trim() && totalCount > 0 && (
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-xs text-gray-500 font-medium">
+                      {totalCount} {totalCount === 1 ? 'project' : 'projects'}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              </div>
+            ) : (
+              <>
+                {/* Services Dropdown */}
+                <div className="relative" ref={servicesRef}>
+                  <div 
+                    onClick={() => toggleDropdown('services')}
+                    className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0"
+                  >
+                    <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Services</span>
+                    <ChevronDown className={`w-4 h-4 text-gray-900 transition-transform duration-200 ${openDropdown === 'services' ? 'rotate-180' : ''}`} />
+                  </div>
+                  
+                  {openDropdown === 'services' && (
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[90vw] max-w-[520px] bg-white rounded-2xl shadow-2xl border border-gray-200 p-3.5 sm:p-4 opacity-0 animate-fadeIn">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
+                        {servicesMenuItems.map(({ title, description, icon: Icon, href }) => (
+                          <Link
+                            key={title}
+                            to={href}
+                            onClick={() => {
+                              scrollToTopImmediate();
+                              setOpenDropdown(null);
+                            }}
+                            className="flex items-start gap-2.5 p-3 sm:p-3 rounded-xl border border-transparent hover:border-purple-100 hover:bg-purple-50/60 transition-all"
+                          >
+                            <div className="mt-0.5">
+                              <Icon className="w-5 h-5 text-purple-600" />
+                            </div>
+                            <div className="space-y-1">
+                              <div className="font-semibold text-gray-900 text-sm sm:text-sm">{title}</div>
+                              <p className="text-[11px] sm:text-xs text-gray-500 leading-snug">{description}</p>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                      <div className="mt-3.5 pt-3.5 border-t border-gray-200 flex justify-center">
+                        <a
+                          href="/services"
+                          onClick={scrollToTopImmediate}
+                          className="text-sm font-semibold text-purple-600 hover:text-purple-700 flex items-center gap-1.5 leading-tight"
+                        >
+                          View all services
+                          <span className="text-base leading-none translate-y-[1px]">→</span>
+                        </a>
+                      </div>
+                    </div>
+                  )}
+                </div>
 
 
-            <Link
-              to="/projects"
-              className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0"
-              onClick={scrollToTopImmediate}
-            >
-              <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Projects</span>
-            </Link>
+                <Link
+                  to="/projects"
+                  className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0"
+                  onClick={scrollToTopImmediate}
+                >
+                  <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Projects</span>
+                </Link>
 
-            <Link
-              to="/pricing"
-              className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0"
-              onClick={scrollToTopImmediate}
-            >
-              <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Pricing</span>
-            </Link>
+                <Link
+                  to="/pricing"
+                  className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0"
+                  onClick={scrollToTopImmediate}
+                >
+                  <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Pricing</span>
+                </Link>
 
-            <Link
-              to="/how-we-work"
-              className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0"
-              onClick={scrollToTopImmediate}
-            >
-              <span className="font-normal text-black text-base lg:text-[17px] whitespace-nowrap" style={{ fontSize: '17px' }}>Our Work Model</span>
-            </Link>
-
+                <Link
+                  to="/how-we-work"
+                  className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0"
+                  onClick={scrollToTopImmediate}
+                >
+                  <span className="font-normal text-black text-base lg:text-[17px] whitespace-nowrap" style={{ fontSize: '17px' }}>Our Work Model</span>
+                </Link>
+              </>
+            )}
           </div>
           
           {/* Desktop CTA Buttons - Right Side */}
