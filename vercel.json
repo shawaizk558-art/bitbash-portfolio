@@ -69,7 +69,7 @@
   "crons": [
     {
       "path": "/api/cron/sync-mongodb-projects",
-      "schedule": "30 8 * * *"
+      "schedule": "0 11 * * *"
     }
   ]
 }
