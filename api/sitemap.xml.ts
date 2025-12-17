@@ -55,68 +55,97 @@ export default async function handler(
   req: VercelRequest,
   res: VercelResponse
 ) {
+  // Initialize with hardcoded projects - these should always work
+  let allProjects: any[] = [];
+  
   try {
-    // Get all projects (hardcoded + MongoDB)
-    let allProjects: any[] = [];
-    
-    // Always start with hardcoded projects
-    try {
+    // Load hardcoded projects first (these must always work)
+    if (Array.isArray(hardcodedProjects) && hardcodedProjects.length > 0) {
       allProjects = [...hardcodedProjects];
       console.log(`[Sitemap] Loaded ${hardcodedProjects.length} hardcoded projects`);
-    } catch (error: any) {
-      console.error('[Sitemap] Error loading hardcoded projects:', error?.message || error);
-      // If hardcoded projects fail, we can't continue - return error
-      res.status(500).json({ error: 'Failed to load projects', details: error?.message });
-      return;
+    } else {
+      console.error('[Sitemap] Hardcoded projects array is invalid');
+      // Still continue - we'll generate sitemap with static pages only
     }
+  } catch (error: any) {
+    console.error('[Sitemap] Error loading hardcoded projects:', error?.message || error);
+    // Continue anyway - we can still generate sitemap with static pages
+  }
+  
+  // Try to add MongoDB projects from Blob Storage (completely optional)
+  // If this fails, we continue with just hardcoded projects
+  try {
+    const { blobs } = await list({ prefix: BLOB_FILE_NAME });
+    const blob = blobs.find(b => b.pathname === BLOB_FILE_NAME);
     
-    // Try to add MongoDB projects from Blob Storage (optional - sitemap works without them)
-    try {
-      const { blobs } = await list({ prefix: BLOB_FILE_NAME });
-      const blob = blobs.find(b => b.pathname === BLOB_FILE_NAME);
-      
-      if (blob && blob.url) {
-        // Fetch the blob content using the URL
-        const response = await fetch(blob.url);
+    if (blob && blob.url) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+        
+        const response = await fetch(blob.url, {
+          signal: controller.signal,
+        });
+        
+        clearTimeout(timeoutId);
+        
         if (response.ok) {
           const content = await response.text();
-          const mongoProjects = JSON.parse(content);
           
-          if (Array.isArray(mongoProjects) && mongoProjects.length > 0) {
+          // Safely parse JSON
+          let mongoProjects: any[] = [];
+          try {
+            const parsed = JSON.parse(content);
+            if (Array.isArray(parsed)) {
+              mongoProjects = parsed;
+            }
+          } catch (parseError: any) {
+            console.warn('[Sitemap] Failed to parse MongoDB projects JSON:', parseError?.message);
+            // Continue without MongoDB projects
+          }
+          
+          if (mongoProjects.length > 0) {
             console.log(`[Sitemap] Fetched ${mongoProjects.length} MongoDB projects from Blob Storage`);
             
             // Filter out MongoDB projects that have same slug as hardcoded (hardcoded take precedence)
-            const hardcodedSlugs = new Set(hardcodedProjects.map(p => p.slug));
+            const hardcodedSlugs = new Set(allProjects.map((p: any) => p?.slug).filter(Boolean));
             const filteredMongoProjects = mongoProjects.filter(
-              (project: any) => project && project.slug && !hardcodedSlugs.has(project.slug)
+              (project: any) => project && project.slug && typeof project.slug === 'string' && !hardcodedSlugs.has(project.slug)
             );
             
-            console.log(`[Sitemap] Adding ${filteredMongoProjects.length} unique MongoDB projects`);
-            allProjects = [...hardcodedProjects, ...filteredMongoProjects];
-          } else {
-            console.log(`[Sitemap] MongoDB projects array is empty, using hardcoded projects only`);
+            if (filteredMongoProjects.length > 0) {
+              console.log(`[Sitemap] Adding ${filteredMongoProjects.length} unique MongoDB projects`);
+              allProjects = [...allProjects, ...filteredMongoProjects];
+            }
           }
         } else {
           console.warn(`[Sitemap] Failed to fetch blob content: ${response.status} ${response.statusText}`);
         }
-      } else {
-        console.log(`[Sitemap] Blob not found in storage, using hardcoded projects only`);
+      } catch (fetchError: any) {
+        if (fetchError.name === 'AbortError') {
+          console.warn('[Sitemap] Blob fetch timeout');
+        } else {
+          console.warn('[Sitemap] Error fetching blob URL:', fetchError?.message || String(fetchError));
+        }
+        // Continue without MongoDB projects
       }
-    } catch (error: any) {
-      // MongoDB projects are optional - log but continue
-      console.warn('[Sitemap] MongoDB projects unavailable (this is OK):', error?.message || String(error));
-      // Continue with just hardcoded projects
+    } else {
+      console.log(`[Sitemap] Blob not found in storage, using hardcoded projects only`);
     }
+  } catch (blobError: any) {
+    // Blob storage errors are completely fine - we continue with hardcoded projects
+    console.warn('[Sitemap] Blob storage unavailable (this is OK):', blobError?.message || String(blobError));
+  }
 
-    console.log(`[Sitemap] Total projects: ${allProjects.length}`);
+  // Generate XML - this should always work
+  try {
+    console.log(`[Sitemap] Generating sitemap with ${allProjects.length} total projects`);
 
-    // Generate XML
     let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset
   xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml"
-  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
->
+  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 `;
 
     // Add static pages
@@ -129,7 +158,7 @@ export default async function handler(
     let projectCount = 0;
     for (const project of allProjects) {
       // Ensure project has a valid slug
-      if (project && project.slug) {
+      if (project && project.slug && typeof project.slug === 'string') {
         xml += generateUrlEntry(
           `/project/${project.slug}`,
           '0.80',
@@ -149,10 +178,10 @@ export default async function handler(
     res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
     res.status(200).send(xml);
     return;
-  } catch (error: any) {
-    console.error('[Sitemap] Error generating sitemap:', error);
-    res.status(500).json({ error: 'Failed to generate sitemap', details: error?.message });
+  } catch (xmlError: any) {
+    // This should never happen, but if it does, return error
+    console.error('[Sitemap] Error generating XML:', xmlError);
+    res.status(500).json({ error: 'Failed to generate sitemap XML', details: xmlError?.message });
     return;
   }
 }
-
