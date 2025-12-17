@@ -21,9 +21,11 @@ const Pricing = lazy(() => import("./pages/Pricing"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Projects = lazy(() => import("./pages/Projects"));
 const Blog = lazy(() => import("./pages/Blog"));
+const BlogPostDetail = lazy(() => import("./pages/BlogPostDetail"));
 const Partners = lazy(() => import("./pages/Partners"));
 const ProjectDetail = lazy(() => import("./pages/ProjectDetail"));
 const HowWeWork = lazy(() => import("./pages/HowWeWork"));
+const Jobs = lazy(() => import("./pages/Jobs"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const MobileViewport = lazy(() =>
@@ -73,10 +75,12 @@ const App = () => {
                 <Route path="/pricing" element={<Pricing />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/blog" element={<Blog />} />
+                <Route path="/blog/:slug" element={<BlogPostDetail />} />
                 <Route path="/partners" element={<Partners />} />
                 <Route path="/projects" element={<Projects />} />
                 <Route path="/how-we-work" element={<HowWeWork />} />
                 <Route path="/project/:slug" element={<ProjectDetail />} />
+                <Route path="/jobs" element={<Jobs />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

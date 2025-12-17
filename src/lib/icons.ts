@@ -40,5 +40,6 @@ export {
   Award,
   Video,
   ExternalLink,
-  Handshake
+  Handshake,
+  Sparkles
 } from "lucide-react";

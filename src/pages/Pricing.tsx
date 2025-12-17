@@ -102,7 +102,7 @@ const Pricing = () => {
                     <h3 className="text-xl font-bold text-gray-900">Automation Project</h3>
                   </div>
                   <div className="flex items-baseline justify-center flex-wrap mb-2">
-                    <span className="text-3xl sm:text-4xl font-bold text-gray-900">$100 - $300</span>
+                    <span className="text-3xl sm:text-4xl font-bold text-gray-900">$500 - $1,500</span>
                   </div>
                 </div>
               </div>
@@ -142,7 +142,7 @@ const Pricing = () => {
                     <h3 className="text-xl font-bold text-gray-900">Fixed Cost Scraping Project</h3>
                   </div>
                   <div className="flex items-baseline justify-center flex-wrap mb-2">
-                    <span className="text-3xl sm:text-4xl font-bold text-gray-900">$500 - $1,500</span>
+                    <span className="text-3xl sm:text-4xl font-bold text-gray-900">$100 - $300</span>
                   </div>
                 </div>
               </div>

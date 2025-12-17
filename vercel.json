@@ -26,11 +26,6 @@
       "permanent": true
     },
     {
-      "source": "/blog/:slug",
-      "destination": "/blog",
-      "permanent": true
-    },
-    {
       "source": "/automation-services",
       "destination": "/services/automation",
       "permanent": true

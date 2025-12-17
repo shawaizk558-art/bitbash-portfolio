@@ -3,6 +3,7 @@ import { Logo } from "@/components/Logo";
 import { Link } from "react-router-dom";
 import { scrollToTopImmediate } from "@/lib/scrollToTop";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
 
 export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
   const [copied, setCopied] = useState(false);
@@ -151,49 +152,6 @@ export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
             </ul>
           </div>
 
-          {/* Company Section */}
-          <div>
-            <h3 className="text-xs sm:text-sm font-bold text-white mb-4 sm:mb-5 md:mb-6 uppercase tracking-wider">Company</h3>
-            <ul className="space-y-2 sm:space-y-3 m-0 p-0 list-none">
-              <li className="m-0 p-0">
-                <Link
-                  to="/"
-                  onClick={scrollToTopImmediate}
-                  className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors block"
-                >
-                  About Us
-                </Link>
-              </li>
-              <li className="m-0 p-0">
-                <Link
-                  to="/partners"
-                  onClick={scrollToTopImmediate}
-                  className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors block"
-                >
-                  Partners
-                </Link>
-              </li>
-              <li className="m-0 p-0">
-                <Link
-                  to="/how-we-work"
-                  onClick={scrollToTopImmediate}
-                  className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors block"
-                >
-                  Our Work Model
-                </Link>
-              </li>
-              <li className="m-0 p-0">
-                <Link
-                  to="/contact"
-                  onClick={scrollToTopImmediate}
-                  className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors block"
-                >
-                  Contact
-                </Link>
-              </li>
-            </ul>
-          </div>
-
           {/* Connect Section */}
           <div>
             <h3 className="text-xs sm:text-sm font-bold text-white mb-4 sm:mb-5 md:mb-6 uppercase tracking-wider">Connect</h3>
@@ -251,6 +209,61 @@ export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
                   </svg>
                   Book a Demo
                 </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Company Section */}
+          <div>
+            <h3 className="text-xs sm:text-sm font-bold text-white mb-4 sm:mb-5 md:mb-6 uppercase tracking-wider">Company</h3>
+            <ul className="space-y-2 sm:space-y-3 m-0 p-0 list-none">
+              <li className="m-0 p-0">
+                <Link
+                  to="/"
+                  onClick={scrollToTopImmediate}
+                  className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors block"
+                >
+                  About Us
+                </Link>
+              </li>
+              <li className="m-0 p-0">
+                <Link
+                  to="/partners"
+                  onClick={scrollToTopImmediate}
+                  className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors block"
+                >
+                  Partners
+                </Link>
+              </li>
+              <li className="m-0 p-0">
+                <Link
+                  to="/how-we-work"
+                  onClick={scrollToTopImmediate}
+                  className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors block"
+                >
+                  Our Work Model
+                </Link>
+              </li>
+              <li className="m-0 p-0">
+                <Link
+                  to="/contact"
+                  onClick={scrollToTopImmediate}
+                  className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors block"
+                >
+                  Contact
+                </Link>
+              </li>
+              <li className="m-0 p-0">
+                <Link
+                  to="/jobs"
+                  onClick={scrollToTopImmediate}
+                  className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors block flex items-center gap-2"
+                >
+                  Jobs
+                  <Badge className="bg-white text-gray-900 hover:bg-gray-100 text-xs sm:text-sm px-2 py-0.5 rounded-md">
+                    We're hiring!
+                  </Badge>
+                </Link>
               </li>
             </ul>
           </div>
