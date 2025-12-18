@@ -183,7 +183,13 @@ export default async function handler(
   req: VercelRequest,
   res: VercelResponse
 ) {
+  const env = isProduction() ? 'Production' : 'Local';
+  console.log(`[${env}] 📥 API /api/mongodb-projects called`);
+  console.log(`[${env}] Request method: ${req.method}`);
+  console.log(`[${env}] Query params:`, req.query);
+  
   if (req.method !== 'GET') {
+    console.log(`[${env}] ❌ Method not allowed: ${req.method}`);
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
@@ -194,8 +200,12 @@ export default async function handler(
     const pageSize = Math.min(Math.max(limit, 1), 100); // Clamp between 1 and 100
     const pageNumber = Math.max(page, 1); // Ensure page >= 1
 
+    console.log(`[${env}] Pagination: page=${pageNumber}, pageSize=${pageSize}`);
+
     // Read projects from appropriate source (always tries blob storage first)
+    console.log(`[${env}] 📖 Reading projects from blob storage...`);
     const allProjects = await readProjects();
+    console.log(`[${env}] ✅ Read ${allProjects.length} projects from source`);
     
     // Apply pagination if requested
     let projects = allProjects;
@@ -212,6 +222,7 @@ export default async function handler(
     
     // Set cache headers
     // Reduced cache time for blob storage to ensure fresh data after cron updates
+    console.log(`[${env}] ✅ Returning ${projects.length} projects (page ${pageNumber} of ${Math.ceil(total / pageSize)})`);
     return res.status(200)
       .setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600')
       .json({
@@ -225,8 +236,11 @@ export default async function handler(
         },
       });
   } catch (error: any) {
-    console.error('Error fetching MongoDB projects:', error);
+    const env = isProduction() ? 'Production' : 'Local';
+    console.error(`[${env}] ❌ Error fetching MongoDB projects:`, error?.message || String(error));
+    console.error(`[${env}] Error stack:`, error?.stack);
     // Always return JSON, even on error (graceful degradation)
+    console.log(`[${env}] ⚠️  Returning empty array due to error`);
     return res.status(200).setHeader('Content-Type', 'application/json').json({
       projects: [],
       pagination: {

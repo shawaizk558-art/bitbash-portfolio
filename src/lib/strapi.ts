@@ -183,6 +183,8 @@ function debugLog(data: any): void {
 }
 
 export async function getMongoProjects(): Promise<(Project & { title?: string; description?: string; readme?: string; [key: string]: any })[]> {
+  const isServer = typeof window === 'undefined';
+  console.log(`[${isServer ? 'SSR' : 'Client'}] 🚀 getMongoProjects() called`);
   // #region agent log
   debugLog({location:'strapi.ts:169',message:'getMongoProjects called',data:{isServer:typeof window==='undefined',isProd:typeof window==='undefined'?Boolean(process.env.VERCEL):false},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A,B,C'});
   // #endregion
@@ -207,121 +209,197 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
       const blobToken = getBlobToken();
       const hasBlobToken = Boolean(process.env.VERCEL || blobToken);
       
+      console.log('[SSR] getMongoProjects - Server-side execution');
+      console.log('[SSR] Environment check:', {
+        isProduction: isProduction(),
+        hasVercelEnv: Boolean(process.env.VERCEL),
+        hasBlobToken: Boolean(blobToken),
+        blobTokenLength: blobToken?.length || 0,
+        blobTokenPrefix: blobToken ? blobToken.substring(0, 20) + '...' : 'none'
+      });
+      
       if (hasBlobToken) {
+        console.log('[SSR] ✅ Blob token available, attempting to read from Blob Storage...');
         try {
           const { list } = await import('@vercel/blob');
+          console.log('[SSR] Successfully imported @vercel/blob');
           
           // Strategy 1: Try list() with prefix
           const listOptions: any = { prefix: 'mongodb-projects.json' };
           if (blobToken) {
             listOptions.token = blobToken;
+            console.log('[SSR] Using explicit blob token for list()');
+          } else {
+            console.log('[SSR] Using VERCEL env (token auto-detected)');
           }
+          
+          console.log('[SSR] Calling list() with prefix: mongodb-projects.json');
           const { blobs } = await list(listOptions);
-          console.log(`[SSR] Found ${blobs.length} blobs with prefix`);
+          console.log(`[SSR] ✅ list() succeeded - Found ${blobs.length} blobs with prefix "mongodb-projects.json"`);
+          
           if (blobs.length > 0) {
-            console.log(`[SSR] Available blobs:`, blobs.map(b => b.pathname).join(', '));
+            console.log(`[SSR] Available blob pathnames:`, blobs.map(b => b.pathname).join(', '));
+          } else {
+            console.log('[SSR] ⚠️  No blobs found with prefix "mongodb-projects.json"');
           }
           
           let blob = blobs.find(b => b.pathname === 'mongodb-projects.json');
+          console.log(`[SSR] Exact match found:`, blob ? `Yes (${blob.pathname})` : 'No');
           
           // If no exact match, try first blob
           if (!blob && blobs.length > 0) {
+            console.log('[SSR] No exact match, trying first blob from results');
             blob = blobs[0];
+            console.log(`[SSR] Using first blob: ${blob.pathname}`);
           }
           
           if (blob && blob.url) {
+            console.log(`[SSR] ✅ Blob found! Fetching from URL: ${blob.url}`);
+            console.log(`[SSR] Blob details:`, {
+              pathname: blob.pathname,
+              url: blob.url,
+              size: blob.size,
+              uploadedAt: blob.uploadedAt
+            });
+            
             debugLog({location:'strapi.ts:180',message:'Fetching from blob URL (SSR)',data:{blobUrl:blob.url,blobPathname:blob.pathname},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'});
             const response = await fetch(blob.url);
+            console.log(`[SSR] Fetch response status: ${response.status} ${response.statusText}`);
+            
             if (response.ok) {
               const content = await response.text();
+              console.log(`[SSR] ✅ Fetched blob content, length: ${content.length} characters`);
               const projects = JSON.parse(content);
+              const projectCount = Array.isArray(projects) ? projects.length : 0;
+              console.log(`[SSR] ✅ Successfully parsed JSON, found ${projectCount} projects`);
+              
               debugLog({location:'strapi.ts:186',message:'SSR blob fetch success (list)',data:{projectCount:Array.isArray(projects)?projects.length:0,source:'blob-storage'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'});
               if (Array.isArray(projects)) {
+                console.log(`[SSR] ✅ Returning ${projects.length} projects from blob storage`);
                 return projects as (Project & { title?: string; description?: string; readme?: string; [key: string]: any })[];
+              } else {
+                console.error('[SSR] ❌ Parsed content is not an array:', typeof projects);
               }
+            } else {
+              console.error(`[SSR] ❌ Fetch failed: ${response.status} ${response.statusText}`);
             }
           } else {
+            console.log('[SSR] ⚠️  No blob found with URL, trying Strategy 2: list all blobs');
             // Strategy 2: Try listing all blobs
             try {
               const listAllOptions: any = {};
               if (blobToken) {
                 listAllOptions.token = blobToken;
               }
+              console.log('[SSR] Attempting to list ALL blobs (no prefix)...');
               const { blobs: allBlobs } = await list(listAllOptions);
-              console.log(`[SSR] Found ${allBlobs.length} total blobs`);
+              console.log(`[SSR] Found ${allBlobs.length} total blobs in storage`);
+              
+              if (allBlobs.length > 0) {
+                console.log(`[SSR] All blob pathnames:`, allBlobs.map(b => b.pathname).join(', '));
+              }
+              
               const matchingBlob = allBlobs.find(b => 
                 b.pathname === 'mongodb-projects.json' || 
                 b.pathname.includes('mongodb-projects.json')
               );
+              
               if (matchingBlob && matchingBlob.url) {
+                console.log(`[SSR] ✅ Found matching blob in full list: ${matchingBlob.pathname}`);
                 const response = await fetch(matchingBlob.url);
                 if (response.ok) {
                   const content = await response.text();
                   const projects = JSON.parse(content);
+                  const projectCount = Array.isArray(projects) ? projects.length : 0;
+                  console.log(`[SSR] ✅ Successfully loaded ${projectCount} projects from full list`);
                   if (Array.isArray(projects)) {
                     return projects as (Project & { title?: string; description?: string; readme?: string; [key: string]: any })[];
                   }
+                } else {
+                  console.error(`[SSR] ❌ Failed to fetch matching blob: ${response.status}`);
                 }
+              } else {
+                console.log('[SSR] ❌ No matching blob found in full list');
               }
             } catch (fullListError: any) {
-              console.error('[SSR] Error listing all blobs:', fullListError.message);
+              console.error('[SSR] ❌ Error listing all blobs:', fullListError.message);
+              console.error('[SSR] Error stack:', fullListError.stack);
             }
           }
         } catch (blobError: any) {
-          console.error('[SSR] Error reading from Blob Storage:', blobError.message);
+          console.error('[SSR] ❌ Error reading from Blob Storage:', blobError.message);
+          console.error('[SSR] Error name:', blobError.name);
           console.error('[SSR] Error stack:', blobError.stack);
           // Continue to fallback if in local development
         }
       } else {
         const allBlobEnvVars = Object.keys(process.env).filter(k => k.includes('BLOB'));
-        console.log('[SSR] No blob token found. Available env vars:', allBlobEnvVars.join(', ') || 'none');
+        console.log('[SSR] ⚠️  No blob token found. Available env vars:', allBlobEnvVars.join(', ') || 'none');
         console.log('[SSR] All env vars with BLOB:', allBlobEnvVars);
       }
       
       // Fallback: In local development, try reading from local file
       if (!isProduction()) {
+        console.log('[SSR] Local development - trying local file fallback');
         const fs = await import('fs/promises');
         const path = await import('path');
         const filePath = path.join(process.cwd(), 'public', 'data', 'mongodb-projects.json');
+        console.log(`[SSR] Attempting to read from: ${filePath}`);
         try {
           const content = await fs.readFile(filePath, 'utf-8');
           const projects = JSON.parse(content);
+          const projectCount = Array.isArray(projects) ? projects.length : 0;
+          console.log(`[SSR] ✅ Local file read success: ${projectCount} projects`);
           // #region agent log
           debugLog({location:'strapi.ts:203',message:'SSR local file read success (fallback)',data:{projectCount:Array.isArray(projects)?projects.length:0,filePath,source:'local-file'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'});
           // #endregion
           if (Array.isArray(projects)) {
             return projects as (Project & { title?: string; description?: string; readme?: string; [key: string]: any })[];
           }
+          console.log('[SSR] ⚠️  Local file content is not an array');
           return [];
         } catch (fileError: any) {
           if (fileError.code === 'ENOENT') {
+            console.log('[SSR] ⚠️  Local file not found (ENOENT)');
             // MongoDB projects file not found, returning empty array
             return [];
           }
+          console.error('[SSR] ❌ Error reading local file:', fileError.message);
           throw fileError;
         }
       }
       
       // Production: If blob storage fails, return empty array (no local file fallback)
+      console.log('[SSR] ⚠️  Production: Blob storage failed, returning empty array (no local file fallback)');
       return [];
     }
     
     // In browser (client-side), fetch from public directory or Blob Storage URL
+    console.log('[Client] getMongoProjects - Client-side execution');
+    console.log('[Client] Environment:', {
+      isDevelopment: isDevelopment(),
+      hostname: typeof window !== 'undefined' ? window.location.hostname : 'N/A'
+    });
+    
     // Check cache first
     const cachedProjects = cache.get<(Project & { title?: string; description?: string; readme?: string; [key: string]: any })[]>(CACHE_KEYS.MONGO_PROJECTS);
+    console.log(`[Client] Cache check: ${cachedProjects ? `Found ${cachedProjects.length} cached projects` : 'No cache'}`);
     // #region agent log
     debugLog({location:'strapi.ts:222',message:'Client-side cache check',data:{hasCache:!!cachedProjects,cacheCount:cachedProjects?.length||0,source:'memory-cache'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'});
     // #endregion
     if (cachedProjects) {
+      console.log(`[Client] ✅ Returning ${cachedProjects.length} projects from cache`);
       return cachedProjects;
     }
 
     // Use request deduplication to prevent concurrent duplicate requests
+    console.log('[Client] No cache, fetching from API route...');
     return requestDeduplicator.getOrCreate(CACHE_KEYS.MONGO_PROJECTS, async () => {
       // Try fetching from API route (handles local vs production automatically)
       try {
         // API route reads from Blob Storage (production) or local file (local)
         const apiUrl = '/api/mongodb-projects';
+        console.log(`[Client] Fetching from API: ${apiUrl}`);
         // #region agent log
         debugLog({location:'strapi.ts:232',message:'Fetching from API route',data:{apiUrl,cacheStrategy:'no-cache'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B,C'});
         // #endregion
@@ -332,6 +410,7 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
         
         // #region agent log
         const contentType = response.headers.get('content-type') || '';
+        console.log(`[Client] API response: ${response.status} ${response.statusText}, Content-Type: ${contentType}`);
         debugLog({location:'strapi.ts:256',message:'API response received',data:{status:response.status,statusText:response.statusText,contentType,isOk:response.ok,url:response.url},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B,C'});
         // #endregion
         
@@ -364,24 +443,35 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
         if (data.projects && Array.isArray(data.projects)) {
           // New paginated format
           projects = data.projects;
+          console.log(`[Client] ✅ Parsed paginated response: ${projects.length} projects`);
         } else if (Array.isArray(data)) {
           // Old format (backward compatibility)
           projects = data;
+          console.log(`[Client] ✅ Parsed array response: ${projects.length} projects`);
         } else {
           projects = [];
+          console.log('[Client] ⚠️  Response is not in expected format (no projects array)');
+          console.log('[Client] Response data keys:', Object.keys(data || {}));
         }
         
         if (Array.isArray(projects)) {
           const typedProjects = projects as (Project & { title?: string; description?: string; readme?: string; [key: string]: any })[];
+          console.log(`[Client] ✅ Successfully loaded ${typedProjects.length} projects from API route`);
           // #region agent log
           debugLog({location:'strapi.ts:255',message:'Caching API response',data:{projectCount:typedProjects.length,ttl:3600000,source:'api-route'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'});
           // #endregion
           // Cache the results (1 hour TTL)
           cache.set(CACHE_KEYS.MONGO_PROJECTS, typedProjects, 3600000);
           return typedProjects;
+        } else {
+          console.log('[Client] ⚠️  Projects is not an array after parsing');
         }
+      } else {
+        console.error(`[Client] ❌ API route returned error: ${response.status} ${response.statusText}`);
       }
       } catch (apiError: any) {
+        console.error('[Client] ❌ API route error:', apiError.message);
+        console.error('[Client] Error name:', apiError.name);
         // #region agent log
         debugLog({location:'strapi.ts:300',message:'API route error - falling back',data:{error:apiError?.message||'Unknown error',errorName:apiError?.name},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B,C'});
         // #endregion
@@ -392,6 +482,7 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
       // Fallback: Fetch from public directory (local file) - ONLY in development
       // In production, if blob storage is empty, return empty array (no file fallback)
       if (isDevelopment()) {
+        console.log('[Client] Development mode - trying public file fallback');
         // #region agent log
         debugLog({location:'strapi.ts:264',message:'Fallback to public file',data:{url:'/data/mongodb-projects.json',cacheStrategy:'force-cache'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'});
         // #endregion
@@ -400,18 +491,23 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
           cache: 'force-cache',
         });
 
+        console.log(`[Client] Public file fetch response: ${response.status} ${response.statusText}`);
         if (!response.ok) {
           // #region agent log
           debugLog({location:'strapi.ts:271',message:'Public file fetch failed',data:{status:response.status,statusText:response.statusText},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'});
           // #endregion
           // File doesn't exist yet or error - return empty array
           if (response.status === 404) {
+            console.log('[Client] ⚠️  Public file not found (404), returning empty array');
             return [];
           }
+          console.error(`[Client] ❌ Public file fetch failed: ${response.statusText}`);
           throw new Error(`Failed to fetch MongoDB projects: ${response.statusText}`);
         }
 
         const projects = await response.json();
+        const projectCount = Array.isArray(projects) ? projects.length : 0;
+        console.log(`[Client] ✅ Public file fetch success: ${projectCount} projects`);
         // #region agent log
         debugLog({location:'strapi.ts:277',message:'Public file fetch success',data:{projectCount:Array.isArray(projects)?projects.length:0,source:'public-file'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'});
         // #endregion
@@ -419,6 +515,7 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
         // Validate and return projects with all fields preserved
         if (Array.isArray(projects)) {
           const typedProjects = projects as (Project & { title?: string; description?: string; readme?: string; [key: string]: any })[];
+          console.log(`[Client] ✅ Returning ${typedProjects.length} projects from public file`);
           // #region agent log
           debugLog({location:'strapi.ts:283',message:'Caching public file response',data:{projectCount:typedProjects.length,ttl:3600000,source:'public-file'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'});
           // #endregion
@@ -427,14 +524,18 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
           return typedProjects;
         }
         
+        console.log('[Client] ⚠️  Public file content is not an array');
         return [];
       }
       
       // In production, if API route failed and blob storage is empty, return empty array
+      console.log('[Client] ⚠️  Production: API route failed, returning empty array (no file fallback)');
       return [];
     });
-  } catch (error) {
-    // Silently handle error
+  } catch (error: any) {
+    // Log error but return empty array (graceful degradation)
+    console.error('[Client] ❌ getMongoProjects error:', error?.message || String(error));
+    console.error('[Client] Error stack:', error?.stack);
     // Return empty array on error (graceful degradation)
     return [];
   }
