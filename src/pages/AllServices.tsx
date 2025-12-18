@@ -73,27 +73,31 @@ const AllServices = () => {
         </div>
       </section>
 
-      <section className="py-8 sm:py-10 md:py-12 bg-white">
+      <section className="py-12 sm:py-16 md:py-20 bg-gradient-to-b from-gray-50 to-white">
         <div className="container-responsive">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {services.map((service) => (
               <Card
                 key={service.title}
-                className="p-0 hover:shadow-lg transition-shadow hover-mobile h-full flex flex-col overflow-hidden"
+                className="group p-6 sm:p-8 hover:shadow-xl transition-all duration-300 hover-mobile h-full flex flex-col overflow-hidden border border-gray-200 bg-white hover:border-purple-200"
               >
-                <Link to={service.href} className="block h-full p-7 sm:p-8">
-                  <div className="flex items-start gap-4 mb-5">
-                    <service.icon className="w-11 h-11 text-purple-600" />
-                    <div>
-                      <h3 className="text-2xl font-bold text-gray-900">{service.title}</h3>
-                      <p className="text-base text-gray-600 mt-1">{service.description}</p>
+                <Link to={service.href} className="block h-full flex flex-col">
+                  <div className="mb-6">
+                    <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br from-purple-100 to-purple-50 mb-4 group-hover:from-purple-200 group-hover:to-purple-100 transition-colors">
+                      <service.icon className="w-7 h-7 text-purple-600" />
                     </div>
+                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 group-hover:text-purple-600 transition-colors">
+                      {service.title}
+                    </h3>
+                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
+                      {service.description}
+                    </p>
                   </div>
-                  <div className="space-y-2.5 mt-auto">
+                  <div className="space-y-2.5 mt-auto pt-4 border-t border-gray-100">
                     {service.features.map((feature) => (
-                      <div key={feature} className="flex items-start gap-2 text-base text-gray-700">
-                        <span className="text-purple-600 leading-none pt-1 inline-block">•</span>
-                        <span>{feature}</span>
+                      <div key={feature} className="flex items-center gap-2.5 text-sm sm:text-base text-gray-700">
+                        <div className="w-1.5 h-1.5 rounded-full bg-purple-600 flex-shrink-0"></div>
+                        <span className="leading-relaxed">{feature}</span>
                       </div>
                     ))}
                   </div>
@@ -101,29 +105,35 @@ const AllServices = () => {
               </Card>
             ))}
             <Card
-              className="p-7 sm:p-8 border border-purple-100 bg-gradient-to-br from-purple-100 via-white to-white hover:shadow-lg transition-shadow hover-mobile flex flex-col gap-5 h-full"
+              className="p-6 sm:p-8 border-2 border-purple-200 bg-gradient-to-br from-purple-50 via-white to-purple-50/50 hover:shadow-xl transition-all duration-300 hover-mobile flex flex-col gap-6 h-full hover:border-purple-300"
             >
-              <div className="space-y-3">
-                <h3 className="text-2xl font-bold text-gray-900">Start Today</h3>
-                <p className="text-base text-gray-700">
-                  Tell us what you want to build or automate. We’ll scope it fast and get your project moving.
-                </p>
-                <ul className="space-y-2 text-base text-gray-700">
-                  <li className="flex items-start gap-2 text-base text-gray-700">
-                    <Clock className="w-4.5 h-4.5 text-purple-600 mt-0.5" />
-                    <span>Get a scoped plan in 24 hours</span>
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Start Today</h3>
+                  <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
+                    Tell us what you want to build or automate. We'll scope it fast and get your project moving.
+                  </p>
+                </div>
+                <ul className="space-y-3 pt-2">
+                  <li className="flex items-start gap-3 text-sm sm:text-base text-gray-700">
+                    <div className="w-5 h-5 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Clock className="w-3.5 h-3.5 text-purple-600" />
+                    </div>
+                    <span className="leading-relaxed">Get a scoped plan in 24 hours</span>
                   </li>
-                  <li className="flex items-start gap-2 text-base text-gray-700">
-                    <Users className="w-4.5 h-4.5 text-purple-600 mt-0.5" />
-                    <span>Dedicated PM + engineers on day one</span>
+                  <li className="flex items-start gap-3 text-sm sm:text-base text-gray-700">
+                    <div className="w-5 h-5 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Users className="w-3.5 h-3.5 text-purple-600" />
+                    </div>
+                    <span className="leading-relaxed">Dedicated PM + engineers on day one</span>
                   </li>
                 </ul>
               </div>
-              <div className="mt-auto">
-                <Link to="/contact" className="inline-block">
+              <div className="mt-auto pt-4">
+                <Link to="/contact" className="inline-block w-full">
                   <ContactButton
                     label="Contact us"
-                    fullWidth={false}
+                    fullWidth={true}
                   />
                 </Link>
               </div>
