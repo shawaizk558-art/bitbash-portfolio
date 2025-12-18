@@ -503,12 +503,20 @@ async function writeProjects(projects: MongoProject[]): Promise<void> {
   if (isProduction()) {
     // Production: Write to Vercel Blob Storage only
     try {
-      await put(BLOB_FILE_NAME, jsonContent, {
+      const blob = await put(BLOB_FILE_NAME, jsonContent, {
         access: 'public',
         contentType: 'application/json',
         addRandomSuffix: false,
       });
       console.log(`✅ [Production] Uploaded ${projects.length} projects to Vercel Blob Storage`);
+      console.log(`   Blob URL: ${blob.url}`);
+      console.log(`   Blob pathname: ${blob.pathname}`);
+      console.log(`   Expected pathname: ${BLOB_FILE_NAME}`);
+      
+      // Verify the pathname matches
+      if (blob.pathname !== BLOB_FILE_NAME) {
+        console.warn(`⚠️  [Production] Pathname mismatch! Expected: "${BLOB_FILE_NAME}", Got: "${blob.pathname}"`);
+      }
     } catch (blobError: any) {
       console.error('❌ [Production] Error writing to Blob Storage:', blobError.message);
       throw blobError; // Re-throw in production since this is critical

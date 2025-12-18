@@ -41,13 +41,23 @@ async function readProjects(): Promise<any[]> {
   if (isProduction()) {
     // Production: Read from Vercel Blob Storage only
     try {
+      // Try to list blobs with the exact filename
       const { blobs } = await list({ prefix: BLOB_FILE_NAME });
-      const blob = blobs.find(b => b.pathname === BLOB_FILE_NAME);
+      
+      // Try to find exact match first
+      let blob = blobs.find(b => b.pathname === BLOB_FILE_NAME);
+      
+      // If no exact match, try to find any blob that contains the filename
+      if (!blob && blobs.length > 0) {
+        blob = blobs[0]; // Use first blob if exact match not found
+      }
       
       if (blob && blob.url) {
         const response = await fetch(blob.url, {
-          cache: 'force-cache',
+          // Don't cache the fetch to get fresh data
+          cache: 'no-store',
         });
+        
         if (response.ok) {
           const content = await response.text();
           return JSON.parse(content);
@@ -96,9 +106,10 @@ export default async function handler(
       : null;
     
     if (project) {
-      // Set cache headers (1 hour cache for production, revalidate)
+      // Set cache headers
+      // Reduced cache time for blob storage to ensure fresh data after cron updates
       return res.status(200)
-        .setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400')
+        .setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600')
         .json(project);
     }
     

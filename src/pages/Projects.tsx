@@ -89,13 +89,25 @@ const Projects = () => {
 
   useEffect(() => {
     async function fetchDynamicProjects() {
+      console.log('[Projects] Starting to fetch MongoDB projects...');
       try {
         const mongoProjectsData = await getMongoProjects();
+        console.log('[Projects] ✅ Fetched MongoDB projects:', {
+          count: mongoProjectsData.length,
+          projects: mongoProjectsData.slice(0, 3).map(p => ({
+            slug: p.slug,
+            name: p.name,
+            title: (p as any).title,
+            sourceDatabase: (p as any).sourceDatabase,
+          })),
+        });
         setMongoProjects(mongoProjectsData);
       } catch (error) {
+        console.error('[Projects] ❌ Error fetching MongoDB projects:', error);
         setMongoProjects([]);
       } finally {
         setIsLoading(false);
+        console.log('[Projects] Finished loading, isLoading set to false');
       }
     }
 
@@ -105,6 +117,11 @@ const Projects = () => {
   // OPTIMIZED: Memoize expensive project processing operations
   // Filter out Telegram Weather Alert Bot and reorder projects (swap 2nd and 3rd for homepage consistency)
   const { filteredHardcodedProjects, reorderedHardcodedProjects, hardcodedSlugs, filteredMongoProjects, allProjects } = useMemo(() => {
+    console.log('[Projects] Processing projects...', {
+      hardcodedCount: hardcodedProjects.length,
+      mongoCount: mongoProjects.length,
+    });
+
     const filtered = hardcodedProjects.filter(
       project => project.slug !== 'telegram-weather-alert-bot'
     );
@@ -121,10 +138,24 @@ const Projects = () => {
       project => !slugs.has(project.slug)
     );
     
+    console.log('[Projects] Project filtering results:', {
+      hardcodedAfterFilter: filtered.length,
+      hardcodedAfterReorder: reordered.length,
+      mongoAfterDeduplication: filteredMongo.length,
+      duplicateSlugs: mongoProjects.length - filteredMongo.length,
+    });
+    
     const all = [
       ...reordered, 
       ...filteredMongo
     ];
+
+    console.log('[Projects] ✅ Final project counts:', {
+      total: all.length,
+      hardcoded: reordered.length,
+      mongo: filteredMongo.length,
+      sampleMongoSlugs: filteredMongo.slice(0, 5).map(p => p.slug),
+    });
 
     return {
       filteredHardcodedProjects: filtered,
