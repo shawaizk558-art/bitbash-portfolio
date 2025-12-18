@@ -152,24 +152,26 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
 /**
  * Get all projects from MongoDB (synced via cron job)
  * 
- * Reads from public/data/mongodb-projects.json which is generated
- * daily by the Vercel cron job.
+ * - Production: Reads from Vercel Blob Storage (via API route or direct blob access)
+ * - Local: Reads from public/data/mongodb-projects.json (via API route or direct file access)
  * 
  * Returns projects with all MongoDB fields preserved (title, description, readme, etc.)
  * 
  * @returns Promise<Project[]>
  */
+/**
+ * Check if we're running in production (Vercel)
+ */
+function isProduction(): boolean {
+  return Boolean(process.env.VERCEL);
+}
+
 export async function getMongoProjects(): Promise<(Project & { title?: string; description?: string; readme?: string; [key: string]: any })[]> {
   try {
-    // In Node.js (server-side), try Vercel Blob Storage first, then local file
+    // In Node.js (server-side), read from appropriate source based on environment
     if (typeof window === 'undefined') {
-      // Try Vercel Blob Storage (production)
-      // Check for any BLOB_READ_WRITE_TOKEN variant (Vercel may name it differently)
-      const hasBlobToken = process.env.VERCEL || 
-        process.env.BLOB_READ_WRITE_TOKEN || 
-        Object.keys(process.env).some(key => key.includes('BLOB') && key.includes('READ_WRITE_TOKEN'));
-      
-      if (hasBlobToken) {
+      if (isProduction()) {
+        // Production: Read from Vercel Blob Storage only
         try {
           const { list } = await import('@vercel/blob');
           const { blobs } = await list({ prefix: 'mongodb-projects.json' });
@@ -186,29 +188,31 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
               }
             }
           }
+          // Blob doesn't exist yet (first run)
+          return [];
         } catch (blobError: any) {
-          // Blob doesn't exist or error - fall back to local file
-          // Silently fallback to local file
-        }
-      }
-      
-      // Fallback: Read from local file (for local development)
-      const fs = await import('fs/promises');
-      const path = await import('path');
-      const filePath = path.join(process.cwd(), 'public', 'data', 'mongodb-projects.json');
-      try {
-        const content = await fs.readFile(filePath, 'utf-8');
-        const projects = JSON.parse(content);
-        if (Array.isArray(projects)) {
-          return projects as (Project & { title?: string; description?: string; readme?: string; [key: string]: any })[];
-        }
-        return [];
-      } catch (fileError: any) {
-        if (fileError.code === 'ENOENT') {
-          // MongoDB projects file not found, returning empty array
+          console.error('[Production] Error reading from Blob Storage:', blobError.message);
           return [];
         }
-        throw fileError;
+      } else {
+        // Local: Read from local file only
+        const fs = await import('fs/promises');
+        const path = await import('path');
+        const filePath = path.join(process.cwd(), 'public', 'data', 'mongodb-projects.json');
+        try {
+          const content = await fs.readFile(filePath, 'utf-8');
+          const projects = JSON.parse(content);
+          if (Array.isArray(projects)) {
+            return projects as (Project & { title?: string; description?: string; readme?: string; [key: string]: any })[];
+          }
+          return [];
+        } catch (fileError: any) {
+          if (fileError.code === 'ENOENT') {
+            // MongoDB projects file not found, returning empty array
+            return [];
+          }
+          throw fileError;
+        }
       }
     }
     
@@ -221,9 +225,9 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
 
     // Use request deduplication to prevent concurrent duplicate requests
     return requestDeduplicator.getOrCreate(CACHE_KEYS.MONGO_PROJECTS, async () => {
-      // First try to get the blob URL from an API route, or fallback to local file
+      // Try fetching from API route (handles local vs production automatically)
       try {
-        // Try fetching from API route that serves from Blob Storage
+        // API route reads from Blob Storage (production) or local file (local)
         const apiUrl = '/api/mongodb-projects';
         const response = await fetch(apiUrl, {
           // OPTIMIZED: Use force-cache with revalidation instead of no-store

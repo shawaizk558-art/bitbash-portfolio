@@ -2,10 +2,13 @@
  * Vercel Cron Job: Sync MongoDB Projects
  * 
  * This API route runs daily via Vercel cron to:
- * 1. Fetch projects from MongoDB dataToExport collection
- * 2. Transform them to Project interface format
- * 3. Check for duplicates using MongoDB id field
- * 4. Save to public/data/mongodb-projects.json
+ * 1. Fetch projects from multiple MongoDB databases (github_automation, github_automation_UTP)
+ * 2. Both databases use the same collection: dataToExport
+ * 3. Fetch from all databases in parallel for maximum speed
+ * 4. Handle duplicates by preferring github_automation over github_automation_UTP
+ * 5. Transform them to Project interface format with sourceDatabase tracking
+ * 6. Check for duplicates using MongoDB id field
+ * 7. Save to public/data/mongodb-projects.json
  */
 
 import { promises as fs } from 'fs';
@@ -50,9 +53,12 @@ interface Project {
   developer?: string;
 }
 
+// Target databases configuration
+const TARGET_DATABASES = ['github_automation', 'github_automation_UTP'];
+const COLLECTION_NAME = 'dataToExport';
+
 // MongoDB utilities (inline to avoid import issues in serverless)
 let client: MongoClient | null = null;
-let db: Db | null = null;
 
 async function getMongoClient(): Promise<MongoClient> {
   if (client) {
@@ -64,7 +70,6 @@ async function getMongoClient(): Promise<MongoClient> {
       // Connection is dead, reset it
       console.log('⚠️  Existing MongoDB connection is dead, creating new one...');
       client = null;
-      db = null;
     }
   }
   const uri = process.env.MONGODB_URI;
@@ -98,16 +103,10 @@ async function getMongoClient(): Promise<MongoClient> {
   return client;
 }
 
-async function getDatabase(): Promise<Db> {
-  if (db) {
-    return db;
-  }
-  const mongoClient = await getMongoClient();
-  db = mongoClient.db('github_automation');
-  return db;
-}
-
-async function fetchMongoProjects(): Promise<any[]> {
+/**
+ * Fetch documents from a specific database
+ */
+async function fetchFromDatabase(dbName: string): Promise<{ documents: any[]; count: number }> {
   const maxRetries = 3;
   let lastError: any;
   
@@ -115,22 +114,29 @@ async function fetchMongoProjects(): Promise<any[]> {
     try {
       // Reset connection on retry to get a fresh connection
       if (attempt > 1) {
-        console.log(`🔄 Retry attempt ${attempt}/${maxRetries}...`);
+        console.log(`   [${dbName}] 🔄 Retry attempt ${attempt}/${maxRetries}...`);
         await closeMongoConnection();
         // Wait a bit before retrying
         await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
       }
       
-      const database = await getDatabase();
-      const collection: Collection = database.collection('dataToExport');
+      const mongoClient = await getMongoClient();
+      const database = mongoClient.db(dbName);
+      const collection: Collection = database.collection(COLLECTION_NAME);
+      
+      console.log(`   [${dbName}] 📥 Fetching documents from ${COLLECTION_NAME} collection...`);
+      const startTime = Date.now();
       
       // Fetch all documents - no timeout, let it take as long as needed
-      // The socket timeout is set to 0 (unlimited) in connection options
       const documents = await collection.find({}).toArray();
-      return documents;
+      
+      const duration = Date.now() - startTime;
+      console.log(`   [${dbName}] ✅ Fetched ${documents.length} documents in ${duration}ms`);
+      
+      return { documents, count: documents.length };
     } catch (error: any) {
       lastError = error;
-      console.error(`Error fetching MongoDB projects (attempt ${attempt}/${maxRetries}):`, error.message);
+      console.error(`   [${dbName}] ❌ Error fetching (attempt ${attempt}/${maxRetries}):`, error.message);
       
       // If it's a network error and we have retries left, continue
       if (attempt < maxRetries && (
@@ -150,11 +156,105 @@ async function fetchMongoProjects(): Promise<any[]> {
   throw lastError;
 }
 
+/**
+ * Fetch documents from all target databases in parallel
+ */
+async function fetchMongoProjects(): Promise<Array<{ doc: any; sourceDatabase: string }>> {
+  console.log(`\n📊 Fetching from ${TARGET_DATABASES.length} databases in parallel...`);
+  const startTime = Date.now();
+  
+  try {
+    // Fetch from all databases in parallel for maximum speed
+    const fetchPromises = TARGET_DATABASES.map(async (dbName) => {
+      try {
+        const result = await fetchFromDatabase(dbName);
+        return {
+          dbName,
+          documents: result.documents,
+          success: true,
+          count: result.count,
+        };
+      } catch (error: any) {
+        console.error(`   [${dbName}] ❌ Failed to fetch:`, error.message);
+        return {
+          dbName,
+          documents: [],
+          success: false,
+          count: 0,
+          error: error.message,
+        };
+      }
+    });
+    
+    const results = await Promise.all(fetchPromises);
+    
+    const totalDuration = Date.now() - startTime;
+    let totalDocuments = 0;
+    let successCount = 0;
+    
+    // Process results and add source database tracking
+    const allDocuments: Array<{ doc: any; sourceDatabase: string }> = [];
+    const seenIds = new Set<string>(); // Track duplicates across databases
+    
+    for (const result of results) {
+      if (result.success) {
+        successCount++;
+        totalDocuments += result.count;
+        console.log(`   [${result.dbName}] ✅ Success: ${result.count} documents`);
+        
+        // Add documents with source tracking, handling duplicates
+        for (const doc of result.documents) {
+          const docId = doc.id;
+          
+          // If duplicate ID exists, prefer github_automation over github_automation_UTP
+          if (docId && seenIds.has(docId)) {
+            // Check if we already have this from a preferred database
+            const existingDoc = allDocuments.find(d => d.doc.id === docId);
+            if (existingDoc) {
+              // If existing is from github_automation, skip this one
+              if (existingDoc.sourceDatabase === 'github_automation' && result.dbName === 'github_automation_UTP') {
+                console.log(`   [${result.dbName}] ⏭️  Skipped duplicate ID: ${docId} (preferring github_automation)`);
+                continue;
+              }
+              // If existing is from UTP and current is from github_automation, replace it
+              if (existingDoc.sourceDatabase === 'github_automation_UTP' && result.dbName === 'github_automation') {
+                const index = allDocuments.findIndex(d => d.doc.id === docId);
+                if (index !== -1) {
+                  allDocuments[index] = { doc, sourceDatabase: result.dbName };
+                  console.log(`   [${result.dbName}] 🔄 Replaced duplicate ID: ${docId} (preferring github_automation)`);
+                  continue;
+                }
+              }
+            }
+          }
+          
+          if (docId) {
+            seenIds.add(docId);
+          }
+          allDocuments.push({ doc, sourceDatabase: result.dbName });
+        }
+      } else {
+        console.error(`   [${result.dbName}] ❌ Failed: ${result.error}`);
+      }
+    }
+    
+    console.log(`\n📈 Fetch Summary:`);
+    console.log(`   Databases: ${successCount}/${TARGET_DATABASES.length} successful`);
+    console.log(`   Total documents: ${totalDocuments}`);
+    console.log(`   After deduplication: ${allDocuments.length}`);
+    console.log(`   Duration: ${totalDuration}ms\n`);
+    
+    return allDocuments;
+  } catch (error: any) {
+    console.error(`\n❌ Error fetching from databases:`, error);
+    throw error;
+  }
+}
+
 async function closeMongoConnection(): Promise<void> {
   if (client) {
     await client.close();
     client = null;
-    db = null;
   }
 }
 
@@ -245,7 +345,7 @@ function getVideoPlaceholder(category?: string, index: number = 0): Project['vid
   return colors[index % colors.length];
 }
 
-function transformMongoDocument(doc: any, index: number = 0): MongoProject {
+function transformMongoDocument(doc: any, sourceDatabase: string, index: number = 0): MongoProject {
   const title = doc.title || '';
   const description = doc.description || '';
   const readme = doc.readme || '';
@@ -280,6 +380,8 @@ function transformMongoDocument(doc: any, index: number = 0): MongoProject {
     rating,
     // Store MongoDB id for uniqueness tracking
     mongoId: doc.id,
+    // Track source database
+    sourceDatabase,
   };
 
   // Preserve all original MongoDB fields
@@ -319,6 +421,7 @@ function transformMongoDocument(doc: any, index: number = 0): MongoProject {
 // Extended Project type with MongoDB id and all original fields
 interface MongoProject extends Project {
   mongoId?: string;
+  sourceDatabase?: string; // Track which database this project came from
   // Preserve all original MongoDB fields
   _id?: any;
   campaignId?: string;
@@ -331,18 +434,21 @@ const BLOB_FILE_NAME = 'mongodb-projects.json';
 const PROJECTS_FILE_PATH = path.join(process.cwd(), 'public', 'data', 'mongodb-projects.json');
 
 /**
- * Read existing MongoDB projects from Vercel Blob Storage
- * Falls back to local file for local development
+ * Check if we're running in production (Vercel)
+ */
+function isProduction(): boolean {
+  return Boolean(process.env.VERCEL);
+}
+
+/**
+ * Read existing MongoDB projects
+ * - Production: Read from Vercel Blob Storage
+ * - Local: Read from local JSON file
  */
 async function readExistingProjects(): Promise<MongoProject[]> {
   try {
-    // Try Vercel Blob Storage first (production)
-    // Check for any BLOB_READ_WRITE_TOKEN variant (Vercel may name it differently)
-    const hasBlobToken = process.env.VERCEL || 
-      process.env.BLOB_READ_WRITE_TOKEN || 
-      Object.keys(process.env).some(key => key.includes('BLOB') && key.includes('READ_WRITE_TOKEN'));
-    
-    if (hasBlobToken) {
+    if (isProduction()) {
+      // Production: Read from Vercel Blob Storage only
       try {
         // List blobs and find the one we need
         const { blobs } = await list({ prefix: BLOB_FILE_NAME });
@@ -354,28 +460,31 @@ async function readExistingProjects(): Promise<MongoProject[]> {
           if (response.ok) {
             const content = await response.text();
             const projects = JSON.parse(content);
-            console.log(`📥 Read ${projects.length} projects from Vercel Blob Storage`);
+            console.log(`📥 [Production] Read ${projects.length} projects from Vercel Blob Storage`);
             return Array.isArray(projects) ? projects : [];
           }
         }
+        // Blob doesn't exist yet (first run)
+        console.log('📄 [Production] No existing blob found (this is normal for first run)');
+        return [];
       } catch (blobError: any) {
-        // Blob doesn't exist yet (first run) - continue to local file fallback
-        console.log('⚠️  Blob not found or error reading from Blob Storage, trying local file');
-      }
-    }
-    
-    // Fallback: Read from local file (for local development)
-    try {
-      const fileContent = await fs.readFile(PROJECTS_FILE_PATH, 'utf-8');
-      const projects = JSON.parse(fileContent);
-      console.log(`📥 Read ${projects.length} projects from local file`);
-      return Array.isArray(projects) ? projects : [];
-    } catch (fileError: any) {
-      if (fileError.code === 'ENOENT') {
-        console.log('📄 No existing projects file found (this is normal for first run)');
+        console.error('❌ [Production] Error reading from Blob Storage:', blobError.message);
         return [];
       }
-      throw fileError;
+    } else {
+      // Local: Read from local file only
+      try {
+        const fileContent = await fs.readFile(PROJECTS_FILE_PATH, 'utf-8');
+        const projects = JSON.parse(fileContent);
+        console.log(`📥 [Local] Read ${projects.length} projects from local file: ${PROJECTS_FILE_PATH}`);
+        return Array.isArray(projects) ? projects : [];
+      } catch (fileError: any) {
+        if (fileError.code === 'ENOENT') {
+          console.log('📄 [Local] No existing projects file found (this is normal for first run)');
+          return [];
+        }
+        throw fileError;
+      }
     }
   } catch (error: any) {
     console.error('Error reading existing projects:', error);
@@ -384,41 +493,37 @@ async function readExistingProjects(): Promise<MongoProject[]> {
 }
 
 /**
- * Write projects to Vercel Blob Storage
- * Also writes to local file for local development
+ * Write projects
+ * - Production: Write to Vercel Blob Storage only
+ * - Local: Write to local JSON file only
  */
 async function writeProjects(projects: MongoProject[]): Promise<void> {
   const jsonContent = JSON.stringify(projects, null, 2);
   
-  // Write to Vercel Blob Storage (production)
-  // Check for any BLOB_READ_WRITE_TOKEN variant
-  const hasBlobToken = process.env.VERCEL || 
-    process.env.BLOB_READ_WRITE_TOKEN || 
-    Object.keys(process.env).some(key => key.includes('BLOB') && key.includes('READ_WRITE_TOKEN'));
-  
-  if (hasBlobToken) {
+  if (isProduction()) {
+    // Production: Write to Vercel Blob Storage only
     try {
       await put(BLOB_FILE_NAME, jsonContent, {
         access: 'public',
         contentType: 'application/json',
         addRandomSuffix: false,
       });
-      console.log(`✅ Uploaded ${projects.length} projects to Vercel Blob Storage`);
-    } catch (blobError) {
-      console.error('⚠️  Error writing to Blob Storage:', blobError);
-      // Continue to local file write as fallback
+      console.log(`✅ [Production] Uploaded ${projects.length} projects to Vercel Blob Storage`);
+    } catch (blobError: any) {
+      console.error('❌ [Production] Error writing to Blob Storage:', blobError.message);
+      throw blobError; // Re-throw in production since this is critical
     }
-  }
-  
-  // Also write to local file (for local development and backup)
-  try {
-    const dir = path.dirname(PROJECTS_FILE_PATH);
-    await fs.mkdir(dir, { recursive: true });
-    await fs.writeFile(PROJECTS_FILE_PATH, jsonContent, 'utf-8');
-    console.log(`✅ Written ${projects.length} projects to local file: ${PROJECTS_FILE_PATH}`);
-  } catch (fileError) {
-    // Local file write is optional (for development only)
-    console.log('⚠️  Could not write to local file (this is OK in production):', fileError);
+  } else {
+    // Local: Write to local file only
+    try {
+      const dir = path.dirname(PROJECTS_FILE_PATH);
+      await fs.mkdir(dir, { recursive: true });
+      await fs.writeFile(PROJECTS_FILE_PATH, jsonContent, 'utf-8');
+      console.log(`✅ [Local] Written ${projects.length} projects to local file: ${PROJECTS_FILE_PATH}`);
+    } catch (fileError: any) {
+      console.error('❌ [Local] Error writing to local file:', fileError.message);
+      throw fileError; // Re-throw in local since this is critical
+    }
   }
 }
 
@@ -449,41 +554,64 @@ export default async function handler(
 
     console.log(`Found ${existingProjects.length} existing projects`);
 
-    // Fetch all documents from MongoDB
-    const mongoDocuments = await fetchMongoProjects();
-    console.log(`Fetched ${mongoDocuments.length} documents from MongoDB`);
+    // Fetch all documents from MongoDB (both databases)
+    const mongoDocumentsWithSource = await fetchMongoProjects();
+    console.log(`Fetched ${mongoDocumentsWithSource.length} documents from MongoDB (after deduplication)`);
 
     // OPTIMIZED: Transform and filter new documents in batches for parallel processing
     const newProjects: MongoProject[] = [];
     let skippedCount = 0;
+    
+    // Track stats per database
+    const dbStats: Record<string, { total: number; new: number; skipped: number }> = {};
+    TARGET_DATABASES.forEach(db => {
+      dbStats[db] = { total: 0, new: 0, skipped: 0 };
+    });
 
     // Filter out documents that are already processed first (more efficient)
-    const documentsToProcess = mongoDocuments.filter((doc, i) => {
-      const mongoId = doc.id;
+    const documentsToProcess = mongoDocumentsWithSource.filter((item) => {
+      const mongoId = item.doc.id;
+      const dbName = item.sourceDatabase;
+      
+      // Update stats
+      if (dbStats[dbName]) {
+        dbStats[dbName].total++;
+      }
+      
       if (mongoId && existingIds.has(mongoId)) {
         skippedCount++;
+        if (dbStats[dbName]) {
+          dbStats[dbName].skipped++;
+        }
         return false;
       }
       return true;
     });
 
-    console.log(`Processing ${documentsToProcess.length} new documents (skipped ${skippedCount} duplicates)`);
+    console.log(`\n🔄 Processing ${documentsToProcess.length} new documents (skipped ${skippedCount} duplicates)`);
+    console.log(`   Per database breakdown:`);
+    TARGET_DATABASES.forEach(db => {
+      const stats = dbStats[db];
+      console.log(`   [${db}]: ${stats.total} total, ${stats.total - stats.skipped} new, ${stats.skipped} skipped`);
+    });
 
     // Process documents in batches of 15 for parallel execution
     const BATCH_SIZE = 15;
+    const processStartTime = Date.now();
+    
     for (let i = 0; i < documentsToProcess.length; i += BATCH_SIZE) {
       const batch = documentsToProcess.slice(i, i + BATCH_SIZE);
       
       // Process batch in parallel
       const batchResults = await Promise.all(
-        batch.map(async (doc, batchIndex) => {
+        batch.map(async (item, batchIndex) => {
           try {
             const globalIndex = i + batchIndex;
-            const transformed = transformMongoDocument(doc, globalIndex);
+            const transformed = transformMongoDocument(item.doc, item.sourceDatabase, globalIndex);
             return { success: true, project: transformed };
           } catch (error) {
-            const mongoId = doc.id || 'unknown';
-            console.warn(`Error transforming document ${mongoId}:`, error);
+            const mongoId = item.doc.id || 'unknown';
+            console.warn(`   ⚠️  Error transforming document ${mongoId} from ${item.sourceDatabase}:`, error);
             return { success: false, project: null };
           }
         })
@@ -493,16 +621,26 @@ export default async function handler(
       for (const result of batchResults) {
         if (result.success && result.project) {
           newProjects.push(result.project);
+          const dbName = result.project.sourceDatabase || 'unknown';
+          if (dbStats[dbName]) {
+            dbStats[dbName].new++;
+          }
         }
       }
 
       // Log progress for large batches
       if (documentsToProcess.length > 50 && (i + BATCH_SIZE) % 50 === 0) {
-        console.log(`Processed ${Math.min(i + BATCH_SIZE, documentsToProcess.length)}/${documentsToProcess.length} documents...`);
+        console.log(`   ⏳ Processed ${Math.min(i + BATCH_SIZE, documentsToProcess.length)}/${documentsToProcess.length} documents...`);
       }
     }
-
-    console.log(`Found ${newProjects.length} new projects, skipped ${skippedCount} duplicates`);
+    
+    const processDuration = Date.now() - processStartTime;
+    console.log(`\n✅ Transformation complete in ${processDuration}ms`);
+    console.log(`   Found ${newProjects.length} new projects, skipped ${skippedCount} duplicates`);
+    console.log(`   Per database new projects:`);
+    TARGET_DATABASES.forEach(db => {
+      console.log(`   [${db}]: ${dbStats[db].new} new projects`);
+    });
 
     // Merge with existing projects
     const allProjects = [...existingProjects, ...newProjects];
@@ -530,6 +668,12 @@ export default async function handler(
     // Close MongoDB connection
     await closeMongoConnection();
 
+    // Calculate per-database stats for response
+    const perDatabaseStats: Record<string, number> = {};
+    TARGET_DATABASES.forEach(db => {
+      perDatabaseStats[db] = finalProjects.filter(p => p.sourceDatabase === db).length;
+    });
+
     return res.status(200).json({
       success: true,
       message: 'MongoDB projects synced successfully',
@@ -538,6 +682,7 @@ export default async function handler(
         existing: existingProjects.length,
         new: newProjects.length,
         skipped: skippedCount,
+        perDatabase: perDatabaseStats,
       },
     });
   } catch (error: any) {
