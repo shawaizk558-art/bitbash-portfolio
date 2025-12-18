@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import type { Project } from '@/data/projects';
 import { detectProjectLogo } from '@/lib/dynamicLogos';
 import { formatName } from '@/lib/utils';
-import { Star, Users, Zap, Database, Bot, Cog, Settings, Workflow, FileSearch, Network, Download, FileCode } from 'lucide-react';
+import { Star, Users, Zap, Database, Sparkles, Rocket, Brain, Cpu, Code2, Globe, Network, Layers, Boxes, CircuitBoard, Atom } from 'lucide-react';
 import { useMemo, useState, memo } from 'react';
 
 interface ProjectCardProps {
@@ -60,25 +60,28 @@ function getInitials(name: string): string {
 }
 
 /**
- * Fallback automation icons (for category-based fallback)
+ * Fallback automation icons (for category-based fallback) - All purple with cool icons
  */
 const AUTOMATION_FALLBACK_ICONS = [
+  { component: Sparkles, color: '#9333ea', name: 'Sparkles' }, // Purple
+  { component: Rocket, color: '#9333ea', name: 'Rocket' }, // Purple
   { component: Zap, color: '#9333ea', name: 'Zap' }, // Purple
-  { component: Bot, color: '#3b82f6', name: 'Bot' }, // Blue
-  { component: Cog, color: '#10b981', name: 'Cog' }, // Green
-  { component: Settings, color: '#f59e0b', name: 'Settings' }, // Orange
-  { component: Workflow, color: '#ec4899', name: 'Workflow' }, // Pink
+  { component: Brain, color: '#9333ea', name: 'Brain' }, // Purple
+  { component: Cpu, color: '#9333ea', name: 'Cpu' }, // Purple
+  { component: CircuitBoard, color: '#9333ea', name: 'CircuitBoard' }, // Purple
+  { component: Atom, color: '#9333ea', name: 'Atom' }, // Purple
 ];
 
 /**
- * Fallback scraping icons (for category-based fallback)
+ * Fallback scraping icons (for category-based fallback) - All purple with cool icons
  */
 const SCRAPING_FALLBACK_ICONS = [
-  { component: Database, color: '#6366f1', name: 'Database' }, // Indigo
-  { component: FileSearch, color: '#14b8a6', name: 'FileSearch' }, // Teal
-  { component: Network, color: '#06b6d4', name: 'Network' }, // Cyan
-  { component: Download, color: '#8b5cf6', name: 'Download' }, // Violet
-  { component: FileCode, color: '#f97316', name: 'FileCode' }, // Orange
+  { component: Database, color: '#9333ea', name: 'Database' }, // Purple
+  { component: Globe, color: '#9333ea', name: 'Globe' }, // Purple
+  { component: Network, color: '#9333ea', name: 'Network' }, // Purple
+  { component: Layers, color: '#9333ea', name: 'Layers' }, // Purple
+  { component: Boxes, color: '#9333ea', name: 'Boxes' }, // Purple
+  { component: Code2, color: '#9333ea', name: 'Code2' }, // Purple
 ];
 
 export const ProjectCard = memo(({ project, index }: ProjectCardProps) => {
@@ -195,10 +198,10 @@ export const ProjectCard = memo(({ project, index }: ProjectCardProps) => {
       );
     } else if (logoResult.type === 'lucide-icon' && logoResult.component) {
       const IconComponent = logoResult.component;
-      // Use the color directly if it's a hex color, otherwise use default
+      // Use the color directly if it's a hex color, otherwise default to purple
       const iconColor = logoResult.color && logoResult.color.startsWith('#') 
         ? logoResult.color 
-        : (logoResult.color === 'purple' ? '#9333ea' : '#4b5563');
+        : (logoResult.color === 'purple' ? '#9333ea' : '#9333ea'); // Default to purple
       return <IconComponent className={`${logoSize} object-contain`} style={{ color: iconColor }} />;
     } else {
       // Gradient fallback with initials
