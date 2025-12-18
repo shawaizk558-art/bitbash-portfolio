@@ -385,46 +385,52 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
         // #region agent log
         debugLog({location:'strapi.ts:300',message:'API route error - falling back',data:{error:apiError?.message||'Unknown error',errorName:apiError?.name},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B,C'});
         // #endregion
-        // API route failed - fallback to local file
+        // API route failed - fallback to local file (only in development)
         // Don't re-throw, continue to fallback
       }
       
-      // Fallback: Fetch from public directory (local file)
-      // #region agent log
-      debugLog({location:'strapi.ts:264',message:'Fallback to public file',data:{url:'/data/mongodb-projects.json',cacheStrategy:'force-cache'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'});
-      // #endregion
-      const response = await fetch('/data/mongodb-projects.json', {
-        // OPTIMIZED: Use force-cache with revalidation instead of no-store
-        cache: 'force-cache',
-      });
-
-      if (!response.ok) {
+      // Fallback: Fetch from public directory (local file) - ONLY in development
+      // In production, if blob storage is empty, return empty array (no file fallback)
+      if (isDevelopment()) {
         // #region agent log
-        debugLog({location:'strapi.ts:271',message:'Public file fetch failed',data:{status:response.status,statusText:response.statusText},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'});
+        debugLog({location:'strapi.ts:264',message:'Fallback to public file',data:{url:'/data/mongodb-projects.json',cacheStrategy:'force-cache'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'});
         // #endregion
-        // File doesn't exist yet or error - return empty array
-        if (response.status === 404) {
-          return [];
+        const response = await fetch('/data/mongodb-projects.json', {
+          // OPTIMIZED: Use force-cache with revalidation instead of no-store
+          cache: 'force-cache',
+        });
+
+        if (!response.ok) {
+          // #region agent log
+          debugLog({location:'strapi.ts:271',message:'Public file fetch failed',data:{status:response.status,statusText:response.statusText},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'});
+          // #endregion
+          // File doesn't exist yet or error - return empty array
+          if (response.status === 404) {
+            return [];
+          }
+          throw new Error(`Failed to fetch MongoDB projects: ${response.statusText}`);
         }
-        throw new Error(`Failed to fetch MongoDB projects: ${response.statusText}`);
-      }
 
-      const projects = await response.json();
-      // #region agent log
-      debugLog({location:'strapi.ts:277',message:'Public file fetch success',data:{projectCount:Array.isArray(projects)?projects.length:0,source:'public-file'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'});
-      // #endregion
-      
-      // Validate and return projects with all fields preserved
-      if (Array.isArray(projects)) {
-        const typedProjects = projects as (Project & { title?: string; description?: string; readme?: string; [key: string]: any })[];
+        const projects = await response.json();
         // #region agent log
-        debugLog({location:'strapi.ts:283',message:'Caching public file response',data:{projectCount:typedProjects.length,ttl:3600000,source:'public-file'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'});
+        debugLog({location:'strapi.ts:277',message:'Public file fetch success',data:{projectCount:Array.isArray(projects)?projects.length:0,source:'public-file'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'});
         // #endregion
-        // Cache the results (1 hour TTL)
-        cache.set(CACHE_KEYS.MONGO_PROJECTS, typedProjects, 3600000);
-        return typedProjects;
+        
+        // Validate and return projects with all fields preserved
+        if (Array.isArray(projects)) {
+          const typedProjects = projects as (Project & { title?: string; description?: string; readme?: string; [key: string]: any })[];
+          // #region agent log
+          debugLog({location:'strapi.ts:283',message:'Caching public file response',data:{projectCount:typedProjects.length,ttl:3600000,source:'public-file'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'});
+          // #endregion
+          // Cache the results (1 hour TTL)
+          cache.set(CACHE_KEYS.MONGO_PROJECTS, typedProjects, 3600000);
+          return typedProjects;
+        }
+        
+        return [];
       }
       
+      // In production, if API route failed and blob storage is empty, return empty array
       return [];
     });
   } catch (error) {
