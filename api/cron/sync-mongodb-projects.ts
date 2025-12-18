@@ -442,50 +442,53 @@ function isProduction(): boolean {
 
 /**
  * Read existing MongoDB projects
- * - Production: Read from Vercel Blob Storage
- * - Local: Read from local JSON file
+ * Always tries Blob Storage first, falls back to local file in development
  */
 async function readExistingProjects(): Promise<MongoProject[]> {
+  const env = isProduction() ? 'Production' : 'Local';
+  
   try {
-    if (isProduction()) {
-      // Production: Read from Vercel Blob Storage only
-      try {
-        // List blobs and find the one we need
-        const { blobs } = await list({ prefix: BLOB_FILE_NAME });
-        const blob = blobs.find(b => b.pathname === BLOB_FILE_NAME);
-        
-        if (blob && blob.url) {
-          // Fetch the blob content using the URL
-          const response = await fetch(blob.url);
-          if (response.ok) {
-            const content = await response.text();
-            const projects = JSON.parse(content);
-            console.log(`📥 [Production] Read ${projects.length} projects from Vercel Blob Storage`);
-            return Array.isArray(projects) ? projects : [];
-          }
+    // Always try Blob Storage first (works in both local and production if BLOB_READ_WRITE_TOKEN is set)
+    try {
+      // List blobs and find the one we need
+      const { blobs } = await list({ prefix: BLOB_FILE_NAME });
+      const blob = blobs.find(b => b.pathname === BLOB_FILE_NAME);
+      
+      if (blob && blob.url) {
+        // Fetch the blob content using the URL
+        const response = await fetch(blob.url);
+        if (response.ok) {
+          const content = await response.text();
+          const projects = JSON.parse(content);
+          console.log(`📥 [${env}] Read ${projects.length} projects from Vercel Blob Storage`);
+          return Array.isArray(projects) ? projects : [];
         }
-        // Blob doesn't exist yet (first run)
-        console.log('📄 [Production] No existing blob found (this is normal for first run)');
-        return [];
-      } catch (blobError: any) {
-        console.error('❌ [Production] Error reading from Blob Storage:', blobError.message);
-        return [];
       }
-    } else {
-      // Local: Read from local file only
+      // Blob doesn't exist yet (first run)
+      console.log(`📄 [${env}] No existing blob found (this is normal for first run)`);
+    } catch (blobError: any) {
+      console.error(`❌ [${env}] Error reading from Blob Storage:`, blobError.message);
+      // Continue to fallback if in local development
+    }
+    
+    // Fallback: In local development, try reading from local file
+    if (!isProduction()) {
       try {
         const fileContent = await fs.readFile(PROJECTS_FILE_PATH, 'utf-8');
         const projects = JSON.parse(fileContent);
-        console.log(`📥 [Local] Read ${projects.length} projects from local file: ${PROJECTS_FILE_PATH}`);
+        console.log(`📥 [Local] Fallback: Read ${projects.length} projects from local file: ${PROJECTS_FILE_PATH}`);
         return Array.isArray(projects) ? projects : [];
       } catch (fileError: any) {
         if (fileError.code === 'ENOENT') {
-          console.log('📄 [Local] No existing projects file found (this is normal for first run)');
+          console.log('📄 [Local] No existing projects file found (blob storage also failed)');
           return [];
         }
         throw fileError;
       }
     }
+    
+    // Production: If blob storage fails, return empty array (no local file fallback)
+    return [];
   } catch (error: any) {
     console.error('Error reading existing projects:', error);
     return [];
@@ -494,43 +497,49 @@ async function readExistingProjects(): Promise<MongoProject[]> {
 
 /**
  * Write projects
- * - Production: Write to Vercel Blob Storage only
- * - Local: Write to local JSON file only
+ * Always writes to Blob Storage (works in both local and production if BLOB_READ_WRITE_TOKEN is set)
+ * Also writes to local file in development as backup
  */
 async function writeProjects(projects: MongoProject[]): Promise<void> {
   const jsonContent = JSON.stringify(projects, null, 2);
+  const env = isProduction() ? 'Production' : 'Local';
   
-  if (isProduction()) {
-    // Production: Write to Vercel Blob Storage only
-    try {
-      const blob = await put(BLOB_FILE_NAME, jsonContent, {
-        access: 'public',
-        contentType: 'application/json',
-        addRandomSuffix: false,
-      });
-      console.log(`✅ [Production] Uploaded ${projects.length} projects to Vercel Blob Storage`);
-      console.log(`   Blob URL: ${blob.url}`);
-      console.log(`   Blob pathname: ${blob.pathname}`);
-      console.log(`   Expected pathname: ${BLOB_FILE_NAME}`);
-      
-      // Verify the pathname matches
-      if (blob.pathname !== BLOB_FILE_NAME) {
-        console.warn(`⚠️  [Production] Pathname mismatch! Expected: "${BLOB_FILE_NAME}", Got: "${blob.pathname}"`);
-      }
-    } catch (blobError: any) {
-      console.error('❌ [Production] Error writing to Blob Storage:', blobError.message);
-      throw blobError; // Re-throw in production since this is critical
+  // Always try to write to Blob Storage first
+  try {
+    const blob = await put(BLOB_FILE_NAME, jsonContent, {
+      access: 'public',
+      contentType: 'application/json',
+      addRandomSuffix: false,
+    });
+    console.log(`✅ [${env}] Uploaded ${projects.length} projects to Vercel Blob Storage`);
+    console.log(`   Blob URL: ${blob.url}`);
+    console.log(`   Blob pathname: ${blob.pathname}`);
+    console.log(`   Expected pathname: ${BLOB_FILE_NAME}`);
+    
+    // Verify the pathname matches
+    if (blob.pathname !== BLOB_FILE_NAME) {
+      console.warn(`⚠️  [${env}] Pathname mismatch! Expected: "${BLOB_FILE_NAME}", Got: "${blob.pathname}"`);
     }
-  } else {
-    // Local: Write to local file only
+  } catch (blobError: any) {
+    console.error(`❌ [${env}] Error writing to Blob Storage:`, blobError.message);
+    // In production, this is critical - re-throw
+    if (isProduction()) {
+      throw blobError;
+    }
+    // In local, continue to local file write as fallback
+    console.log(`⚠️  [Local] Blob Storage write failed, continuing to local file write...`);
+  }
+  
+  // In local development, also write to local file as backup
+  if (!isProduction()) {
     try {
       const dir = path.dirname(PROJECTS_FILE_PATH);
       await fs.mkdir(dir, { recursive: true });
       await fs.writeFile(PROJECTS_FILE_PATH, jsonContent, 'utf-8');
-      console.log(`✅ [Local] Written ${projects.length} projects to local file: ${PROJECTS_FILE_PATH}`);
+      console.log(`✅ [Local] Also written ${projects.length} projects to local file (backup): ${PROJECTS_FILE_PATH}`);
     } catch (fileError: any) {
       console.error('❌ [Local] Error writing to local file:', fileError.message);
-      throw fileError; // Re-throw in local since this is critical
+      // Don't throw - blob storage write might have succeeded
     }
   }
 }

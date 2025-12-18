@@ -130,6 +130,34 @@ function apiRoutesDevMiddleware(): Plugin {
     name: "vite-api-routes-dev-middleware",
     apply: "serve",
     configureServer(server) {
+      // Load environment variables once when middleware is set up
+      let envLoaded = false;
+      const loadEnvVars = async () => {
+        if (envLoaded || process.env.VERCEL) return;
+        try {
+          const dotenv = await import('dotenv');
+          const envLocalPath = path.join(process.cwd(), '.env.local');
+          const envPath = path.join(process.cwd(), '.env');
+          
+          // Try .env.local first, then .env
+          dotenv.config({ path: envLocalPath });
+          dotenv.config({ path: envPath });
+          
+          envLoaded = true;
+          console.log('[API Dev Middleware] Environment variables loaded');
+          if (process.env.BLOB_READ_WRITE_TOKEN) {
+            console.log('[API Dev Middleware] ✅ BLOB_READ_WRITE_TOKEN found');
+          } else {
+            console.log('[API Dev Middleware] ⚠️  BLOB_READ_WRITE_TOKEN not found. Create .env.local file with your token.');
+          }
+        } catch (e) {
+          // dotenv not available - that's okay
+        }
+      };
+      
+      // Load env vars immediately
+      loadEnvVars();
+      
       // Insert middleware early, before Vite's history API fallback
       server.middlewares.use(async (req, res, next) => {
         const url = req.url?.split('?')[0]; // Remove query params
@@ -145,6 +173,9 @@ function apiRoutesDevMiddleware(): Plugin {
           next();
           return;
         }
+        
+        // Ensure env vars are loaded before handling request
+        await loadEnvVars();
         
         console.log(`[API Dev Middleware] Handling ${req.method} ${url}`);
         

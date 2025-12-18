@@ -9,6 +9,9 @@ import { list } from '@vercel/blob';
 import { promises as fs } from 'fs';
 import path from 'path';
 
+// Note: Environment variables are loaded by Vite middleware in development
+// Create a .env.local file in the project root with: BLOB_READ_WRITE_TOKEN=your_token_here
+
 type VercelRequest = {
   method?: string;
   headers: Record<string, string | string[] | undefined>;
@@ -35,41 +38,70 @@ function isProduction(): boolean {
 }
 
 /**
+ * Get blob storage token from environment
+ */
+function getBlobToken(): string | undefined {
+  // Check common token names
+  return process.env.BLOB_READ_WRITE_TOKEN ||
+    process.env.Blob_projects_READ_WRITE_TOKEN ||
+    Object.keys(process.env)
+      .find(key => key.includes('BLOB') && key.includes('READ_WRITE_TOKEN'))
+      ? process.env[Object.keys(process.env).find(key => key.includes('BLOB') && key.includes('READ_WRITE_TOKEN'))!]
+      : undefined;
+}
+
+/**
+ * Check if blob storage token is available
+ */
+function hasBlobToken(): boolean {
+  return Boolean(process.env.VERCEL || getBlobToken());
+}
+
+/**
  * Read projects from the appropriate source
+ * Always tries Blob Storage first, falls back to local file in development
  */
 async function readProjects(): Promise<any[]> {
-  // #region agent log
-  const logData = {location:'api/mongodb-projects.ts:40',message:'readProjects called',data:{isProduction:isProduction(),vercelEnv:process.env.VERCEL,blobFileName:BLOB_FILE_NAME,filePath:PROJECTS_FILE_PATH},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E,D'};
-  await fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(logData)}).catch(()=>{});
-  // #endregion
-  if (isProduction()) {
-    // Production: Read from Vercel Blob Storage only
+  const env = isProduction() ? 'Production' : 'Local';
+  
+  // Check if blob token is available
+  const blobToken = getBlobToken();
+  const allBlobEnvVars = Object.keys(process.env).filter(k => k.includes('BLOB'));
+  
+  if (!hasBlobToken()) {
+    console.log(`[${env}] ⚠️  No blob token found. Available env vars:`, allBlobEnvVars.join(', ') || 'none');
+    console.log(`[${env}] All env vars with 'BLOB':`, allBlobEnvVars);
+    // Continue to fallback
+  } else {
+    console.log(`[${env}] ✅ Blob token found (${blobToken ? 'token length: ' + blobToken.length : 'VERCEL env detected'}), attempting to read from Blob Storage...`);
+    console.log(`[${env}] Blob token env var name:`, Object.keys(process.env).find(k => k.includes('BLOB') && k.includes('READ_WRITE_TOKEN')) || 'VERCEL');
+    
+    // Strategy 1: Try to list blobs with prefix
     try {
-      // Try to list blobs with the exact filename
-      const { blobs } = await list({ prefix: BLOB_FILE_NAME });
+      // Explicitly pass token if available
+      const listOptions: any = { prefix: BLOB_FILE_NAME };
+      if (blobToken) {
+        listOptions.token = blobToken;
+      }
+      const { blobs } = await list(listOptions);
       
-      // Log for debugging
-      console.log(`[Production] Found ${blobs.length} blobs with prefix "${BLOB_FILE_NAME}"`);
-      // #region agent log
-      await fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'api/mongodb-projects.ts:45',message:'Blob list result',data:{blobCount:blobs.length,blobPathnames:blobs.map(b=>b.pathname),searchPrefix:BLOB_FILE_NAME},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'F'})}).catch(()=>{});
-      // #endregion
+      console.log(`[${env}] Found ${blobs.length} blobs with prefix "${BLOB_FILE_NAME}"`);
+      if (blobs.length > 0) {
+        console.log(`[${env}] Available blob pathnames:`, blobs.map(b => b.pathname).join(', '));
+      }
       
       // Try to find exact match first
       let blob = blobs.find(b => b.pathname === BLOB_FILE_NAME);
       
       // If no exact match, try to find any blob that contains the filename
       if (!blob && blobs.length > 0) {
-        console.log(`[Production] No exact match, trying first blob. Available blobs:`, blobs.map(b => b.pathname));
+        console.log(`[${env}] No exact match, trying first blob. Available blobs:`, blobs.map(b => b.pathname));
         blob = blobs[0]; // Use first blob if exact match not found
       }
       
       if (blob && blob.url) {
-        console.log(`[Production] Fetching blob from URL: ${blob.url}`);
-        // #region agent log
-        await fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'api/mongodb-projects.ts:59',message:'Fetching blob content',data:{blobUrl:blob.url,blobPathname:blob.pathname},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
-        // #endregion
+        console.log(`[${env}] Fetching blob from URL: ${blob.url}`);
         const response = await fetch(blob.url, {
-          // Don't cache the fetch to get fresh data
           cache: 'no-store',
         });
         
@@ -77,64 +109,80 @@ async function readProjects(): Promise<any[]> {
           const content = await response.text();
           const projects = JSON.parse(content);
           const projectCount = Array.isArray(projects) ? projects.length : 0;
-          console.log(`[Production] Successfully loaded ${projectCount} projects from Blob Storage`);
-          // #region agent log
-          await fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'api/mongodb-projects.ts:68',message:'Blob fetch success',data:{projectCount,blobUrl:blob.url,source:'blob-storage'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
-          // #endregion
+          console.log(`[${env}] ✅ Successfully loaded ${projectCount} projects from Blob Storage (via list())`);
           return Array.isArray(projects) ? projects : [];
         } else {
-          console.error(`[Production] Failed to fetch blob: ${response.status} ${response.statusText}`);
-          // #region agent log
-          await fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'api/mongodb-projects.ts:72',message:'Blob fetch failed',data:{status:response.status,statusText:response.statusText},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
-          // #endregion
+          console.error(`[${env}] Failed to fetch blob: ${response.status} ${response.statusText}`);
         }
       } else {
-        console.error(`[Production] Blob not found. Searched for: "${BLOB_FILE_NAME}"`);
-        // #region agent log
-        await fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'api/mongodb-projects.ts:75',message:'Blob not found',data:{searchedFor:BLOB_FILE_NAME,availableBlobs:blobs.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'F'})}).catch(()=>{});
-        // #endregion
+        console.log(`[${env}] Blob not found in list results. Searched for: "${BLOB_FILE_NAME}"`);
       }
-      return [];
-    } catch (error: any) {
-      console.error('[Production] Error reading from Blob Storage:', error.message);
-      console.error('[Production] Error stack:', error.stack);
-      // #region agent log
-      await fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'api/mongodb-projects.ts:79',message:'Blob read error',data:{error:error.message},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
-      // #endregion
-      return [];
+    } catch (listError: any) {
+      console.error(`[${env}] Error with list() method:`, listError.message);
+      console.error(`[${env}] Full error:`, JSON.stringify(listError, null, 2));
+      
+      // Strategy 2: Try listing all blobs (no prefix) to see what's available
+      try {
+        console.log(`[${env}] Attempting to list all blobs to find the file...`);
+        const listAllOptions: any = {};
+        if (blobToken) {
+          listAllOptions.token = blobToken;
+        }
+        const { blobs } = await list(listAllOptions);
+        console.log(`[${env}] Found ${blobs.length} total blobs in storage`);
+        if (blobs.length > 0) {
+          console.log(`[${env}] All blob pathnames:`, blobs.map(b => b.pathname).join(', '));
+          
+          // Try to find any blob that matches our filename
+          const matchingBlob = blobs.find(b => 
+            b.pathname === BLOB_FILE_NAME || 
+            b.pathname.includes(BLOB_FILE_NAME) ||
+            b.pathname.endsWith(BLOB_FILE_NAME)
+          );
+          
+          if (matchingBlob && matchingBlob.url) {
+            console.log(`[${env}] Found matching blob: ${matchingBlob.pathname}`);
+            const response = await fetch(matchingBlob.url, { cache: 'no-store' });
+            if (response.ok) {
+              const content = await response.text();
+              const projects = JSON.parse(content);
+              const projectCount = Array.isArray(projects) ? projects.length : 0;
+              console.log(`[${env}] ✅ Successfully loaded ${projectCount} projects from Blob Storage (via full list)`);
+              return Array.isArray(projects) ? projects : [];
+            }
+          }
+        }
+      } catch (fullListError: any) {
+        console.error(`[${env}] Error listing all blobs:`, fullListError.message);
+      }
     }
-  } else {
-    // Local: Read from local file only
+  }
+  
+  // Fallback: In local development, try reading from local file
+  if (!isProduction()) {
     try {
       const content = await fs.readFile(PROJECTS_FILE_PATH, 'utf-8');
       const projects = JSON.parse(content);
       const projectCount = Array.isArray(projects) ? projects.length : 0;
-      console.log(`[Local] Successfully loaded ${projectCount} projects from local file`);
-      // #region agent log
-      await fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'api/mongodb-projects.ts:87',message:'Local file read success',data:{projectCount,filePath:PROJECTS_FILE_PATH,source:'local-file'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
-      // #endregion
+      console.log(`[Local] ✅ Fallback: Successfully loaded ${projectCount} projects from local file`);
       return Array.isArray(projects) ? projects : [];
     } catch (error: any) {
       if (error.code === 'ENOENT') {
-        console.log('[Local] No projects file found');
-        // #region agent log
-        await fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'api/mongodb-projects.ts:91',message:'Local file not found',data:{filePath:PROJECTS_FILE_PATH},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
-        // #endregion
+        console.log('[Local] No projects file found (blob storage also failed)');
         return [];
       }
       throw error;
     }
   }
+  
+  // Production: If blob storage fails, return empty array (no local file fallback)
+  return [];
 }
 
 export default async function handler(
   req: VercelRequest,
   res: VercelResponse
 ) {
-  // #region agent log
-  await fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'api/mongodb-projects.ts:130',message:'API handler called',data:{method:req.method,isProduction:isProduction()},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
-  // #endregion
-  
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -146,11 +194,8 @@ export default async function handler(
     const pageSize = Math.min(Math.max(limit, 1), 100); // Clamp between 1 and 100
     const pageNumber = Math.max(page, 1); // Ensure page >= 1
 
-    // Read projects from appropriate source (production = blob, local = file)
+    // Read projects from appropriate source (always tries blob storage first)
     const allProjects = await readProjects();
-    // #region agent log
-    await fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'api/mongodb-projects.ts:116',message:'API handler received projects',data:{totalProjects:allProjects.length,page:pageNumber,pageSize,isProduction:isProduction()},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
-    // #endregion
     
     // Apply pagination if requested
     let projects = allProjects;
@@ -181,9 +226,6 @@ export default async function handler(
       });
   } catch (error: any) {
     console.error('Error fetching MongoDB projects:', error);
-    // #region agent log
-    await fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'api/mongodb-projects.ts:146',message:'API handler error',data:{error:error?.message||'Unknown error',stack:error?.stack},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
-    // #endregion
     // Always return JSON, even on error (graceful degradation)
     return res.status(200).setHeader('Content-Type', 'application/json').json({
       projects: [],
