@@ -10,7 +10,7 @@ export const useSmoothScroll = () => {
       orientation: 'vertical', // Only smooth vertical scrolling
       gestureOrientation: 'vertical', // Only capture vertical gestures
       smoothWheel: true,    // Enable smooth scrolling for mouse wheel
-      wheelMultiplier: 1,   // Adjust scroll speed (1 = normal)
+      wheelMultiplier: 2,   // Adjust scroll speed (1 = normal)
       touchMultiplier: 2,   // Touch scroll multiplier
       infinite: false,      // Don't loop scroll (no infinite scroll)
       syncTouch: false,     // Disable touch sync for better performance
