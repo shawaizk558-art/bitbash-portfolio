@@ -102,8 +102,12 @@ const Projects = () => {
           })),
         });
         setMongoProjects(mongoProjectsData);
-      } catch (error) {
-        console.error('[Projects] ❌ Error fetching MongoDB projects:', error);
+      } catch (error: any) {
+        // Handle errors gracefully - API might return HTML error pages
+        const errorMessage = error?.message || 'Unknown error';
+        console.warn('[Projects] ⚠️  Error fetching MongoDB projects (using fallback):', errorMessage);
+        // Error is already handled in getMongoProjects with fallback to public file
+        // Just set empty array if everything fails
         setMongoProjects([]);
       } finally {
         setIsLoading(false);

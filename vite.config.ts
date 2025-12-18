@@ -18,6 +18,7 @@ export default defineConfig(({ mode }) => ({
     reactGrab(),
     mode === "development" && componentTagger(),
     mode === "development" && sitemapDevMiddleware(),
+    mode === "development" && apiRoutesDevMiddleware(),
     mode === "production" && inlineCriticalCss(),
     mode === "production" && visualizer({
       filename: "dist/stats.html",
@@ -116,6 +117,149 @@ function inlineCriticalCss(): Plugin {
       const html = await fs.readFile(htmlPath, "utf8");
       const inlined = await critters.process(html);
       await fs.writeFile(htmlPath, inlined, "utf8");
+    },
+  };
+}
+
+/**
+ * Vite middleware plugin to handle API routes in development
+ * This allows API routes to work locally without needing Vercel CLI
+ */
+function apiRoutesDevMiddleware(): Plugin {
+  return {
+    name: "vite-api-routes-dev-middleware",
+    apply: "serve",
+    configureServer(server) {
+      // Insert middleware early, before Vite's history API fallback
+      server.middlewares.use(async (req, res, next) => {
+        const url = req.url?.split('?')[0]; // Remove query params
+        
+        // Only handle API routes
+        if (!url?.startsWith('/api/')) {
+          next();
+          return;
+        }
+        
+        // Skip sitemap (handled by separate middleware)
+        if (url === '/api/sitemap.xml') {
+          next();
+          return;
+        }
+        
+        console.log(`[API Dev Middleware] Handling ${req.method} ${url}`);
+        
+        try {
+          // Import and execute the API route handler
+          let handler: any;
+          let routePath: string;
+          
+          // Handle different API route patterns
+          if (url === '/api/mongodb-projects') {
+            routePath = path.resolve(__dirname, './api/mongodb-projects.ts');
+          } else if (url.startsWith('/api/mongodb-projects/')) {
+            // Extract slug from URL
+            const slug = url.replace('/api/mongodb-projects/', '');
+            routePath = path.resolve(__dirname, './api/mongodb-projects/[slug].ts');
+          } else {
+            // Unknown API route, let Vite handle it
+            next();
+            return;
+          }
+          
+          // Dynamically import the handler
+          const module = await import(routePath);
+          handler = module.default;
+          
+          if (!handler || typeof handler !== 'function') {
+            console.error(`[API Dev Middleware] Handler not found or not a function for ${url}`);
+            next();
+            return;
+          }
+          
+          // Parse query string
+          const urlObj = new URL(req.url || '', `http://${req.headers.host || 'localhost'}`);
+          const query: Record<string, string | string[]> = {};
+          urlObj.searchParams.forEach((value, key) => {
+            if (query[key]) {
+              // Multiple values for same key
+              const existing = query[key];
+              query[key] = Array.isArray(existing) ? [...existing, value] : [existing as string, value];
+            } else {
+              query[key] = value;
+            }
+          });
+          
+          // Add slug to query if it's a slug route
+          if (url.startsWith('/api/mongodb-projects/') && url !== '/api/mongodb-projects') {
+            const slug = url.replace('/api/mongodb-projects/', '').split('?')[0];
+            query.slug = slug;
+          }
+          
+          // Create Vercel-compatible request/response objects
+          const vercelReq = {
+            method: req.method,
+            headers: req.headers as Record<string, string | string[] | undefined>,
+            query,
+            body: undefined,
+          };
+          
+          let responseData: any = null;
+          let statusCode = 200;
+          const responseHeaders: Record<string, string> = {};
+          
+          const vercelRes = {
+            status: (code: number) => {
+              statusCode = code;
+              return vercelRes;
+            },
+            setHeader: (name: string, value: string) => {
+              responseHeaders[name] = value;
+              return vercelRes;
+            },
+            json: (data: any) => {
+              responseData = data;
+            },
+            send: (data: any) => {
+              responseData = data;
+            },
+            end: () => {
+              // Response handled
+            },
+          };
+          
+          // Execute the handler
+          await handler(vercelReq, vercelRes);
+          
+          // Send response
+          if (responseData !== null) {
+            // Set headers
+            Object.entries(responseHeaders).forEach(([name, value]) => {
+              res.setHeader(name, value);
+            });
+            
+            // Default to JSON if no content-type set
+            if (!responseHeaders['content-type']) {
+              res.setHeader('Content-Type', 'application/json; charset=utf-8');
+            }
+            
+            res.statusCode = statusCode;
+            res.end(JSON.stringify(responseData));
+          } else {
+            // Handler didn't send response, let Vite handle it
+            next();
+          }
+        } catch (error: any) {
+          console.error(`[API Dev Middleware] Error handling ${url}:`, error);
+          if (!res.headersSent && !res.writableEnded) {
+            res.statusCode = 500;
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({ 
+              error: 'Internal server error', 
+              message: error?.message || String(error)
+            }));
+          }
+        }
+      });
     },
   };
 }

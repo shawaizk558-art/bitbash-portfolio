@@ -167,9 +167,15 @@ function isProduction(): boolean {
 }
 
 export async function getMongoProjects(): Promise<(Project & { title?: string; description?: string; readme?: string; [key: string]: any })[]> {
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'strapi.ts:169',message:'getMongoProjects called',data:{isServer:typeof window==='undefined',isProd:typeof window==='undefined'?Boolean(process.env.VERCEL):false},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A,B,C'})}).catch(()=>{});
+  // #endregion
   try {
     // In Node.js (server-side), read from appropriate source based on environment
     if (typeof window === 'undefined') {
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'strapi.ts:173',message:'Server-side execution path',data:{isProduction:isProduction(),vercelEnv:process.env.VERCEL},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+      // #endregion
       if (isProduction()) {
         // Production: Read from Vercel Blob Storage only
         try {
@@ -178,16 +184,25 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
           const blob = blobs.find(b => b.pathname === 'mongodb-projects.json');
           
           if (blob && blob.url) {
+            // #region agent log
+            fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'strapi.ts:180',message:'Fetching from blob URL (SSR)',data:{blobUrl:blob.url,blobPathname:blob.pathname},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+            // #endregion
             // Fetch the blob content using the URL
             const response = await fetch(blob.url);
             if (response.ok) {
               const content = await response.text();
               const projects = JSON.parse(content);
+              // #region agent log
+              fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'strapi.ts:186',message:'SSR blob fetch success',data:{projectCount:Array.isArray(projects)?projects.length:0,source:'blob-storage'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+              // #endregion
               if (Array.isArray(projects)) {
                 return projects as (Project & { title?: string; description?: string; readme?: string; [key: string]: any })[];
               }
             }
           }
+          // #region agent log
+          fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'strapi.ts:192',message:'SSR blob not found or failed',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+          // #endregion
           // Blob doesn't exist yet (first run)
           return [];
         } catch (blobError: any) {
@@ -202,6 +217,9 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
         try {
           const content = await fs.readFile(filePath, 'utf-8');
           const projects = JSON.parse(content);
+          // #region agent log
+          fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'strapi.ts:203',message:'SSR local file read success',data:{projectCount:Array.isArray(projects)?projects.length:0,filePath,source:'local-file'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+          // #endregion
           if (Array.isArray(projects)) {
             return projects as (Project & { title?: string; description?: string; readme?: string; [key: string]: any })[];
           }
@@ -219,6 +237,9 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
     // In browser (client-side), fetch from public directory or Blob Storage URL
     // Check cache first
     const cachedProjects = cache.get<(Project & { title?: string; description?: string; readme?: string; [key: string]: any })[]>(CACHE_KEYS.MONGO_PROJECTS);
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'strapi.ts:222',message:'Client-side cache check',data:{hasCache:!!cachedProjects,cacheCount:cachedProjects?.length||0,source:'memory-cache'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
     if (cachedProjects) {
       return cachedProjects;
     }
@@ -229,14 +250,43 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
       try {
         // API route reads from Blob Storage (production) or local file (local)
         const apiUrl = '/api/mongodb-projects';
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'strapi.ts:232',message:'Fetching from API route',data:{apiUrl,cacheStrategy:'force-cache'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B,C'})}).catch(()=>{});
+        // #endregion
         const response = await fetch(apiUrl, {
-          // OPTIMIZED: Use force-cache with revalidation instead of no-store
-          // This enables browser caching while still allowing revalidation
-          cache: 'force-cache',
+          // Use no-cache to avoid stale HTML error pages
+          cache: 'no-cache',
         });
         
+        // #region agent log
+        const contentType = response.headers.get('content-type') || '';
+        fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'strapi.ts:256',message:'API response received',data:{status:response.status,statusText:response.statusText,contentType,isOk:response.ok,url:response.url},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B,C'})}).catch(()=>{});
+        // #endregion
+        
       if (response.ok) {
-        const data = await response.json();
+        // Check if response is actually JSON before parsing
+        if (!contentType.includes('application/json')) {
+          // #region agent log
+          const responseText = await response.text().catch(() => 'Unable to read');
+          fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'strapi.ts:262',message:'API returned non-JSON',data:{contentType,responsePreview:responseText.substring(0,300)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B,C'})}).catch(()=>{});
+          // #endregion
+          throw new Error(`API returned ${contentType} instead of JSON`);
+        }
+        
+        // Safely parse JSON with error handling
+        let data: any;
+        try {
+          const responseText = await response.text();
+          data = JSON.parse(responseText);
+        } catch (parseError: any) {
+          // #region agent log
+          fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'strapi.ts:275',message:'JSON parse error',data:{error:parseError?.message,contentType},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B,C'})}).catch(()=>{});
+          // #endregion
+          throw new Error(`Failed to parse JSON response: ${parseError?.message}`);
+        }
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'strapi.ts:239',message:'API route response received',data:{hasProjects:!!data.projects,projectsCount:data.projects?.length||0,isArray:Array.isArray(data),total:data.pagination?.total||0,responseStatus:response.status,responseHeaders:Object.fromEntries(response.headers.entries())},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B,C'})}).catch(()=>{});
+        // #endregion
         // Handle paginated response (new format) or array response (old format)
         let projects: any[];
         if (data.projects && Array.isArray(data.projects)) {
@@ -251,22 +301,35 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
         
         if (Array.isArray(projects)) {
           const typedProjects = projects as (Project & { title?: string; description?: string; readme?: string; [key: string]: any })[];
+          // #region agent log
+          fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'strapi.ts:255',message:'Caching API response',data:{projectCount:typedProjects.length,ttl:3600000,source:'api-route'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+          // #endregion
           // Cache the results (1 hour TTL)
           cache.set(CACHE_KEYS.MONGO_PROJECTS, typedProjects, 3600000);
           return typedProjects;
         }
       }
-      } catch (apiError) {
-        // Fallback to local file
+      } catch (apiError: any) {
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'strapi.ts:300',message:'API route error - falling back',data:{error:apiError?.message||'Unknown error',errorName:apiError?.name},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B,C'})}).catch(()=>{});
+        // #endregion
+        // API route failed - fallback to local file
+        // Don't re-throw, continue to fallback
       }
       
       // Fallback: Fetch from public directory (local file)
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'strapi.ts:264',message:'Fallback to public file',data:{url:'/data/mongodb-projects.json',cacheStrategy:'force-cache'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+      // #endregion
       const response = await fetch('/data/mongodb-projects.json', {
         // OPTIMIZED: Use force-cache with revalidation instead of no-store
         cache: 'force-cache',
       });
 
       if (!response.ok) {
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'strapi.ts:271',message:'Public file fetch failed',data:{status:response.status,statusText:response.statusText},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+        // #endregion
         // File doesn't exist yet or error - return empty array
         if (response.status === 404) {
           return [];
@@ -275,10 +338,16 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
       }
 
       const projects = await response.json();
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'strapi.ts:277',message:'Public file fetch success',data:{projectCount:Array.isArray(projects)?projects.length:0,source:'public-file'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+      // #endregion
       
       // Validate and return projects with all fields preserved
       if (Array.isArray(projects)) {
         const typedProjects = projects as (Project & { title?: string; description?: string; readme?: string; [key: string]: any })[];
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'strapi.ts:283',message:'Caching public file response',data:{projectCount:typedProjects.length,ttl:3600000,source:'public-file'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+        // #endregion
         // Cache the results (1 hour TTL)
         cache.set(CACHE_KEYS.MONGO_PROJECTS, typedProjects, 3600000);
         return typedProjects;
