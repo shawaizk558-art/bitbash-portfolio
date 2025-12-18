@@ -7,6 +7,7 @@ import { CTA } from "@/components/CTA";
 import { Footer } from "@/components/Footer";
 import { HomepageSchema } from "@/components/HomepageSchema";
 import { SEO } from "@/components/SEO";
+import { Sitelinks } from "@/components/Sitelinks";
 
 const Index = () => {
   return (
@@ -23,6 +24,7 @@ const Index = () => {
       <Showcase />
       <FAQ />
       <CTA />
+      <Sitelinks />
       <Footer isHomepage={true} />
     </div>
   );
