@@ -142,25 +142,25 @@ export const Navigation = () => {
   return (
     <>
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200">
-      <div className="container-responsive">
-        <div className="flex items-center h-16">
+      <div className="container-responsive px-4 sm:px-0">
+        <div className="flex items-center h-14 sm:h-16">
           {/* Logo - Left Side */}
           <Link
             to="/"
-            className="flex items-center space-x-2 hover:opacity-80 transition-opacity lg:min-h-[44px] min-h-[44px]"
+            className="flex items-center space-x-1.5 sm:space-x-2 hover:opacity-80 transition-opacity lg:min-h-[44px] min-h-[44px]"
             onClick={() => {
               scrollToTopImmediate();
               closeMobileMenu();
             }}
           >
-            <Logo size="lg" variant="default" />
+            <Logo size="lg" variant="default" className="text-lg sm:text-xl md:text-2xl lg:text-3xl" />
           </Link>
           
           {/* Mobile Menu Button - Sleek & Simple */}
           <button
             ref={menuToggleRef}
             onClick={toggleMobileMenu}
-            className="lg:hidden flex items-center justify-center w-11 h-11 rounded-lg focus:outline-none ml-auto min-h-[44px] min-w-[44px]"
+            className="lg:hidden flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-lg focus:outline-none ml-auto min-h-[44px] min-w-[44px]"
             aria-label="Toggle mobile menu"
           >
             {!mobileMenuOpen && (
@@ -296,7 +296,7 @@ export const Navigation = () => {
                 </Link>
 
                 <Link
-                  to="/how-we-work"
+                  to="/our-work-model"
                   className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0"
                   onClick={scrollToTopImmediate}
                 >
@@ -388,7 +388,7 @@ export const Navigation = () => {
                   <span>Pricing</span>
                 </Link>
                 <Link 
-                  to="/how-we-work" 
+                  to="/our-work-model" 
                   className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
                   onClick={() => {
                     scrollToTopImmediate();

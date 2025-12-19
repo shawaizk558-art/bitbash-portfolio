@@ -31,10 +31,10 @@ const Jobs = () => {
             <div>
               <a
                 href="#open-positions"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-all duration-300 font-semibold text-base sm:text-lg shadow-lg hover:shadow-xl"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-all duration-300 font-semibold text-sm sm:text-base shadow-lg hover:shadow-xl"
               >
                 View open positions
-                <ArrowRight className="w-5 h-5" />
+                <ArrowRight className="w-4 h-4" />
               </a>
             </div>
           </div>
@@ -70,33 +70,30 @@ const Jobs = () => {
               {/* Right Side - Image */}
               <div className="relative h-full">
                 <div className="h-full overflow-hidden shadow-xl bg-gradient-to-br from-purple-100 to-purple-50">
-                  {/* Placeholder for team image - Replace with actual image */}
-                  <div className="w-full h-full flex items-center justify-center min-h-[300px]">
-                    <div className="text-center p-8">
-                      <div className="w-24 h-24 rounded-full bg-purple-600 mx-auto mb-4 flex items-center justify-center">
-                        <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                      </div>
-                      <p className="text-gray-600 font-medium">Team Photo</p>
-                      <p className="text-sm text-gray-500 mt-2">Add your team image here</p>
-                    </div>
-                  </div>
-                  {/* Uncomment and use when you have the image:
                   <img
-                    src="/team-photo.jpg"
+                    src="/team Large.png"
                     alt="BitBash Team"
                     className="w-full h-full object-cover"
                   />
-                  */}
                 </div>
               </div>
             </div>
 
             {/* How We Work Section - Two Column Layout */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 items-stretch max-w-6xl mx-auto border border-gray-200 rounded-2xl overflow-hidden h-full">
-              {/* Left Side - Text Content */}
-              <div className="flex flex-col p-8 sm:p-10 md:p-12">
+              {/* Left Side - Image */}
+              <div className="relative h-full order-1 lg:order-1">
+                <div className="h-full overflow-hidden shadow-xl bg-gradient-to-br from-purple-100 to-purple-50">
+                  <img
+                    src="/silent-zone Large.png"
+                    alt="BitBash Office / Work Environment"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+
+              {/* Right Side - Text Content */}
+              <div className="flex flex-col p-8 sm:p-10 md:p-12 order-2 lg:order-2">
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-6">
                   How we work
                 </h2>
@@ -107,37 +104,12 @@ const Jobs = () => {
                   software that makes a real impact.
                 </p>
                 <Link
-                  to="/how-we-work"
+                  to="/our-work-model"
                   className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 font-semibold text-base sm:text-lg transition-colors group mt-auto"
                 >
                   BitBash culture 101
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
-              </div>
-
-              {/* Right Side - Image */}
-              <div className="relative h-full">
-                <div className="h-full overflow-hidden shadow-xl bg-gradient-to-br from-purple-100 to-purple-50">
-                  {/* Placeholder for office/work image - Replace with actual image */}
-                  <div className="w-full h-full flex items-center justify-center min-h-[300px]">
-                    <div className="text-center p-8">
-                      <div className="w-24 h-24 rounded-full bg-purple-600 mx-auto mb-4 flex items-center justify-center">
-                        <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                        </svg>
-                      </div>
-                      <p className="text-gray-600 font-medium">Office / Work Photo</p>
-                      <p className="text-sm text-gray-500 mt-2">Add your work environment image here</p>
-                    </div>
-                  </div>
-                  {/* Uncomment and use when you have the image:
-                  <img
-                    src="/office-photo.jpg"
-                    alt="BitBash Team Working"
-                    className="w-full h-full object-cover"
-                  />
-                  */}
-                </div>
               </div>
             </div>
           </div>

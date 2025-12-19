@@ -312,7 +312,7 @@ const ProjectDetail = () => {
   const structuredData = [projectSchema, breadcrumbSchema];
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white overflow-x-hidden">
       <SEO
         title={`${projectName} - BitBash Project`}
         description={projectDescription}
@@ -324,7 +324,7 @@ const ProjectDetail = () => {
       <Navigation />
 
       {/* Breadcrumbs */}
-      <div className="container-responsive pt-6 pb-4">
+      <div className="container-responsive pt-4 pb-3 sm:pt-6 sm:pb-4 px-4 sm:px-0">
         <Breadcrumbs
           items={[
             { name: "Home", href: "/" },
@@ -352,53 +352,53 @@ const ProjectDetail = () => {
       {/* Content Section - Description, Technologies, etc */}
       {slug === "telegram-weather-alert-bot" ? (
         // Special case: render full markdown from content/projects/project1.md
-        <section className="container-responsive pb-12 sm:pb-16 md:pb-20 lg:pb-24">
-          <div className={`max-w-5xl lg:max-w-6xl xl:max-w-7xl mx-auto ${!isHardcodedProject ? 'grid lg:grid-cols-[320px,minmax(0,1fr)] gap-10' : ''}`}>
+        <section className="container-responsive pb-12 sm:pb-16 md:pb-20 lg:pb-24 px-4 sm:px-0 overflow-x-hidden">
+          <div className={`max-w-5xl lg:max-w-6xl xl:max-w-7xl mx-auto w-full ${!isHardcodedProject ? 'grid lg:grid-cols-[320px,minmax(0,1fr)] gap-6 sm:gap-8 lg:gap-10' : ''}`}>
             {!isHardcodedProject && (
-            <aside className="order-1">
-              <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 sm:p-7 lg:p-8 space-y-6 lg:space-y-7 lg:sticky lg:top-28">
+            <aside className="order-1 w-full lg:w-auto">
+              <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4 sm:p-5 md:p-6 lg:p-8 space-y-4 sm:space-y-5 md:space-y-6 lg:space-y-7 lg:sticky lg:top-28 overflow-hidden">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-semibold text-gray-900">Project Details</h3>
+                  <h3 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900">Project Details</h3>
                 </div>
-                <div className="space-y-4">
-                  <div className="flex justify-between gap-4">
-                    <span className="text-gray-600 font-medium">Pricing</span>
-                    <span className="text-gray-900 font-semibold text-right whitespace-nowrap">{sidebarContent.pricing}</span>
+                <div className="space-y-2.5 sm:space-y-3 md:space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-3 md:gap-4">
+                    <span className="text-gray-600 font-medium text-xs sm:text-sm md:text-base">Pricing</span>
+                    <span className="text-gray-900 font-semibold text-left sm:text-right text-xs sm:text-sm md:text-base break-words sm:whitespace-nowrap">{sidebarContent.pricing}</span>
                   </div>
-                  <div className="flex justify-between gap-4">
-                    <span className="text-gray-600 font-medium">Timeline</span>
-                    <span className="text-gray-900 font-semibold text-right">{sidebarContent.timeline}</span>
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-3 md:gap-4">
+                    <span className="text-gray-600 font-medium text-xs sm:text-sm md:text-base">Timeline</span>
+                    <span className="text-gray-900 font-semibold text-left sm:text-right text-xs sm:text-sm md:text-base break-words">{sidebarContent.timeline}</span>
                   </div>
                 </div>
                 <div>
-                  <p className="text-gray-600 font-medium mb-2">Technology Used</p>
-                  <div className="flex flex-wrap gap-2">
+                  <p className="text-gray-600 font-medium mb-1.5 sm:mb-2 text-xs sm:text-sm md:text-base">Technology Used</p>
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
                     {project.technologies.map((tech, idx) => (
                       <span
                         key={idx}
-                        className="px-3 py-1.5 bg-purple-50 text-purple-700 rounded-full text-xs font-semibold"
+                        className="px-2 sm:px-2.5 md:px-3 py-0.5 sm:py-1 md:py-1.5 bg-purple-50 text-purple-700 rounded-full text-[10px] sm:text-xs font-semibold"
                       >
                         {tech}
                       </span>
                     ))}
                   </div>
                 </div>
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-2.5 md:space-y-3">
                   <div>
-                    <p className="text-gray-600 font-medium">Post-Delivery Support</p>
-                    <p className="text-gray-900 font-semibold">{sidebarContent.postDeliverySupport}</p>
+                    <p className="text-gray-600 font-medium text-xs sm:text-sm md:text-base">Post-Delivery Support</p>
+                    <p className="text-gray-900 font-semibold text-xs sm:text-sm md:text-base break-words">{sidebarContent.postDeliverySupport}</p>
                   </div>
                   <div>
-                    <p className="text-gray-600 font-medium">Payment Methods</p>
-                    <p className="text-gray-900 font-semibold">{sidebarContent.paymentMethods}</p>
+                    <p className="text-gray-600 font-medium text-xs sm:text-sm md:text-base">Payment Methods</p>
+                    <p className="text-gray-900 font-semibold text-[10px] sm:text-xs md:text-sm lg:text-base break-words leading-snug">{sidebarContent.paymentMethods}</p>
                   </div>
                   <div>
-                    <p className="text-gray-600 font-medium">More Details</p>
+                    <p className="text-gray-600 font-medium text-xs sm:text-sm md:text-base">More Details</p>
                     <a
                       href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ29FECFRffucAqab3OFhlt5h5AeB8cs4irUQoDWTF3ZqfZs4pUaNRvWa8GYpRbm7RjV_1z8ldeR"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-gray-900 font-semibold hover:text-purple-600 transition-colors cursor-pointer"
+                      className="text-gray-900 font-semibold hover:text-purple-600 transition-colors cursor-pointer text-xs sm:text-sm md:text-base break-words"
                     >
                       {sidebarContent.moreDetails}
                     </a>
@@ -407,8 +407,8 @@ const ProjectDetail = () => {
               </div>
             </aside>
             )}
-            <div className={!isHardcodedProject ? "order-2" : ""}>
-              <article className="prose prose-slate max-w-none">
+            <div className={!isHardcodedProject ? "order-2 w-full overflow-x-hidden" : "w-full overflow-x-hidden"}>
+              <article className="prose prose-slate max-w-none px-0 sm:px-0 overflow-x-hidden">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                   {telegramWeatherMarkdown}
                 </ReactMarkdown>
@@ -417,53 +417,53 @@ const ProjectDetail = () => {
           </div>
         </section>
       ) : (
-        <section className="container-responsive pb-12 sm:pb-16 md:pb-20 lg:pb-24">
-          <div className={`max-w-5xl lg:max-w-6xl xl:max-w-7xl mx-auto ${!isHardcodedProject ? 'grid lg:grid-cols-[320px,minmax(0,1fr)] gap-10' : ''}`}>
+        <section className="container-responsive pb-12 sm:pb-16 md:pb-20 lg:pb-24 px-4 sm:px-0 overflow-x-hidden">
+          <div className={`max-w-5xl lg:max-w-6xl xl:max-w-7xl mx-auto w-full ${!isHardcodedProject ? 'grid lg:grid-cols-[320px,minmax(0,1fr)] gap-6 sm:gap-8 lg:gap-10' : ''}`}>
             {!isHardcodedProject && (
-            <aside className="order-first lg:order-none">
-              <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 sm:p-7 lg:p-8 space-y-6 lg:space-y-7 lg:sticky lg:top-28">
+            <aside className="order-first lg:order-none w-full lg:w-auto">
+              <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4 sm:p-5 md:p-6 lg:p-8 space-y-4 sm:space-y-5 md:space-y-6 lg:space-y-7 lg:sticky lg:top-28 overflow-hidden">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-semibold text-gray-900">Project Details</h3>
+                  <h3 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900">Project Details</h3>
                 </div>
-                <div className="space-y-4">
-                  <div className="flex justify-between gap-4">
-                    <span className="text-gray-600 font-medium">Pricing</span>
-                    <span className="text-gray-900 font-semibold text-right whitespace-nowrap">{sidebarContent.pricing}</span>
+                <div className="space-y-2.5 sm:space-y-3 md:space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-3 md:gap-4">
+                    <span className="text-gray-600 font-medium text-xs sm:text-sm md:text-base">Pricing</span>
+                    <span className="text-gray-900 font-semibold text-left sm:text-right text-xs sm:text-sm md:text-base break-words sm:whitespace-nowrap">{sidebarContent.pricing}</span>
                   </div>
-                  <div className="flex justify-between gap-4">
-                    <span className="text-gray-600 font-medium">Timeline</span>
-                    <span className="text-gray-900 font-semibold text-right">{sidebarContent.timeline}</span>
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-3 md:gap-4">
+                    <span className="text-gray-600 font-medium text-xs sm:text-sm md:text-base">Timeline</span>
+                    <span className="text-gray-900 font-semibold text-left sm:text-right text-xs sm:text-sm md:text-base break-words">{sidebarContent.timeline}</span>
                   </div>
                 </div>
                 <div>
-                  <p className="text-gray-600 font-medium mb-2">Technology Used</p>
-                  <div className="flex flex-wrap gap-2">
+                  <p className="text-gray-600 font-medium mb-1.5 sm:mb-2 text-xs sm:text-sm md:text-base">Technology Used</p>
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
                     {project.technologies.map((tech, idx) => (
                       <span
                         key={idx}
-                        className="px-3 py-1.5 bg-purple-50 text-purple-700 rounded-full text-xs font-semibold"
+                        className="px-2 sm:px-2.5 md:px-3 py-0.5 sm:py-1 md:py-1.5 bg-purple-50 text-purple-700 rounded-full text-[10px] sm:text-xs font-semibold"
                       >
                         {tech}
                       </span>
                     ))}
                   </div>
                 </div>
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-2.5 md:space-y-3">
                   <div>
-                    <p className="text-gray-600 font-medium">Post-Delivery Support</p>
-                    <p className="text-gray-900 font-semibold">{sidebarContent.postDeliverySupport}</p>
+                    <p className="text-gray-600 font-medium text-xs sm:text-sm md:text-base">Post-Delivery Support</p>
+                    <p className="text-gray-900 font-semibold text-xs sm:text-sm md:text-base break-words">{sidebarContent.postDeliverySupport}</p>
                   </div>
                   <div>
-                    <p className="text-gray-600 font-medium">Payment Methods</p>
-                    <p className="text-gray-900 font-semibold">{sidebarContent.paymentMethods}</p>
+                    <p className="text-gray-600 font-medium text-xs sm:text-sm md:text-base">Payment Methods</p>
+                    <p className="text-gray-900 font-semibold text-[10px] sm:text-xs md:text-sm lg:text-base break-words leading-snug">{sidebarContent.paymentMethods}</p>
                   </div>
                   <div>
-                    <p className="text-gray-600 font-medium">More Details</p>
+                    <p className="text-gray-600 font-medium text-xs sm:text-sm md:text-base">More Details</p>
                     <a
                       href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ29FECFRffucAqab3OFhlt5h5AeB8cs4irUQoDWTF3ZqfZs4pUaNRvWa8GYpRbm7RjV_1z8ldeR"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-gray-900 font-semibold hover:text-purple-600 transition-colors cursor-pointer"
+                      className="text-gray-900 font-semibold hover:text-purple-600 transition-colors cursor-pointer text-xs sm:text-sm md:text-base break-words"
                     >
                       {sidebarContent.moreDetails}
                     </a>
@@ -472,10 +472,10 @@ const ProjectDetail = () => {
               </div>
             </aside>
             )}
-            <div className={`space-y-8 sm:space-y-10 md:space-y-12 lg:space-y-14 ${!isHardcodedProject ? '' : ''}`}>
+            <div className={`space-y-6 sm:space-y-8 md:space-y-10 lg:space-y-12 xl:space-y-14 w-full overflow-x-hidden ${!isHardcodedProject ? '' : ''}`}>
               {/* Description - Use readme from MongoDB if available, otherwise use description */}
-              <div className="-mt-8 sm:-mt-10 md:-mt-12 lg:-mt-14">
-                <div className="prose prose-lg lg:prose-lg max-w-none [&>h2:first-child]:mt-0">
+              <div className="-mt-6 sm:-mt-8 md:-mt-10 lg:-mt-12 xl:-mt-14 w-full overflow-x-hidden">
+                <div className="prose prose-lg lg:prose-lg max-w-none [&>h2:first-child]:mt-0 overflow-x-hidden">
                   {(project as any).readme ? (
                     <div className="text-base sm:text-lg lg:text-lg xl:text-xl text-gray-700 leading-relaxed lg:leading-relaxed">
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -493,17 +493,17 @@ const ProjectDetail = () => {
               {/* Target Audience / Niche */}
               {project.targetAudience && project.targetAudience.length > 0 && (
                 <div>
-                  <h2 className="text-2xl sm:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb-4 sm:mb-6 lg:mb-8">
+                  <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 md:mb-6 lg:mb-8">
                     Target Audience
                   </h2>
                   <ul className="space-y-2 sm:space-y-3 lg:space-y-4">
                     {project.targetAudience.map((audience, index) => (
                       <li
                         key={index}
-                        className="flex items-start gap-3 text-base sm:text-lg lg:text-lg xl:text-xl text-gray-700"
+                        className="flex items-start gap-2 sm:gap-3 text-sm sm:text-base md:text-lg lg:text-lg xl:text-xl text-gray-700"
                       >
-                        <span className="text-purple-600 leading-[1] mt-1">•</span>
-                        <span>{audience}</span>
+                        <span className="text-purple-600 leading-[1] mt-1 flex-shrink-0">•</span>
+                        <span className="break-words">{audience}</span>
                       </li>
                     ))}
                   </ul>
@@ -513,17 +513,17 @@ const ProjectDetail = () => {
               {/* Key Features */}
               {project.keyFeatures && project.keyFeatures.length > 0 && (
                 <div>
-                  <h2 className="text-2xl sm:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb-4 sm:mb-6 lg:mb-8">
+                  <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 md:mb-6 lg:mb-8">
                     Key Features
                   </h2>
                   <ul className="space-y-2 sm:space-y-3 lg:space-y-4">
                     {project.keyFeatures.map((feature, index) => (
                       <li
                         key={index}
-                        className="flex items-start gap-3 text-base sm:text-lg lg:text-lg xl:text-xl text-gray-700"
+                        className="flex items-start gap-2 sm:gap-3 text-sm sm:text-base md:text-lg lg:text-lg xl:text-xl text-gray-700"
                       >
-                        <span className="text-purple-600 leading-[1] mt-1">•</span>
-                        <span>{feature}</span>
+                        <span className="text-purple-600 leading-[1] mt-1 flex-shrink-0">•</span>
+                        <span className="break-words">{feature}</span>
                       </li>
                     ))}
                   </ul>
@@ -534,41 +534,25 @@ const ProjectDetail = () => {
               {project.architectureHighlights &&
                 project.architectureHighlights.length > 0 && (
                   <div>
-                    <h2 className="text-2xl sm:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb-4 sm:mb-6 lg:mb-8">
+                    <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 md:mb-6 lg:mb-8">
                       Architecture Highlights
                     </h2>
                     <ul className="space-y-2 sm:space-y-3 lg:space-y-4">
                       {project.architectureHighlights.map((highlight, index) => (
                         <li
                           key={index}
-                          className="flex items-start gap-3 text-base sm:text-lg lg:text-lg xl:text-xl text-gray-700"
+                          className="flex items-start gap-2 sm:gap-3 text-sm sm:text-base md:text-lg lg:text-lg xl:text-xl text-gray-700"
                         >
-                          <span className="text-purple-600 leading-[1] mt-1">
+                          <span className="text-purple-600 leading-[1] mt-1 flex-shrink-0">
                             •
                           </span>
-                          <span>{highlight}</span>
+                          <span className="break-words">{highlight}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
                 )}
 
-              {/* Rating */}
-              <div className="pt-4 lg:pt-6 border-t border-gray-200 flex items-center justify-center gap-2 lg:gap-3">
-                <span className="text-gray-700 font-semibold text-base sm:text-lg lg:text-lg xl:text-xl">
-                  Rating:
-                </span>
-                <div className="flex gap-1 lg:gap-1.5">
-                  {[...Array(Math.floor(Number(project.rating) || 5))].map((_, i) => (
-                    <span
-                      key={i}
-                      className="text-yellow-400 text-xl lg:text-xl xl:text-2xl"
-                    >
-                      ★
-                    </span>
-                  ))}
-                </div>
-              </div>
             </div>
           </div>
         </section>
@@ -576,21 +560,20 @@ const ProjectDetail = () => {
 
       <Footer isHomepage={false} />
 
-      {/* Floating Social Icons - Bottom Right (only for non-hardcoded projects) */}
-      {!isHardcodedProject && (
-        <div className="fixed bottom-6 right-6 z-40 flex flex-col gap-3">
+      {/* Floating Social Icons - Bottom Right */}
+      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 flex flex-col gap-2 sm:gap-3">
           {/* WhatsApp Icon */}
           <a
             href="https://api.whatsapp.com/send/?phone=923249868488&text=Hi+Zeeshan%2C+I%27m+interested+in+automation.&type=phone_number&app_absent=0"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-14 h-14 bg-[#25D366] rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
+            className="w-12 h-12 sm:w-14 sm:h-14 bg-[#25D366] rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
             aria-label="Contact us on WhatsApp"
           >
             <img 
               src="/logos/whatsapp.svg" 
               alt="WhatsApp" 
-              className="w-9 h-9 brightness-0 invert"
+              className="w-7 h-7 sm:w-9 sm:h-9 brightness-0 invert"
             />
           </a>
 
@@ -599,19 +582,18 @@ const ProjectDetail = () => {
             href="https://t.me/Bitbash333"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-14 h-14 bg-[#26A5E4] rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
+            className="w-12 h-12 sm:w-14 sm:h-14 bg-[#26A5E4] rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
             aria-label="Contact us on Telegram"
           >
             <svg 
               viewBox="0 0 24 24" 
-              className="w-11 h-11 fill-white"
+              className="w-8 h-8 sm:w-11 sm:h-11 fill-white"
               xmlns="http://www.w3.org/2000/svg"
             >
               <path d="M16.906 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
             </svg>
           </a>
         </div>
-      )}
     </div>
   );
 };

@@ -30,7 +30,7 @@ export const RoutePreloader = () => {
                 "/projects": () => import("@/pages/Projects"),
                 "/blog": () => import("@/pages/Blog"),
                 "/partners": () => import("@/pages/Partners"),
-                "/how-we-work": () => import("@/pages/HowWeWork"),
+                "/our-work-model": () => import("@/pages/OurWorkModel"),
             };
 
             if (routeMap[path]) {

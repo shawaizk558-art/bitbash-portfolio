@@ -24,7 +24,7 @@ export const Hero = ({ title, subtitle, variant = "default", buttons }: HeroProp
       <br className="md:block lg:hidden" /> <span className="text-purple-600">Fast</span> by a Team You Can Count On.
     </span>
   );
-  const defaultSubtitle = "The Software Development Agency for Full Stack Apps and Scripts";
+  const defaultSubtitle = "The No 1 Automation Company in the World, Built for Success.";
 
   // Default buttons for index page
   const defaultButtons: HeroButton[] = [
@@ -38,13 +38,13 @@ export const Hero = ({ title, subtitle, variant = "default", buttons }: HeroProp
   // Default: Original index page heights (50vh-65vh)
   // Compact: Projects page heights (42vh-50vh)
   const heightClasses = variant === "compact"
-    ? "min-h-[clamp(220px,42vh,340px)] sm:min-h-[clamp(260px,46vh,380px)] md:min-h-[clamp(300px,50vh,420px)] lg:min-h-[clamp(280px,48vh,400px)] 2xl:min-h-[clamp(300px,46vh,420px)]"
-    : "hero-tablet-height min-h-[clamp(300px,50vh,400px)] sm:min-h-[clamp(350px,55vh,450px)] md:min-h-[clamp(420px,65vh,540px)] lg:min-h-[clamp(360px,65vh,520px)] 2xl:min-h-[clamp(360px,64vh,560px)]";
+    ? "min-h-[clamp(200px,40vh,320px)] sm:min-h-[clamp(260px,46vh,380px)] md:min-h-[clamp(300px,50vh,420px)] lg:min-h-[clamp(280px,48vh,400px)] 2xl:min-h-[clamp(300px,46vh,420px)]"
+    : "hero-tablet-height min-h-[clamp(250px,45vh,380px)] sm:min-h-[clamp(350px,55vh,450px)] md:min-h-[clamp(420px,65vh,540px)] lg:min-h-[clamp(360px,65vh,520px)] 2xl:min-h-[clamp(360px,64vh,560px)]";
 
   // Padding adjustments for compact variant
   const paddingClasses = variant === "compact"
-    ? "pt-14 pb-6 sm:pb-8 lg:pb-12"
-    : "pt-14 pb-8 sm:pb-12 lg:pb-0";
+    ? "pt-12 pb-4 sm:pt-14 sm:pb-6 lg:pb-8 xl:pb-12"
+    : "pt-10 pb-4 sm:pt-12 sm:pb-6 md:pb-8 lg:pb-0";
 
   return (
     <section className={`relative ${heightClasses} flex items-center justify-center overflow-hidden ${paddingClasses}`}>
@@ -55,7 +55,7 @@ export const Hero = ({ title, subtitle, variant = "default", buttons }: HeroProp
         <div className="max-w-4xl mx-auto space-responsive-lg animate-fade-in">
           {/* Core project hero content (title + description) */}
           <div
-            className="space-responsive-sm mt-6 sm:mt-10 lg:mt-14"
+            className="space-responsive-sm mt-4 sm:mt-8 lg:mt-10"
             data-project-hero-core="true"
           >
             <h1 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-bold leading-[1.1] tracking-tight font-sans px-2 sm:px-0">
@@ -68,7 +68,7 @@ export const Hero = ({ title, subtitle, variant = "default", buttons }: HeroProp
           </div>
 
           {/* Call-to-Action Buttons */}
-          <div className="relative max-w-3xl mx-auto mt-8 sm:mt-10 lg:mt-12">
+          <div className="relative max-w-3xl mx-auto mt-6 sm:mt-8 lg:mt-10">
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:-translate-y-2">
               {heroButtons.map((button, index) => (
               <Button

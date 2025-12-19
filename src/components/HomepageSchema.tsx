@@ -21,7 +21,7 @@ export const HomepageSchema = () => {
   const schemas = [
     buildOrganizationSchema(),
     buildWebsiteSchema(),
-    buildWebPageSchema("/"),
+    buildWebPageSchema("/", "The No 1 Automation Company in the World, Built for Success. The Complete Platform for Modern Teams and Innovators. Experience lightning-fast performance, enterprise security, and AI-powered automation."),
     buildBreadcrumbSchema(homepageBreadcrumbs),
     buildFAQSchema(defaultFaqs),
     ...buildServiceSchemas(coreServices)

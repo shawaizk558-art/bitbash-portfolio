@@ -12,6 +12,7 @@ export const buildOrganizationSchema = () => ({
   "name": "BitBash",
   "url": SITE_URL,
   "logo": `${SITE_URL}/favicon.png`,
+  "description": "The No 1 Automation Company in the World, Built for Success. Providing full stack development, AI automation, and intelligent business solutions.",
   "contactPoint": [
     {
       "@type": "ContactPoint",

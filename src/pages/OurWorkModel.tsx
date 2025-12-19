@@ -1,16 +1,19 @@
 import { Navigation } from "@/components/Navigation";
 import { Hero } from "@/components/Hero";
-import { HowWeWorkFeatures } from "@/components/HowWeWorkFeatures";
+import { ServiceModels } from "@/components/ServiceModels";
+import { DevelopmentLifecycle } from "@/components/DevelopmentLifecycle";
+import { ConsistentDelivery } from "@/components/ConsistentDelivery";
+import { CTA } from "@/components/CTA";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
 
-const HowWeWork = () => {
+const OurWorkModel = () => {
   return (
     <div className="min-h-screen">
       <SEO
-        title="How We Work - BitBash"
+        title="Our Work Model - BitBash"
         description="Discover our transparent, efficient, and results-driven software development process. From client communication to deep work execution."
-        canonical="/how-we-work"
+        canonical="/our-work-model"
       />
       <Navigation />
       <Hero
@@ -21,12 +24,14 @@ const HowWeWork = () => {
           { label: "View Our Work", href: "/projects", variant: "outline" }
         ]}
       />
-      <HowWeWorkFeatures />
-      <Footer />
+      <ServiceModels />
+      <DevelopmentLifecycle />
+      <ConsistentDelivery />
+      <CTA />
+      <Footer isHomepage={true} />
     </div>
   );
 };
 
-export default HowWeWork;
-
+export default OurWorkModel;
 

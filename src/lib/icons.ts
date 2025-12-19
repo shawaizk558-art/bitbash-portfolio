@@ -41,5 +41,7 @@ export {
   Video,
   ExternalLink,
   Handshake,
-  Sparkles
+  Sparkles,
+  RefreshCw,
+  CheckCircle2
 } from "lucide-react";
