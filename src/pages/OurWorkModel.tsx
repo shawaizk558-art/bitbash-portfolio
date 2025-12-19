@@ -3,6 +3,7 @@ import { Hero } from "@/components/Hero";
 import { ServiceModels } from "@/components/ServiceModels";
 import { DevelopmentLifecycle } from "@/components/DevelopmentLifecycle";
 import { ConsistentDelivery } from "@/components/ConsistentDelivery";
+import { HowWeWorkFeatures } from "@/components/HowWeWorkFeatures";
 import { CTA } from "@/components/CTA";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
@@ -27,6 +28,7 @@ const OurWorkModel = () => {
       <ServiceModels />
       <DevelopmentLifecycle />
       <ConsistentDelivery />
+      <HowWeWorkFeatures />
       <CTA />
       <Footer isHomepage={true} />
     </div>
