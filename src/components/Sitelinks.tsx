@@ -6,7 +6,7 @@ export const Sitelinks = () => {
     { label: "View Our Projects", path: "/projects" },
     { label: "See Pricing Plans", path: "/pricing" },
     { label: "Services", path: "/services" },
-    { label: "Hiring", path: "/jobs" },
+    { label: "Hiring", path: "/careers" },
     { label: "Contact", path: "/contact" },
   ];
 

@@ -302,6 +302,14 @@ export const Navigation = () => {
                 >
                   <span className="font-normal text-black text-base lg:text-[17px] whitespace-nowrap" style={{ fontSize: '17px' }}>Our Work Model</span>
                 </Link>
+
+                <Link
+                  to="/careers"
+                  className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0"
+                  onClick={scrollToTopImmediate}
+                >
+                  <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Careers</span>
+                </Link>
               </>
             )}
           </div>
@@ -396,6 +404,16 @@ export const Navigation = () => {
                   }}
                 >
                   <span>Our Work Model</span>
+                </Link>
+                <Link 
+                  to="/careers" 
+                  className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
+                  onClick={() => {
+                    scrollToTopImmediate();
+                    closeMobileMenu();
+                  }}
+                >
+                  <span>Careers</span>
                 </Link>
                 <Link 
                   to="/contact" 

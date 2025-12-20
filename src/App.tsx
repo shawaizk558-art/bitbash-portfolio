@@ -25,7 +25,7 @@ const BlogPostDetail = lazy(() => import("./pages/BlogPostDetail"));
 const Partners = lazy(() => import("./pages/Partners"));
 const ProjectDetail = lazy(() => import("./pages/ProjectDetail"));
 const OurWorkModel = lazy(() => import("./pages/OurWorkModel"));
-const Jobs = lazy(() => import("./pages/Jobs"));
+const Careers = lazy(() => import("./pages/Careers"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const MobileViewport = lazy(() =>
@@ -80,7 +80,7 @@ const App = () => {
                 <Route path="/projects" element={<Projects />} />
                 <Route path="/our-work-model" element={<OurWorkModel />} />
                 <Route path="/project/:slug" element={<ProjectDetail />} />
-                <Route path="/jobs" element={<Jobs />} />
+                <Route path="/careers" element={<Careers />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

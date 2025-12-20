@@ -255,8 +255,11 @@ export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
               </li>
               <li className="m-0 p-0">
                 <Link
-                  to="/jobs"
-                  onClick={scrollToTopImmediate}
+                  to="/careers#open-positions"
+                  onClick={(e) => {
+                    // Don't prevent default - let React Router handle navigation
+                    // Scroll will be handled by useEffect in Careers component
+                  }}
                   className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors block flex items-center gap-2"
                 >
                   Jobs

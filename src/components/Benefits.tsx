@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, Heart, Rocket, GraduationCap, Cpu } from 'lucide-react';
+import { Sparkles, Heart, Rocket, GraduationCap, Gift } from 'lucide-react';
 
 const benefits = [
     {
@@ -23,9 +23,9 @@ const benefits = [
         description: "Stay ahead in AI, machine learning, and automation technologies. We invest in your growth with learning budgets, conference attendance, certifications, and access to the latest tools and frameworks in full-stack development and data engineering."
     },
     {
-        icon: Cpu,
-        title: "Modern tools & infrastructure",
-        description: "Best-in-class hardware, software licenses, and cloud infrastructure. Whether you're building AI solutions, developing full-stack applications, or creating automation systems, you'll have the tools and resources needed to excel in your role."
+        icon: Gift,
+        title: "Monthly lunches and bonuses",
+        description: "Enjoy monthly team lunches to connect with colleagues and celebrate our shared success. We also offer performance bonuses and recognition rewards to acknowledge your contributions to our software development projects and team achievements."
     }
 ];
 

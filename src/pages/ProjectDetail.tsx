@@ -283,7 +283,9 @@ const ProjectDetail = () => {
     developer: project.developer ?? defaultSidebarContent.developer
   };
 
-  // Check if this is a hardcoded (top 9) project - exclude floating icons for these
+  // Check if this is a hardcoded (top 9) project
+  // Only projects from src/data/projects.ts are considered hardcoded
+  // MongoDB projects will have isHardcodedProject = false
   const isHardcodedProject = slug ? Boolean(getHardcodedProject(slug)) : false;
 
   // Process technologies for SEO
@@ -407,7 +409,7 @@ const ProjectDetail = () => {
               </div>
             </aside>
             )}
-            <div className={!isHardcodedProject ? "order-2 w-full overflow-x-hidden" : "w-full overflow-x-hidden"}>
+            <div className={!isHardcodedProject ? "order-2 w-full overflow-x-hidden" : "w-full overflow-x-hidden max-w-4xl mx-auto"}>
               <article className="prose prose-slate max-w-none px-0 sm:px-0 overflow-x-hidden">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                   {telegramWeatherMarkdown}
@@ -472,27 +474,56 @@ const ProjectDetail = () => {
               </div>
             </aside>
             )}
-            <div className={`space-y-6 sm:space-y-8 md:space-y-10 lg:space-y-12 xl:space-y-14 w-full overflow-x-hidden ${!isHardcodedProject ? '' : ''}`}>
+            <div className={`w-full overflow-x-hidden ${!isHardcodedProject ? 'order-2 space-y-6 sm:space-y-8 md:space-y-10 lg:space-y-12 xl:space-y-14' : 'max-w-4xl mx-auto space-y-8 sm:space-y-10 md:space-y-12 lg:space-y-14 xl:space-y-16'}`}>
               {/* Description - Use readme from MongoDB if available, otherwise use description */}
-              <div className="-mt-6 sm:-mt-8 md:-mt-10 lg:-mt-12 xl:-mt-14 w-full overflow-x-hidden">
-                <div className="prose prose-lg lg:prose-lg max-w-none [&>h2:first-child]:mt-0 overflow-x-hidden">
+              {/* For hardcoded projects (top 9): small positive margin for spacing */}
+              {/* For MongoDB projects: negative margin to pull content up (works with sidebar layout) */}
+              <div className={`w-full overflow-x-hidden ${!isHardcodedProject ? '-mt-6 sm:-mt-8 md:-mt-10 lg:-mt-12 xl:-mt-14' : 'mt-4 sm:mt-6 md:mt-8'}`}>
+                {isHardcodedProject && (
+                  <>
+                    <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb-0">
+                      Introduction
+                    </h2>
+                    <div className="h-px bg-gradient-to-r from-transparent via-purple-200 to-transparent mb-6 sm:mb-8 md:mb-10 mt-3 sm:mt-4"></div>
+                  </>
+                )}
+                <div className={`prose prose-lg lg:prose-lg max-w-none [&>h2:first-child]:mt-0 overflow-x-hidden ${isHardcodedProject ? 'prose-headings:text-gray-900 prose-p:text-gray-700 prose-p:leading-relaxed' : ''}`}>
                   {(project as any).readme ? (
-                    <div className="text-base sm:text-lg lg:text-lg xl:text-xl text-gray-700 leading-relaxed lg:leading-relaxed">
+                    <div className={`text-base sm:text-lg lg:text-lg xl:text-xl text-gray-700 leading-relaxed lg:leading-relaxed ${isHardcodedProject ? 'bg-gray-50 rounded-2xl p-6 sm:p-8 md:p-10 border border-gray-100' : ''}`}>
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>
                         {removeLeadingSpacing(cleanMarkdownContent(removeDirectoryStructureTree(removeContentBeforeIntroduction((project as any).readme))))}
                       </ReactMarkdown>
                     </div>
                   ) : (
-                    <p className="text-base sm:text-lg lg:text-lg xl:text-xl text-gray-700 leading-relaxed lg:leading-relaxed">
+                    <p className={`text-base sm:text-lg lg:text-lg xl:text-xl text-gray-700 leading-relaxed lg:leading-relaxed ${isHardcodedProject ? 'bg-gray-50 rounded-2xl p-6 sm:p-8 md:p-10 border border-gray-100' : ''}`}>
                       {project.description}
                     </p>
                   )}
                 </div>
               </div>
 
+              {/* Technologies Showcase - Only for hardcoded projects */}
+              {isHardcodedProject && project.technologies && project.technologies.length > 0 && (
+                <div className="w-full">
+                  <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb-4 sm:mb-5 md:mb-6 lg:mb-8">
+                    Technologies Used
+                  </h2>
+                  <div className="flex flex-wrap gap-2 sm:gap-3 md:gap-4">
+                    {project.technologies.map((tech, idx) => (
+                      <span
+                        key={idx}
+                        className="px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 md:py-3 bg-gradient-to-br from-purple-50 to-purple-100 text-purple-700 rounded-xl text-sm sm:text-base font-semibold border border-purple-200 shadow-sm hover:shadow-md transition-shadow duration-200"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Target Audience / Niche */}
               {project.targetAudience && project.targetAudience.length > 0 && (
-                <div>
+                <div className={isHardcodedProject ? 'bg-white rounded-2xl p-6 sm:p-8 md:p-10 border border-gray-200 shadow-sm' : ''}>
                   <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 md:mb-6 lg:mb-8">
                     Target Audience
                   </h2>
@@ -500,9 +531,9 @@ const ProjectDetail = () => {
                     {project.targetAudience.map((audience, index) => (
                       <li
                         key={index}
-                        className="flex items-start gap-2 sm:gap-3 text-sm sm:text-base md:text-lg lg:text-lg xl:text-xl text-gray-700"
+                        className={`flex items-start gap-2 sm:gap-3 text-sm sm:text-base md:text-lg lg:text-lg xl:text-xl text-gray-700 ${isHardcodedProject ? 'pl-2' : ''}`}
                       >
-                        <span className="text-purple-600 leading-[1] mt-1 flex-shrink-0">•</span>
+                        <span className="text-purple-600 leading-[1] mt-1 flex-shrink-0 text-lg sm:text-xl">•</span>
                         <span className="break-words">{audience}</span>
                       </li>
                     ))}
@@ -512,7 +543,7 @@ const ProjectDetail = () => {
 
               {/* Key Features */}
               {project.keyFeatures && project.keyFeatures.length > 0 && (
-                <div>
+                <div className={isHardcodedProject ? 'bg-white rounded-2xl p-6 sm:p-8 md:p-10 border border-gray-200 shadow-sm' : ''}>
                   <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 md:mb-6 lg:mb-8">
                     Key Features
                   </h2>
@@ -520,9 +551,9 @@ const ProjectDetail = () => {
                     {project.keyFeatures.map((feature, index) => (
                       <li
                         key={index}
-                        className="flex items-start gap-2 sm:gap-3 text-sm sm:text-base md:text-lg lg:text-lg xl:text-xl text-gray-700"
+                        className={`flex items-start gap-2 sm:gap-3 text-sm sm:text-base md:text-lg lg:text-lg xl:text-xl text-gray-700 ${isHardcodedProject ? 'pl-2' : ''}`}
                       >
-                        <span className="text-purple-600 leading-[1] mt-1 flex-shrink-0">•</span>
+                        <span className="text-purple-600 leading-[1] mt-1 flex-shrink-0 text-lg sm:text-xl">•</span>
                         <span className="break-words">{feature}</span>
                       </li>
                     ))}
@@ -533,7 +564,7 @@ const ProjectDetail = () => {
               {/* Architecture Highlights */}
               {project.architectureHighlights &&
                 project.architectureHighlights.length > 0 && (
-                  <div>
+                  <div className={isHardcodedProject ? 'bg-white rounded-2xl p-6 sm:p-8 md:p-10 border border-gray-200 shadow-sm' : ''}>
                     <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 md:mb-6 lg:mb-8">
                       Architecture Highlights
                     </h2>
@@ -541,9 +572,9 @@ const ProjectDetail = () => {
                       {project.architectureHighlights.map((highlight, index) => (
                         <li
                           key={index}
-                          className="flex items-start gap-2 sm:gap-3 text-sm sm:text-base md:text-lg lg:text-lg xl:text-xl text-gray-700"
+                          className={`flex items-start gap-2 sm:gap-3 text-sm sm:text-base md:text-lg lg:text-lg xl:text-xl text-gray-700 ${isHardcodedProject ? 'pl-2' : ''}`}
                         >
-                          <span className="text-purple-600 leading-[1] mt-1 flex-shrink-0">
+                          <span className="text-purple-600 leading-[1] mt-1 flex-shrink-0 text-lg sm:text-xl">
                             •
                           </span>
                           <span className="break-words">{highlight}</span>
