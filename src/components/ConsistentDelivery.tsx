@@ -1,3 +1,5 @@
+import { ResponsiveImage } from "@/components/ResponsiveImage";
+
 export const ConsistentDelivery = () => {
   return (
     <section className="bg-white pt-12 sm:pt-16 md:pt-24">
@@ -14,9 +16,10 @@ export const ConsistentDelivery = () => {
             
             {/* Image */}
             <div className="w-full max-w-5xl mx-auto">
-              <img 
+              <ResponsiveImage 
                 src="/client-communication.webp" 
                 alt="Real client communication examples" 
+                width={1024}
                 className="w-full h-auto rounded-lg shadow-lg"
               />
             </div>

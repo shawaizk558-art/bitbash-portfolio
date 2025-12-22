@@ -93,12 +93,18 @@ export default defineConfig(({ mode }) => ({
             return "lenis";
           }
 
-          // Three.js and related libraries - separate chunk (heavy, not critical)
+          // Three.js and related libraries - separate chunk (heavy, not critical, desktop-only)
+          // This will be dynamically imported only on desktop, so it won't affect mobile bundle
           if (
             id.includes("node_modules/three") ||
             id.includes("node_modules/@react-three")
           ) {
             return "three";
+          }
+
+          // Lenis smooth scroll - separate chunk (desktop-only, dynamically imported)
+          if (id.includes("node_modules/lenis")) {
+            return "lenis";
           }
 
           // Separate Radix UI components into UI vendor chunk

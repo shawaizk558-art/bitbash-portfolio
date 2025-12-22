@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Code, Smartphone, Palette, Zap, Database, Globe, Cloud, Github, Building2, ShoppingCart, Rocket, Bot, GitBranch, Shield, Menu, X, Search } from "@/lib/icons";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo, memo, useCallback } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Logo } from "@/components/Logo";
@@ -8,7 +8,7 @@ import { ContactButton } from "@/components/ContactButton";
 import { scrollToTopImmediate } from "@/lib/scrollToTop";
 import { useProjectsSearch } from "@/contexts/ProjectsSearchContext";
 
-export const Navigation = () => {
+const NavigationComponent = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -18,15 +18,28 @@ export const Navigation = () => {
   const { searchQuery, setSearchQuery, filteredCount, totalCount } = useProjectsSearch();
 
   // Track scroll position to show search bar only when scrolled on Projects page
+  // Use throttled handler on mobile to reduce work
+  const handleScroll = useCallback(() => {
+    const scrollY = window.scrollY;
+    setIsScrolled(scrollY > 50); // Show search after scrolling 50px
+  }, []);
+
   useEffect(() => {
     if (!isProjectsPage) return;
 
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      setIsScrolled(scrollY > 50); // Show search after scrolling 50px
+    // On mobile, throttle scroll events more aggressively
+    let ticking = false;
+    const throttledHandleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("scroll", throttledHandleScroll, { passive: true });
     
     // Defer initial scroll check to avoid forced reflow during mount
     // requestAnimationFrame ensures layout is complete before querying scroll position
@@ -35,15 +48,16 @@ export const Navigation = () => {
     });
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", throttledHandleScroll);
     };
-  }, [isProjectsPage]);
+  }, [isProjectsPage, handleScroll]);
 
   const menuToggleRef = useRef<HTMLButtonElement | null>(null);
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
   const servicesRef = useRef<HTMLDivElement | null>(null);
 
-  const servicesMenuItems = [
+  // Memoize menu items to prevent recreation on every render
+  const servicesMenuItems = useMemo(() => [
     {
       title: "Automation",
       description: "Browser, mobile, and workflow automation",
@@ -74,7 +88,7 @@ export const Navigation = () => {
       icon: Rocket,
       href: "/services/saas-mvp",
     },
-  ];
+  ], []);
 
   // Function to check if a page is currently active (mobile only)
   const isActivePage = (path: string) => {
@@ -84,19 +98,20 @@ export const Navigation = () => {
     return location.pathname === path;
   };
 
-  const toggleDropdown = (dropdown: string) => {
-    setOpenDropdown(openDropdown === dropdown ? null : dropdown);
-  };
+  // Memoize handlers to prevent re-renders
+  const toggleDropdown = useCallback((dropdown: string) => {
+    setOpenDropdown(prev => prev === dropdown ? null : dropdown);
+  }, []);
 
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
+  const toggleMobileMenu = useCallback(() => {
+    setMobileMenuOpen(prev => !prev);
     setOpenDropdown(null); // Close any open dropdowns
-  };
+  }, []);
 
-  const closeMobileMenu = () => {
+  const closeMobileMenu = useCallback(() => {
     setMobileMenuOpen(false);
     setOpenDropdown(null);
-  };
+  }, []);
 
   useEffect(() => {
     if (!mobileMenuOpen) return;
@@ -146,7 +161,14 @@ export const Navigation = () => {
 
   return (
     <>
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200">
+    <nav 
+      className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200"
+      style={{ 
+        contain: 'layout style paint',
+        willChange: 'transform',
+        backfaceVisibility: 'hidden'
+      }}
+    >
       <div className="container-responsive px-4 sm:px-0">
         <div className="flex items-center h-14 sm:h-16">
           {/* Logo - Left Side */}
@@ -466,3 +488,6 @@ export const Navigation = () => {
     </>
   );
 };
+
+// Memoize Navigation component to prevent unnecessary re-renders on mobile
+export const Navigation = memo(NavigationComponent);

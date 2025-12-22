@@ -1,4 +1,5 @@
 import { useCallback, useEffect } from "react";
+import { ResponsiveImage } from "@/components/ResponsiveImage";
 
 export interface SocialProofProps {
   className?: string;
@@ -35,13 +36,15 @@ export const SocialProof = ({ className = "", textClassName = "", avatars }: Soc
     <div className={`flex flex-col sm:flex-row items-center justify-center gap-3 ${className}`}> 
       <div className="flex -space-x-2">
         {avatarUrls.slice(0, 5).map((src, i) => (
-          <img
+          <ResponsiveImage
             key={`${src}-${i}`}
-            ref={setHighPriority}
             src={src}
             alt="Team member"
+            width={64}
+            height={64}
             className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover shadow-lg"
             loading="eager"
+            fetchpriority="high"
             decoding="async"
           />
         ))}

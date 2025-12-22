@@ -1,30 +1,47 @@
 
 import { Globe, Smartphone, Database, Zap, Shield, Code, Cloud, Bot, Target, BarChart3, TrendingUp } from "@/lib/icons";
 import { coreServices } from "@/data/services";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, memo, useCallback } from "react";
 import { Link } from "react-router-dom";
+import { ResponsiveImage } from "@/components/ResponsiveImage";
+import { useIsMobile } from "@/hooks/use-mobile";
 
-export const Features = () => {
+const FeaturesComponent = () => {
+  const isMobile = useIsMobile();
   const [activeTab, setActiveTab] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
-  const tabs = coreServices.map((service) => ({
+  // Memoize tabs to prevent recreation on every render
+  const tabs = useMemo(() => coreServices.map((service) => ({
     icon: service.icon,
     title: service.name,
     label: service.label,
     image: service.image,
     description: service.summary
-  }));
+  })), []);
 
-  // Preload all images on component mount
+  // Preload images - defer on mobile to reduce initial work
   useEffect(() => {
-    tabs.forEach((tab) => {
-      const img = new Image();
-      img.src = tab.image;
-    });
-  }, []);
+    if (isMobile) {
+      // On mobile, defer image preloading until after initial render
+      const timer = setTimeout(() => {
+        tabs.forEach((tab) => {
+          const img = new Image();
+          img.src = tab.image;
+        });
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else {
+      // On desktop, preload immediately
+      tabs.forEach((tab) => {
+        const img = new Image();
+        img.src = tab.image;
+      });
+    }
+  }, [tabs, isMobile]);
 
   // Auto-play: Cycle through all tabs automatically
+  // On mobile, use longer interval to reduce work
   useEffect(() => {
     if (isPaused) return;
 
@@ -33,11 +50,11 @@ export const Features = () => {
         // Cycle to next tab, loop back to 0 after reaching last tab
         return (prevTab + 1) % tabs.length;
       });
-    }, 4000); // Change tab every 4 seconds
+    }, isMobile ? 6000 : 4000); // Slower on mobile (6s vs 4s) to reduce CPU work
 
     // Cleanup interval on component unmount
     return () => clearInterval(interval);
-  }, [isPaused, tabs.length]);
+  }, [isPaused, tabs.length, isMobile]);
 
   // Resume auto-play after user interaction
   useEffect(() => {
@@ -50,13 +67,21 @@ export const Features = () => {
     }
   }, [isPaused]);
 
-  const handleTabClick = (index: number) => {
+  // Memoize tab click handler to prevent re-renders
+  const handleTabClick = useCallback((index: number) => {
     setActiveTab(index);
     setIsPaused(true); // Pause auto-play when user manually clicks
-  };
+  }, []);
 
   return (
-    <section id="features" className="py-12 sm:py-16 md:py-24 bg-white overflow-x-hidden">
+    <section 
+      id="features" 
+      className="py-12 sm:py-16 md:py-24 bg-white overflow-x-hidden"
+      style={{ 
+        contain: 'layout style paint',
+        willChange: 'auto'
+      }}
+    >
       <div className="container-responsive">
         <div className="text-center max-w-7xl mx-auto mb-12 sm:mb-16 space-responsive-sm px-4 md:px-8 w-full box-border">
           <h2 className="text-2xl sm:text-3xl md:text-3xl lg:text-4xl xl:text-4xl font-bold text-gray-900 leading-tight px-2 sm:px-0 md:px-6 break-words overflow-wrap-anywhere">
@@ -99,30 +124,44 @@ export const Features = () => {
           </div>
 
           {/* Photo Display Area - Mobile Optimized */}
-          <div className="bg-gradient-to-br from-purple-50 to-white p-2 sm:p-4 relative overflow-visible">
-            <div className="bg-white rounded-lg shadow-xl p-2 sm:p-4 w-full max-w-4xl mx-auto transform translate-y-4 sm:translate-y-6 md:translate-y-8 relative">
+          <div className="bg-gradient-to-br from-purple-50 to-white p-2 sm:p-4 relative overflow-visible" style={{ contain: 'layout style paint' }}>
+            <div className="bg-white rounded-lg shadow-xl p-2 sm:p-4 w-full max-w-4xl mx-auto transform translate-y-4 sm:translate-y-6 md:translate-y-8 relative" style={{ willChange: 'transform', backfaceVisibility: 'hidden' }}>
               {/* Container for maintaining aspect ratio */}
-              <div className="relative w-full overflow-hidden rounded-lg">
+              <div className="relative w-full overflow-hidden rounded-lg" style={{ contain: 'layout style paint' }}>
                 {/* Invisible spacer to maintain container height based on active image */}
-                <img
+                <ResponsiveImage
                   src={tabs[activeTab].image}
                   alt={tabs[activeTab].title}
-                  fetchpriority={activeTab === 0 ? "high" : "auto"}
+                  fetchPriority={activeTab === 0 ? "high" : "auto"}
                   loading="eager"
+                  width={606}
+                  height={265}
                   className="w-full h-auto rounded-lg opacity-0 pointer-events-none"
                 />
                 {/* All images stacked absolutely for seamless crossfade */}
-                {tabs.map((tab, index) => (
-                  <img
-                    key={index}
-                    src={tab.image}
-                    alt={tab.title}
-                    fetchpriority={index === 0 ? "high" : "auto"}
-                    loading={index === 0 ? "eager" : "lazy"}
-                    className={`w-full h-auto rounded-lg absolute top-0 left-0 transition-opacity duration-500 ease-in-out ${activeTab === index ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none'
-                      }`}
-                  />
-                ))}
+                {/* Memoize image rendering to reduce React commits */}
+                {tabs.map((tab, index) => {
+                  const isActive = activeTab === index;
+                  return (
+                    <ResponsiveImage
+                      key={`${tab.image}-${index}`}
+                      src={tab.image}
+                      alt={tab.title}
+                      fetchPriority={index === 0 ? "high" : "auto"}
+                      loading={index === 0 ? "eager" : "lazy"}
+                      width={606}
+                      height={265}
+                      className={`w-full h-auto rounded-lg absolute top-0 left-0 transition-opacity duration-500 ease-in-out ${isActive ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none'
+                        }`}
+                      style={{ 
+                        willChange: 'opacity',
+                        backfaceVisibility: 'hidden',
+                        transform: 'translateZ(0)', // Force GPU acceleration
+                        contain: 'layout style paint' // Isolate style recalculation
+                      }}
+                    />
+                  );
+                })}
               </div>
             </div>
 
@@ -205,9 +244,11 @@ export const Features = () => {
 
             {/* Right side - Visual mockups - Mobile Optimized */}
             <div className="bg-white flex items-center justify-end pl-4 pb-4 pr-0 pt-0 order-1 lg:order-2">
-              <img
+              <ResponsiveImage
                 src="/stack3.webp"
                 alt="Automation System Stack"
+                width={634}
+                height={240}
                 className="w-full md:w-[105%] h-auto object-cover"
               />
             </div>
@@ -219,9 +260,11 @@ export const Features = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2">
             {/* Left side - Visual mockups - Mobile Optimized */}
             <div className="bg-white flex items-center justify-start lg:order-1 pr-4 pb-4 pl-0 pt-0 order-1 lg:order-1">
-              <img
+              <ResponsiveImage
                 src="/stack2.webp"
                 alt="AI Solutions Stack"
+                width={634}
+                height={424}
                 className="w-full md:w-[95%] h-auto object-cover"
               />
             </div>
@@ -378,9 +421,11 @@ export const Features = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2">
             {/* Left side - Visual mockups - Mobile Optimized */}
             <div className="bg-white flex items-center justify-start lg:order-1 pr-4 pb-4 pl-0 pt-0 order-1 lg:order-1">
-              <img
+              <ResponsiveImage
                 src="/stack4.webp"
                 alt="Data Scraping Stack"
+                width={634}
+                height={634}
                 className="w-full md:w-[105%] h-auto object-cover"
               />
             </div>
@@ -472,9 +517,11 @@ export const Features = () => {
 
             {/* Right side - Visual mockups - Mobile Optimized */}
             <div className="bg-white flex items-center justify-end pl-4 pb-4 pr-0 pt-0 order-1 lg:order-2">
-              <img
+              <ResponsiveImage
                 src="/stack5.webp"
                 alt="SaaS & MVP Development Stack"
+                width={634}
+                height={347}
                 className="w-full md:w-[105%] h-auto object-cover"
               />
             </div>
@@ -503,9 +550,11 @@ export const Features = () => {
             <div className="relative w-full aspect-video bg-gray-100 rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg border border-gray-200">
               {/* Placeholder image */}
               <div className="absolute inset-0">
-                <img
+                <ResponsiveImage
                   src="/placeholder.webp"
                   alt="How we work"
+                  width={668}
+                  height={371}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -524,3 +573,6 @@ export const Features = () => {
     </section>
   );
 };
+
+// Memoize Features component to prevent unnecessary re-renders on mobile
+export const Features = memo(FeaturesComponent);

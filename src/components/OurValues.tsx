@@ -1,5 +1,10 @@
-import React, { Suspense } from "react";
-import { ThreeDScene } from "./ThreeDValues";
+import React, { Suspense, lazy } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
+
+// Lazy load ThreeDScene only on desktop - skip entirely on mobile
+const ThreeDScene = lazy(() => 
+  import("./ThreeDValues").then(module => ({ default: module.ThreeDScene }))
+);
 
 const values = [
     {
@@ -35,6 +40,8 @@ const values = [
 ];
 
 export const OurValues = () => {
+    const isMobile = useIsMobile();
+
     return (
         <section className="py-24 bg-white">
             <div className="container px-4 mx-auto">
@@ -54,10 +61,18 @@ export const OurValues = () => {
                             <div className="absolute inset-0 bg-gradient-to-br from-purple-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                             <div className="relative z-10 flex flex-col items-center text-center">
-                                <div className="w-full h-48 mb-8 rounded-xl flex items-center justify-center overflow-hidden">
-                                    <Suspense fallback={<div className="w-8 h-8 rounded-full bg-purple-200 animate-pulse" />}>
-                                        <ThreeDScene type={value.type} />
-                                    </Suspense>
+                                <div className="w-full h-48 mb-8 rounded-xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-purple-50 to-purple-100">
+                                    {isMobile ? (
+                                        // Mobile: Show simple icon placeholder instead of 3D scene
+                                        <div className="w-16 h-16 rounded-full bg-purple-200 flex items-center justify-center">
+                                            <span className="text-2xl font-bold text-purple-600">{value.title.charAt(0)}</span>
+                                        </div>
+                                    ) : (
+                                        // Desktop: Load 3D scene lazily
+                                        <Suspense fallback={<div className="w-8 h-8 rounded-full bg-purple-200 animate-pulse" />}>
+                                            <ThreeDScene type={value.type} />
+                                        </Suspense>
+                                    )}
                                 </div>
 
                                 <h3 className="text-2xl font-bold text-gray-900 mb-4">

@@ -19,7 +19,8 @@
     "add-project": "node scripts/add-project-direct.js",
     "schema:test": "tsx scripts/schema-check.ts",
     "schema:snapshot": "tsx scripts/schema-check.ts --write",
-    "test:mongodb-sync": "tsx scripts/test-mongodb-sync.ts"
+    "test:mongodb-sync": "tsx scripts/test-mongodb-sync.ts",
+    "optimize-images": "tsx scripts/generate-image-sizes.ts"
   },
   "dependencies": {
     "@radix-ui/react-dropdown-menu": "^2.1.15",

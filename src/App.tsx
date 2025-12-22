@@ -28,10 +28,6 @@ const OurWorkModel = lazy(() => import("./pages/OurWorkModel"));
 const Careers = lazy(() => import("./pages/Careers"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
-// Lazy load mobile optimization components
-const MobileViewport = lazy(() => import("@/components/MobileViewport"));
-const MobileOptimizations = lazy(() => import("@/components/MobileOptimizations"));
-
 const App = () => {
   // Initialize smooth scrolling globally for all pages
   useSmoothScroll();
@@ -40,10 +36,6 @@ const App = () => {
     <HelmetProvider>
       <TooltipProvider>
         <ProjectsSearchProvider>
-          <Suspense fallback={null}>
-            <MobileViewport />
-            <MobileOptimizations />
-          </Suspense>
           <ToastContainer />
           <SonnerToaster />
           <BrowserRouter>

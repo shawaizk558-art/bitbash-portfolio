@@ -51,7 +51,7 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
         };
         
         const draw = () => {
-            if (!isDesktop() || document.hidden) {
+            if (!isDesktop() || document.hidden || !isIntersecting) {
                 animationFrameId = null;
                 clearCanvas();
                 return;
@@ -144,6 +144,27 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
         handleVisibility();
         window.addEventListener('resize', handleResize);
         
+        // Use IntersectionObserver to pause animation when canvas is not visible
+        let intersectionObserver: IntersectionObserver | null = null;
+        let isIntersecting = true;
+        
+        if (typeof window !== 'undefined' && 'IntersectionObserver' in window) {
+            intersectionObserver = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        isIntersecting = entry.isIntersecting;
+                        if (!isIntersecting && animationFrameId) {
+                            stopAnimation();
+                        } else if (isIntersecting && !animationFrameId && isDesktop() && !document.hidden) {
+                            startAnimation();
+                        }
+                    });
+                },
+                { threshold: 0 }
+            );
+            intersectionObserver.observe(canvas);
+        }
+        
         // Throttle scroll updates to avoid jank - use requestAnimationFrame for smoother updates
         let scrollRafId: number | null = null;
         
@@ -172,6 +193,9 @@ export const InteractiveGridPattern = ({ className }: InteractiveGridPatternProp
             window.removeEventListener('resize', handleResize);
             if (supportsResizeObserver && resizeObserver) {
                 resizeObserver.disconnect();
+            }
+            if (intersectionObserver) {
+                intersectionObserver.disconnect();
             }
             window.removeEventListener('scroll', throttledScroll);
             if (scrollRafId !== null) {

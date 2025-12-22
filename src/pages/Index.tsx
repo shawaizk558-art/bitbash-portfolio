@@ -1,14 +1,15 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Hero } from "@/components/Hero";
 import { Features } from "@/components/Features";
-import { HomepageSchema } from "@/components/HomepageSchema";
 import { SEO } from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
 import { LazySection } from "@/components/LazySection";
 
+// Lazy load schema generation to defer heavy JSON-LD work
+const HomepageSchema = lazy(() => import("@/components/HomepageSchema").then(m => ({ default: m.HomepageSchema })));
+
 // Lazy load below-the-fold components to reduce critical request chain
-// Components now have default exports for simpler lazy loading
 const Showcase = lazy(() => import("@/components/Showcase"));
 const FAQ = lazy(() => import("@/components/FAQ"));
 const CTA = lazy(() => import("@/components/CTA"));
@@ -28,13 +29,16 @@ const Index = () => {
         <link rel="preload" as="image" href="/fullstack1.webp" fetchPriority="high" />
         {/* YouTube preconnects are already in index.html - removed duplicates to reduce preconnect count */}
       </Helmet>
-      <HomepageSchema />
+      {/* Defer schema generation until after initial render */}
+      <Suspense fallback={null}>
+        <HomepageSchema />
+      </Suspense>
       <Navigation />
       <Hero />
       <Features />
       {/* Lazy-loaded below-the-fold components with Intersection Observer */}
-      {/* Only start loading when components are about to enter viewport */}
-      <LazySection>
+      {/* On mobile, Showcase waits for user interaction to reduce initial JS execution */}
+      <LazySection waitForInteraction={true}>
         <Suspense fallback={null}>
           <Showcase />
         </Suspense>

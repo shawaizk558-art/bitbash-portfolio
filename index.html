@@ -16,50 +16,8 @@
   <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
   <link rel="dns-prefetch" href="https://www.google-analytics.com" />
 
-  <!-- Google tag (gtag.js) - Ultra-deferred to minimize unused JS -->
-  <script>
-    (function (w, d, id) {
-      w.dataLayer = w.dataLayer || [];
-      function gtag() { w.dataLayer.push(arguments); }
-      w.gtag = gtag;
-      gtag('js', new Date());
-      gtag('config', id);
-
-      let gtagLoaded = false;
-      let interactionDetected = false;
-
-      const loadGtag = () => {
-        if (gtagLoaded) return;
-        gtagLoaded = true;
-        const script = d.createElement('script');
-        script.id = 'gtag-js';
-        script.async = true;
-        script.src = `https://www.googletagmanager.com/gtag/js?id=${id}`;
-        d.head.appendChild(script);
-      };
-
-      // Only load GTM after user interaction or after 10s
-      const handleInteraction = () => {
-        if (!interactionDetected) {
-          interactionDetected = true;
-          // Wait additional 2s after first interaction
-          setTimeout(loadGtag, 2000);
-        }
-      };
-
-      // Delayed loading - increased to 10s
-      if ('requestIdleCallback' in w) {
-        w.requestIdleCallback(loadGtag, { timeout: 10000 });
-      } else {
-        w.setTimeout(loadGtag, 10000);
-      }
-
-      // Load on first meaningful interaction
-      ['scroll', 'click', 'keydown', 'touchstart'].forEach((evt) => {
-        w.addEventListener(evt, handleInteraction, { once: true, passive: true });
-      });
-    })(window, document, 'G-9RM36DRDK7');
-  </script>
+  <!-- Google tag (gtag.js) - Completely deferred, no synchronous execution -->
+  <!-- Moved to end of body to avoid blocking initial render -->
   <link rel="canonical" href="https://bitbash.dev/" />
   <link rel="alternate" href="https://bitbash.dev/" hreflang="en" />
   <meta name="theme-color" content="#0f0b1d" />
@@ -113,105 +71,144 @@
   <!-- Preconnect & async load Google Fonts to reduce render blocking -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preload" as="style"
-    href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&display=swap" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&display=swap"
-    media="print" onload="this.media='all'" />
+  <!-- Defer font loading until after initial render -->
+  <script>
+    // Load fonts after page load to avoid blocking
+    window.addEventListener('load', function() {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&display=swap';
+      document.head.appendChild(link);
+    }, { once: true });
+  </script>
   <noscript>
     <link rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&display=swap" />
   </noscript>
 
-  <!-- JSON-LD: Organization -->
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "BitBash",
-      "url": "https://bitbash.dev/",
-      "logo": "https://bitbash.dev/favicon.png",
-      "description": "The No 1 Automation Company in the World, Built for Success. Providing full stack development, AI automation, and intelligent business solutions.",
-      "sameAs": [
-        "https://www.linkedin.com/company/bitbash-dev",
-        "https://github.com/bitbash-dev"
-      ],
-      "contactPoint": [
-        {
-          "@type": "ContactPoint",
-          "contactType": "sales",
-          "email": "hello@bitbash.dev",
-          "areaServed": "Global",
-          "availableLanguage": ["en"]
-        }
-      ]
-    }
-    </script>
-
-  <!-- JSON-LD: WebSite -->
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "BitBash",
-      "url": "https://bitbash.dev/",
-      "inLanguage": "en",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://bitbash.dev/search?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
-    }
-    </script>
-
-  <!-- JSON-LD: WebPage (Home) -->
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebPage",
-      "name": "BitBash - Transform Your Business with Intelligent Solutions",
-      "url": "https://bitbash.dev/",
-      "description": "The No 1 Automation Company in the World, Built for Success. The Complete Platform for Modern Teams and Innovators. Experience lightning-fast performance, enterprise security, and AI-powered automation.",
-      "isPartOf": {
-        "@type": "WebSite",
-        "name": "BitBash",
-        "url": "https://bitbash.dev/"
-      },
-      "breadcrumb": "https://bitbash.dev/#breadcrumbs"
-    }
-    </script>
-
-  <!-- JSON-LD: BreadcrumbList (Home) -->
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": "https://bitbash.dev/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Solutions",
-          "item": "https://bitbash.dev/#features"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "Docs",
-          "item": "https://bitbash.dev/docs"
-        }
-      ]
-    }
-    </script>
+  <!-- JSON-LD scripts moved to end of body to defer parsing -->
 </head>
 
 <body>
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
+  
+  <!-- JSON-LD: Loaded after initial render to reduce parsing work -->
+  <script>
+    // Defer JSON-LD parsing until after page load
+    if (document.readyState === 'complete') {
+      loadJsonLd();
+    } else {
+      window.addEventListener('load', loadJsonLd, { once: true });
+    }
+    
+    function loadJsonLd() {
+      const schemas = [
+        {
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "BitBash",
+          "url": "https://bitbash.dev/",
+          "logo": "https://bitbash.dev/favicon.png",
+          "description": "The No 1 Automation Company in the World, Built for Success. Providing full stack development, AI automation, and intelligent business solutions.",
+          "sameAs": [
+            "https://www.linkedin.com/company/bitbash-dev",
+            "https://github.com/bitbash-dev"
+          ],
+          "contactPoint": [{
+            "@type": "ContactPoint",
+            "contactType": "sales",
+            "email": "hello@bitbash.dev",
+            "areaServed": "Global",
+            "availableLanguage": ["en"]
+          }]
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": "BitBash",
+          "url": "https://bitbash.dev/",
+          "inLanguage": "en",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://bitbash.dev/search?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": "BitBash - Transform Your Business with Intelligent Solutions",
+          "url": "https://bitbash.dev/",
+          "description": "The No 1 Automation Company in the World, Built for Success. The Complete Platform for Modern Teams and Innovators. Experience lightning-fast performance, enterprise security, and AI-powered automation.",
+          "isPartOf": {
+            "@type": "WebSite",
+            "name": "BitBash",
+            "url": "https://bitbash.dev/"
+          },
+          "breadcrumb": "https://bitbash.dev/#breadcrumbs"
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://bitbash.dev/" },
+            { "@type": "ListItem", "position": 2, "name": "Solutions", "item": "https://bitbash.dev/#features" },
+            { "@type": "ListItem", "position": 3, "name": "Docs", "item": "https://bitbash.dev/docs" }
+          ]
+        }
+      ];
+      
+      schemas.forEach(schema => {
+        const script = document.createElement('script');
+        script.type = 'application/ld+json';
+        script.textContent = JSON.stringify(schema);
+        document.head.appendChild(script);
+      });
+    }
+  </script>
+  
+  <!-- Google tag (gtag.js) - Loaded after page render to avoid blocking -->
+  <script>
+    // Defer gtag initialization until after page load
+    if (document.readyState === 'complete') {
+      initGtag();
+    } else {
+      window.addEventListener('load', initGtag, { once: true });
+    }
+    
+    function initGtag() {
+      // Further defer until idle or after 15s
+      const loadGtag = () => {
+        const w = window;
+        const d = document;
+        const id = 'G-9RM36DRDK7';
+        
+        w.dataLayer = w.dataLayer || [];
+        function gtag() { w.dataLayer.push(arguments); }
+        w.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', id);
+        
+        const script = d.createElement('script');
+        script.id = 'gtag-js';
+        script.async = true;
+        script.src = `https://www.googletagmanager.com/gtag/js?id=${id}`;
+        d.head.appendChild(script);
+      };
+      
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(loadGtag, { timeout: 15000 });
+      } else {
+        setTimeout(loadGtag, 15000);
+      }
+      
+      // Load on first interaction (after page load)
+      ['scroll', 'click', 'keydown', 'touchstart'].forEach((evt) => {
+        window.addEventListener(evt, loadGtag, { once: true, passive: true });
+      });
+    }
+  </script>
 </body>
 
 </html>

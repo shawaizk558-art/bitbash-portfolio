@@ -20,8 +20,14 @@ export const Hero = ({ title, subtitle, variant = "default", buttons }: HeroProp
   // Default values for index page
   const defaultTitle = (
     <span className="block sm:inline">
-      Your Software, Built <span className="text-purple-600">Right</span> — Delivered
-      <br className="md:block lg:hidden" /> <span className="text-purple-600">Fast</span> by a Team You Can Count On.
+      Your Software, Built <span className="text-purple-600">Right</span>
+      <span className="sm:hidden">
+        <br /> — Delivered <span className="text-purple-600">Fast</span>
+        <br /> by a Team You Can Count On.
+      </span>
+      <span className="hidden sm:inline">
+        {" "}— Delivered <span className="text-purple-600">Fast</span> by a Team You Can Count On.
+      </span>
     </span>
   );
   const defaultSubtitle = "The No 1 Automation Company in the World, Built for Success.";
@@ -39,26 +45,26 @@ export const Hero = ({ title, subtitle, variant = "default", buttons }: HeroProp
   // Compact: Projects page heights (42vh-50vh)
   const heightClasses = variant === "compact"
     ? "min-h-[clamp(200px,40vh,320px)] sm:min-h-[clamp(260px,46vh,380px)] md:min-h-[clamp(300px,50vh,420px)] lg:min-h-[clamp(280px,48vh,400px)] 2xl:min-h-[clamp(300px,46vh,420px)]"
-    : "hero-tablet-height min-h-[clamp(250px,45vh,380px)] sm:min-h-[clamp(350px,55vh,450px)] md:min-h-[clamp(420px,65vh,540px)] lg:min-h-[clamp(360px,65vh,520px)] 2xl:min-h-[clamp(360px,64vh,560px)]";
+    : "hero-tablet-height min-h-[clamp(280px,48vh,400px)] sm:min-h-[clamp(350px,55vh,450px)] md:min-h-[clamp(420px,65vh,540px)] lg:min-h-[clamp(360px,65vh,520px)] 2xl:min-h-[clamp(360px,64vh,560px)]";
 
   // Padding adjustments for compact variant
   const paddingClasses = variant === "compact"
     ? "pt-12 pb-4 sm:pt-14 sm:pb-6 lg:pb-8 xl:pb-12"
-    : "pt-10 pb-4 sm:pt-12 sm:pb-6 md:pb-8 lg:pb-0";
+    : "pt-16 pb-4 sm:pt-12 sm:pb-6 md:pb-8 lg:pb-0";
 
   return (
-    <section className={`relative ${heightClasses} flex items-center justify-center overflow-hidden ${paddingClasses}`}>
+    <section className={`relative ${heightClasses} flex items-start sm:items-center justify-center overflow-hidden ${paddingClasses}`}>
       <HeroBackground />
 
 
-      <div className="relative z-10 container-responsive text-center 2xl:-mt-4">
+      <div className="relative z-10 container-responsive px-4 sm:px-0 text-center 2xl:-mt-4 my-6 sm:my-0">
         <div className="max-w-4xl mx-auto space-responsive-lg animate-fade-in">
           {/* Core project hero content (title + description) */}
           <div
-            className="space-responsive-sm mt-4 sm:mt-8 lg:mt-10"
+            className="space-responsive-sm mt-3 sm:mt-8 lg:mt-10"
             data-project-hero-core="true"
           >
-            <h1 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-bold leading-[1.1] tracking-tight font-sans px-2 sm:px-0">
+            <h1 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-bold leading-[1.1] tracking-tight font-sans px-2 sm:px-0 ml-4 md:ml-0">
               {title ? <span className="block sm:inline">{title}</span> : defaultTitle}
             </h1>
 

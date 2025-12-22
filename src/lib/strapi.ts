@@ -9,13 +9,37 @@
 
 import type { Project } from '@/data/projects';
 import { cache, CACHE_KEYS, requestDeduplicator } from './cache';
-// Use import attribute for NodeNext compatibility (Vercel type checking)
-// Vite bundler mode will handle this correctly
-import projectsJson from '@/data/strapi-projects.json' with { type: 'json' };
 
-const STATIC_PROJECTS: Project[] = Array.isArray(projectsJson)
-  ? (projectsJson as Project[])
-  : [];
+// Lazy load large JSON file to reduce initial bundle size
+let STATIC_PROJECTS_CACHE: Project[] | null = null;
+
+async function loadStaticProjects(): Promise<Project[]> {
+  if (STATIC_PROJECTS_CACHE !== null) {
+    return STATIC_PROJECTS_CACHE;
+  }
+  
+  // Dynamic import to defer loading until needed
+  // Use fetch for JSON files since esbuild doesn't support import attributes
+  try {
+    const response = await fetch('/data/strapi-projects.json');
+    if (!response.ok) {
+      console.warn('Failed to load strapi-projects.json, using empty array');
+      STATIC_PROJECTS_CACHE = [];
+      return STATIC_PROJECTS_CACHE;
+    }
+    const projectsJson = await response.json();
+    STATIC_PROJECTS_CACHE = Array.isArray(projectsJson)
+      ? (projectsJson as Project[])
+      : [];
+  } catch (error) {
+    console.warn('Error loading strapi-projects.json:', error);
+    STATIC_PROJECTS_CACHE = [];
+  }
+  
+  return STATIC_PROJECTS_CACHE;
+}
+
+const STATIC_PROJECTS: Project[] = [];
 
 /**
  * Transform Strapi project to frontend Project interface
@@ -136,7 +160,8 @@ export async function getProjects(params: {
   sort?: string;
   pagination?: { page: number; pageSize: number };
 } = {}): Promise<Project[]> {
-  return applyFiltersAndSort(STATIC_PROJECTS, params);
+  const projects = await loadStaticProjects();
+  return applyFiltersAndSort(projects, params);
 }
 
 /**
@@ -146,7 +171,8 @@ export async function getProjects(params: {
  * @returns Promise<Project | null>
  */
 export async function getProjectBySlug(slug: string): Promise<Project | null> {
-  return STATIC_PROJECTS.find((p) => p.slug === slug) || null;
+  const projects = await loadStaticProjects();
+  return projects.find((p) => p.slug === slug) || null;
 }
 
 /**
