@@ -7,6 +7,7 @@ import { reactGrab } from "react-grab/plugins/vite";
 import Critters from "critters";
 import { visualizer } from "rollup-plugin-visualizer";
 
+
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   server: {
@@ -33,39 +34,48 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  esbuild: {
+    // Drop console and debugger statements in production
+    drop: mode === "production" ? ["console", "debugger"] : [],
+    // Ensure proper handling of React to prevent initialization issues
+    legalComments: "none",
+    treeShaking: true,
+  },
+  optimizeDeps: {
+    // Force pre-bundling of React to ensure proper initialization order
+    include: ["react", "react-dom", "react/jsx-runtime"],
+    // Exclude problematic packages from optimization
+    exclude: [],
+  },
   build: {
     // Enable CSS code splitting for better caching
     cssCodeSplit: true,
 
-    // Use terser for better minification
-    minify: "terser",
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true,
-        pure_funcs: ["console.log", "console.info"],
-        passes: 2,
-      },
-      mangle: {
-        safari10: true,
-      },
-    },
+    // Use esbuild for minification (Vite's default, handles React better)
+    minify: "esbuild",
+    // Disable sourcemaps in production for smaller builds
+    sourcemap: false,
 
     // Chunk size warnings
     chunkSizeWarningLimit: 500,
 
     rollupOptions: {
       output: {
-        // Manual chunk splitting - aggressively optimized to reduce critical path depth
-        manualChunks: (id) => {
-          // React core - smallest possible chunk (most critical)
-          if (id.includes("node_modules/react/") && !id.includes("react-dom")) {
-            return "react-core";
-          }
-          
-          // React-DOM in separate chunk (loads in parallel with react-core)
-          if (id.includes("node_modules/react-dom")) {
-            return "react-dom";
+        // Manual chunk splitting - optimized to reduce critical path depth
+        // IMPORTANT: Keep React and React-DOM together to avoid initialization order issues
+        manualChunks: (id, { getModuleInfo }) => {
+          // React and React-DOM together - prevents "Cannot access before initialization" errors
+          // This MUST be the first check to ensure React loads before everything else
+          // Include all React-related modules in the same chunk
+          if (
+            id.includes("node_modules/react/") || 
+            id.includes("node_modules/react-dom") ||
+            id.includes("node_modules/react/jsx-runtime") ||
+            id.includes("node_modules/react/jsx-dev-runtime") ||
+            id.includes("node_modules/react/index.js") ||
+            id.includes("node_modules/react-dom/client")
+          ) {
+            return "react-vendor";
           }
 
           // Router in separate chunk (can load in parallel, not needed immediately)
@@ -139,6 +149,8 @@ export default defineConfig(({ mode }) => ({
           return `assets/${facadeModuleId}-[hash].js`;
         },
       },
+      // Ensure proper module resolution order to prevent initialization issues
+      preserveEntrySignatures: 'strict',
     },
   },
 }));
@@ -214,12 +226,12 @@ function addModulePreload(): Plugin {
 
       const html = await fs.readFile(htmlPath, "utf8");
 
-      // Find critical chunks in manifest (react-core, react-dom, and entry chunks)
+      // Find critical chunks in manifest (react-vendor and entry chunks)
       const preloadLinks: string[] = [];
       for (const [key, value] of Object.entries(manifest)) {
         if (
           value.isEntry ||
-          (value.name && (value.name === "react-core" || value.name === "react-dom"))
+          (value.name && value.name === "react-vendor")
         ) {
           if (value.file && value.file.endsWith(".js")) {
             const filePath = value.file.startsWith("/") ? value.file : `/${value.file}`;

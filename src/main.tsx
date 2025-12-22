@@ -1,3 +1,5 @@
+// Import React first to ensure proper initialization order
+import "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";

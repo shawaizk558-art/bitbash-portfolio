@@ -356,3 +356,5 @@ export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
     </footer>
   );
 };
+
+export default Footer;

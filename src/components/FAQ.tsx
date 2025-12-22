@@ -120,3 +120,5 @@ export const FAQ = ({ variant = "default" }: FAQProps) => {
   );
 };
 
+export default FAQ;
+

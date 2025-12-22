@@ -9,14 +9,8 @@ interface ProjectsSearchContextType {
   setTotalCount: (count: number) => void;
 }
 
-const ProjectsSearchContext = createContext<ProjectsSearchContextType>({
-  searchQuery: "",
-  setSearchQuery: () => {},
-  filteredCount: 0,
-  setFilteredCount: () => {},
-  totalCount: 0,
-  setTotalCount: () => {},
-});
+// Use undefined as default to avoid minification issues with function references
+const ProjectsSearchContext = createContext<ProjectsSearchContextType | undefined>(undefined);
 
 export const ProjectsSearchProvider = ({ children }: { children: ReactNode }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -38,5 +32,9 @@ export const ProjectsSearchProvider = ({ children }: { children: ReactNode }) =>
 };
 
 export const useProjectsSearch = () => {
-  return useContext(ProjectsSearchContext);
+  const context = useContext(ProjectsSearchContext);
+  if (context === undefined) {
+    throw new Error("useProjectsSearch must be used within a ProjectsSearchProvider");
+  }
+  return context;
 };

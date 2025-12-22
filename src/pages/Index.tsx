@@ -8,19 +8,11 @@ import { Helmet } from "react-helmet-async";
 import { LazySection } from "@/components/LazySection";
 
 // Lazy load below-the-fold components to reduce critical request chain
-// Convert named exports to default exports for React.lazy()
-const Showcase = lazy(() => import("@/components/Showcase").then((module) => {
-  return { default: module.Showcase };
-}));
-const FAQ = lazy(() => import("@/components/FAQ").then((module) => {
-  return { default: module.FAQ };
-}));
-const CTA = lazy(() => import("@/components/CTA").then((module) => {
-  return { default: module.CTA };
-}));
-const Footer = lazy(() => import("@/components/Footer").then((module) => {
-  return { default: module.Footer };
-}));
+// Components now have default exports for simpler lazy loading
+const Showcase = lazy(() => import("@/components/Showcase"));
+const FAQ = lazy(() => import("@/components/FAQ"));
+const CTA = lazy(() => import("@/components/CTA"));
+const Footer = lazy(() => import("@/components/Footer"));
 
 const Index = () => {
   return (

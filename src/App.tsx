@@ -28,17 +28,9 @@ const OurWorkModel = lazy(() => import("./pages/OurWorkModel"));
 const Careers = lazy(() => import("./pages/Careers"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
-const MobileViewport = lazy(() =>
-  import("@/components/MobileOptimizations").then((module) => ({
-    default: module.MobileViewport,
-  }))
-);
-
-const MobileOptimizations = lazy(() =>
-  import("@/components/MobileOptimizations").then((module) => ({
-    default: module.MobileOptimizations,
-  }))
-);
+// Lazy load mobile optimization components
+const MobileViewport = lazy(() => import("@/components/MobileViewport"));
+const MobileOptimizations = lazy(() => import("@/components/MobileOptimizations"));
 
 const App = () => {
   // Initialize smooth scrolling globally for all pages
