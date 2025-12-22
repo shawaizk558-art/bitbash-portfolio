@@ -32,7 +32,9 @@ export const HeroBackground = () => {
             </div>
 
             {/* Interactive Dotted Background */}
-            <InteractiveGridPattern className="z-0 opacity-60" />
+            {/* Ensure grid is above white background but below content */}
+            {/* Note: Grid pattern only animates on desktop (>=1024px), but canvas still renders on mobile */}
+            <InteractiveGridPattern className="z-[1] opacity-80" />
         </>
     );
 };

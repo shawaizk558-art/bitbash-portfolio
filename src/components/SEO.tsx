@@ -13,7 +13,7 @@ interface SEOProps {
 export const SEO = ({ title, description, canonical, image, robots = "index, follow", keywords, structuredData }: SEOProps) => {
     const siteUrl = 'https://bitbash.dev';
     const fullUrl = canonical ? `${siteUrl}${canonical}` : siteUrl;
-    const metaImage = image ? `${siteUrl}${image}` : `${siteUrl}/placeholder.jpeg`;
+    const metaImage = image ? `${siteUrl}${image}` : `${siteUrl}/placeholder.webp`;
 
     return (
         <Helmet>

@@ -61,7 +61,7 @@ export const Testimonials = () => {
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3 min-w-0">
                         <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-white flex items-center justify-center flex-shrink-0">
-                          <img src="/kareem.jpg" alt="Kareem" className="w-full h-full object-cover" />
+                          <img src="/kareem.webp" alt="Kareem" className="w-full h-full object-cover" />
                         </div>
                         <div className="min-w-0">
                           <p className="text-white font-bold text-sm sm:text-base truncate">Kareem</p>
@@ -121,7 +121,7 @@ export const Testimonials = () => {
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3 min-w-0">
                         <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-white flex items-center justify-center flex-shrink-0">
-                          <img src="/odeta-pfp.png" alt="Odeta" className="w-full h-full object-cover" />
+                          <img src="/odeta-pfp.webp" alt="Odeta" className="w-full h-full object-cover" />
                         </div>
                         <div className="min-w-0">
                           <p className="text-white font-bold text-sm sm:text-base truncate">Odeta</p>
@@ -182,7 +182,7 @@ export const Testimonials = () => {
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3 min-w-0">
                         <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-white flex items-center justify-center flex-shrink-0">
-                          <img src="/hugo-pfp.jpeg" alt="Hugo Sanders" className="w-full h-full object-cover" />
+                          <img src="/hugo-pfp.webp" alt="Hugo Sanders" className="w-full h-full object-cover" />
                         </div>
                         <div className="min-w-0">
                           <p className="text-white font-bold text-sm sm:text-base truncate">Hugo Sanders</p>
@@ -256,7 +256,7 @@ export const Testimonials = () => {
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3 min-w-0">
                         <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-white flex items-center justify-center flex-shrink-0">
-                          <img src="/syed-pfp.png" alt="Syed" className="w-full h-full object-cover" />
+                          <img src="/syed-pfp.webp" alt="Syed" className="w-full h-full object-cover" />
                         </div>
                         <div className="min-w-0">
                           <p className="text-white font-bold text-sm sm:text-base truncate">Syed</p>

@@ -26,8 +26,13 @@ export const Navigation = () => {
       setIsScrolled(scrollY > 50); // Show search after scrolling 50px
     };
 
-    window.addEventListener("scroll", handleScroll);
-    handleScroll(); // Check initial scroll position
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    
+    // Defer initial scroll check to avoid forced reflow during mount
+    // requestAnimationFrame ensures layout is complete before querying scroll position
+    requestAnimationFrame(() => {
+      handleScroll();
+    });
 
     return () => {
       window.removeEventListener("scroll", handleScroll);

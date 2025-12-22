@@ -8,8 +8,8 @@ export const PaymentMethods = () => {
     },
     {
       name: "Payoneer",
-      logo: "/logos/Payoneer.png",
-      fallback: "/logos/Payoneer.png",
+      logo: "/logos/Payoneer.webp",
+      fallback: "/logos/Payoneer.webp",
       description: "Global payment platform"
     },
     {

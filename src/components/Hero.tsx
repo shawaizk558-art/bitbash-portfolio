@@ -90,7 +90,7 @@ export const Hero = ({ title, subtitle, variant = "default", buttons }: HeroProp
             {/* Social Proof - Reusable */}
             <SocialProof
               className="pt-6 sm:pt-8 pb-4 sm:pb-8 lg:pb-8"
-              avatars={["/zee.jpg", "/awais.jpg", "/hassan-arslan.png", "/mughees.jpg", "/fras.png"]}
+              avatars={["/zee.webp", "/awais.webp", "/hassan-arslan.webp", "/mughees.webp", "/fras.webp"]}
             />
           </div>
         </div>

@@ -1,5 +1,6 @@
-// Import LinkedIn logo statically to ensure it's bundled correctly in production
-import linkedinLogo from "@/assets/avatars/linkedin.svg";
+// Use string path for LinkedIn logo to avoid blocking critical path
+// SVG will be loaded on-demand when needed, not during initial bundle
+const LINKEDIN_LOGO_PATH = "/avatars/linkedin.svg";
 
 type MediaAsset = {
   videoKey: string | null;
@@ -20,14 +21,14 @@ const MEDIA_MAP: Record<string, Partial<MediaAsset>> = {
   "actuary-list": {
     videoKey: "actuarylist",
     alt: "Actuary List website preview",
-    avatarSrc: "/actuarylist-logo.png",
+    avatarSrc: "/actuarylist-logo.webp",
     avatarAlt: "Actuary List Logo",
     avatarWrapperClass: "bg-white",
   },
   "scraper-glass": {
     videoKey: "scraperglass",
     alt: "Scraper Glass website preview",
-    avatarSrc: "/scraperglass-logo.png",
+    avatarSrc: "/scraperglass-logo.webp",
     avatarAlt: "Scraper Glass Logo",
   },
   "threads-scraper": {
@@ -47,7 +48,7 @@ const MEDIA_MAP: Record<string, Partial<MediaAsset>> = {
   ttinit: {
     videoKey: "ttinit",
     alt: "TTinit TikTok Shop Affiliate Outreach Bot preview",
-    avatarSrc: "/ttinit-logo.png",
+    avatarSrc: "/ttinit-logo.webp",
     avatarAlt: "TTinit Logo",
   },
   "spotify-bot": {
@@ -60,7 +61,7 @@ const MEDIA_MAP: Record<string, Partial<MediaAsset>> = {
   purepeak: {
     videoKey: "purepeak",
     alt: "PurePeak TikTok Shop scaling preview",
-    avatarSrc: "/purepeak_ltd_logo.jpeg",
+    avatarSrc: "/purepeak_ltd_logo.webp",
     avatarAlt: "PurePeak Logo",
   },
   "facebook-scraper": {
@@ -73,7 +74,7 @@ const MEDIA_MAP: Record<string, Partial<MediaAsset>> = {
   "linkedin-automation": {
     videoKey: "linkedin-automation",
     alt: "LinkedIn Automation System preview",
-    avatarSrc: linkedinLogo, // Use imported path to ensure proper bundling
+    avatarSrc: LINKEDIN_LOGO_PATH, // Use string path to avoid blocking critical path
     avatarAlt: "LinkedIn Logo",
     avatarWrapperClass: "bg-white p-1.5",
   },
@@ -118,5 +119,5 @@ export const getVideoSources = (videoKey: string) => [
 ];
 
 export const getPosterPath = (videoKey: string) =>
-  `/media-posters/${videoKey}.jpg`;
+  `/media-posters/${videoKey}.webp`;
 

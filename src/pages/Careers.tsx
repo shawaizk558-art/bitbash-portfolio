@@ -539,7 +539,7 @@ const Careers = () => {
               <div className="relative h-64 sm:h-80 md:h-96 lg:h-full min-h-[250px]">
                 <div className="h-full overflow-hidden shadow-xl bg-gradient-to-br from-purple-100 to-purple-50">
                   <img
-                    src="/team Large.png"
+                    src="/team Large.webp"
                     alt="BitBash Team"
                     className="w-full h-full object-cover"
                   />
@@ -552,7 +552,7 @@ const Careers = () => {
               <div className="relative h-64 sm:h-80 md:h-96 lg:h-full min-h-[250px] order-1 lg:order-1">
                 <div className="h-full overflow-hidden shadow-xl bg-gradient-to-br from-purple-100 to-purple-50">
                   <img
-                    src="/silent-zone Large.png"
+                    src="/silent-zone Large.webp"
                     alt="BitBash Office / Work Environment"
                     className="w-full h-full object-cover"
                   />

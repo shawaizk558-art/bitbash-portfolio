@@ -88,7 +88,7 @@ const features = [
             "Practical solutions that drive your project's success."
         ],
         icon: Cloud,
-        image: "/images/how-we-work/solution_architect.png",
+        image: "/images/how-we-work/solution_architect.webp",
         label: "ARCHITECTURE"
     },
     {
@@ -100,7 +100,7 @@ const features = [
             "Data-driven decision making for project timelines"
         ],
         icon: FileText,
-        image: "/images/how-we-work/bashlog_reporting.png",
+        image: "/images/how-we-work/bashlog_reporting.webp",
         label: "REPORTING"
     },
     {
@@ -136,7 +136,7 @@ const features = [
             "Rigorous QA testing at every stage"
         ],
         icon: Rocket,
-        image: "/images/how-we-work/pdlc_process.png",
+        image: "/images/how-we-work/pdlc_process.webp",
         label: "PROCESS"
     }
 ];

@@ -1,5 +1,5 @@
 import { Play, Star, X } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { projects } from "@/data/projects";
 import { AutoPlayVideo } from "@/components/AutoPlayVideo";
@@ -9,7 +9,6 @@ import {
   getVideoSources,
 } from "@/lib/mediaAssets";
 import { LiteYouTubeEmbed } from "@/components/LiteYouTubeEmbed";
-import { HomepagePricing } from "@/components/HomepagePricing";
 
 const gradientClasses = {
   purple: "from-purple-400 to-purple-600",
@@ -40,6 +39,18 @@ export const Showcase = ({
   const [isOdetaTestimonialPlaying, setIsOdetaTestimonialPlaying] = useState<boolean>(false);
   const [isKareemTestimonialPlaying, setIsKareemTestimonialPlaying] = useState<boolean>(false);
   const [isFourthTestimonialPlaying, setIsFourthTestimonialPlaying] = useState<boolean>(false);
+  
+  // Dynamically import HomepagePricing only when needed (not at module level)
+  // This ensures it's truly deferred and not bundled with Showcase
+  const [HomepagePricingComponent, setHomepagePricingComponent] = useState<React.ComponentType | null>(null);
+
+  useEffect(() => {
+    if (showTestimonials && !limit && !HomepagePricingComponent) {
+      import("@/components/HomepagePricing").then(module => {
+        setHomepagePricingComponent(() => module.HomepagePricing);
+      });
+    }
+  }, [showTestimonials, limit, HomepagePricingComponent]);
 
 
   // Filter out Telegram Weather Alert Bot and reorder projects (swap 2nd and 3rd for homepage consistency)
@@ -220,7 +231,10 @@ export const Showcase = ({
         )}
 
         {/* Homepage Pricing Section - Only show on homepage (when showTestimonials is true and no limit) */}
-        {showTestimonials && !limit && <HomepagePricing />}
+        {/* Dynamically loaded component - only loads when needed */}
+        {showTestimonials && !limit && HomepagePricingComponent && (
+          <HomepagePricingComponent />
+        )}
 
         {/* Testimonials Section Heading */}
         {showTestimonials && (
@@ -278,7 +292,7 @@ export const Showcase = ({
                           <div className="flex items-center gap-3 min-w-0">
                             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-white flex items-center justify-center flex-shrink-0">
                               <img
-                                src="/kareem.jpg"
+                                src="/kareem.webp"
                                 alt="Kareem profile photo"
                                 className="w-full h-full object-cover"
                               />
@@ -355,7 +369,7 @@ export const Showcase = ({
                           <div className="flex items-center gap-3 min-w-0">
                             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-white flex items-center justify-center flex-shrink-0">
                               <img
-                                src="/odeta-pfp.png"
+                                src="/odeta-pfp.webp"
                                 alt="Odeta profile photo"
                                 className="w-full h-full object-cover"
                               />
@@ -431,7 +445,7 @@ export const Showcase = ({
                           <div className="flex items-center gap-3 min-w-0">
                             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-white flex items-center justify-center flex-shrink-0">
                               <img
-                                src="/hugo-pfp.jpeg"
+                                src="/hugo-pfp.webp"
                                 alt="Hugo Sanders profile photo"
                                 className="w-full h-full object-cover"
                               />
@@ -524,7 +538,7 @@ export const Showcase = ({
                           <div className="flex items-center gap-3 min-w-0">
                             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-white flex items-center justify-center flex-shrink-0">
                               <img
-                                src="/syed-pfp.png"
+                                src="/syed-pfp.webp"
                                 alt="Syed profile photo"
                                 className="w-full h-full object-cover"
                               />

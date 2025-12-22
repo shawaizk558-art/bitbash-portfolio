@@ -11,7 +11,11 @@ export const ScrollToTop = () => {
   const location = useLocation();
 
   useEffect(() => {
-    scrollToTopImmediate();
+    // Defer scroll to top to avoid forced reflows during route transitions
+    // requestAnimationFrame ensures layout is complete before scrolling
+    requestAnimationFrame(() => {
+      scrollToTopImmediate();
+    });
   }, [location.pathname]);
 
   return null;

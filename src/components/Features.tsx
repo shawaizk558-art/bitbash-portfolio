@@ -107,6 +107,8 @@ export const Features = () => {
                 <img
                   src={tabs[activeTab].image}
                   alt={tabs[activeTab].title}
+                  fetchpriority={activeTab === 0 ? "high" : "auto"}
+                  loading="eager"
                   className="w-full h-auto rounded-lg opacity-0 pointer-events-none"
                 />
                 {/* All images stacked absolutely for seamless crossfade */}
@@ -115,6 +117,8 @@ export const Features = () => {
                     key={index}
                     src={tab.image}
                     alt={tab.title}
+                    fetchpriority={index === 0 ? "high" : "auto"}
+                    loading={index === 0 ? "eager" : "lazy"}
                     className={`w-full h-auto rounded-lg absolute top-0 left-0 transition-opacity duration-500 ease-in-out ${activeTab === index ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none'
                       }`}
                   />
@@ -202,7 +206,7 @@ export const Features = () => {
             {/* Right side - Visual mockups - Mobile Optimized */}
             <div className="bg-white flex items-center justify-end pl-4 pb-4 pr-0 pt-0 order-1 lg:order-2">
               <img
-                src="/stack3.png"
+                src="/stack3.webp"
                 alt="Automation System Stack"
                 className="w-full md:w-[105%] h-auto object-cover"
               />
@@ -216,7 +220,7 @@ export const Features = () => {
             {/* Left side - Visual mockups - Mobile Optimized */}
             <div className="bg-white flex items-center justify-start lg:order-1 pr-4 pb-4 pl-0 pt-0 order-1 lg:order-1">
               <img
-                src="/stack2.png"
+                src="/stack2.webp"
                 alt="AI Solutions Stack"
                 className="w-full md:w-[95%] h-auto object-cover"
               />
@@ -375,7 +379,7 @@ export const Features = () => {
             {/* Left side - Visual mockups - Mobile Optimized */}
             <div className="bg-white flex items-center justify-start lg:order-1 pr-4 pb-4 pl-0 pt-0 order-1 lg:order-1">
               <img
-                src="/stack4.png"
+                src="/stack4.webp"
                 alt="Data Scraping Stack"
                 className="w-full md:w-[105%] h-auto object-cover"
               />
@@ -469,7 +473,7 @@ export const Features = () => {
             {/* Right side - Visual mockups - Mobile Optimized */}
             <div className="bg-white flex items-center justify-end pl-4 pb-4 pr-0 pt-0 order-1 lg:order-2">
               <img
-                src="/stack5.png"
+                src="/stack5.webp"
                 alt="SaaS & MVP Development Stack"
                 className="w-full md:w-[105%] h-auto object-cover"
               />
@@ -500,7 +504,7 @@ export const Features = () => {
               {/* Placeholder image */}
               <div className="absolute inset-0">
                 <img
-                  src="/placeholder.jpeg"
+                  src="/placeholder.webp"
                   alt="How we work"
                   className="w-full h-full object-cover"
                 />

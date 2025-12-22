@@ -18,10 +18,12 @@ export function useIsMobile() {
   React.useEffect(() => {
     const mql = window.matchMedia(`(max-width: ${BREAKPOINTS.md - 1}px)`);
     const onChange = () => {
-      setIsMobile(window.innerWidth < BREAKPOINTS.md);
+      // Use matchMedia.matches instead of window.innerWidth to avoid forced reflow
+      setIsMobile(mql.matches);
     };
     mql.addEventListener("change", onChange);
-    setIsMobile(window.innerWidth < BREAKPOINTS.md);
+    // Use matchMedia.matches for initial state - doesn't force reflow (cached value)
+    setIsMobile(mql.matches);
     return () => mql.removeEventListener("change", onChange);
   }, []);
 
@@ -33,19 +35,41 @@ export function useResponsive() {
   const [breakpoint, setBreakpoint] = React.useState<Breakpoint>('xs');
 
   React.useEffect(() => {
+    // Create matchMedia queries for each breakpoint (using min-width, checking largest to smallest)
+    // This avoids forced reflows by using cached matchMedia.matches values
+    const queries = {
+      '2xl': window.matchMedia(`(min-width: ${BREAKPOINTS['2xl']}px)`),
+      xl: window.matchMedia(`(min-width: ${BREAKPOINTS.xl}px)`),
+      lg: window.matchMedia(`(min-width: ${BREAKPOINTS.lg}px)`),
+      md: window.matchMedia(`(min-width: ${BREAKPOINTS.md}px)`),
+      sm: window.matchMedia(`(min-width: ${BREAKPOINTS.sm}px)`),
+    };
+
     const updateBreakpoint = () => {
-      const width = window.innerWidth;
-      if (width >= BREAKPOINTS['2xl']) setBreakpoint('2xl');
-      else if (width >= BREAKPOINTS.xl) setBreakpoint('xl');
-      else if (width >= BREAKPOINTS.lg) setBreakpoint('lg');
-      else if (width >= BREAKPOINTS.md) setBreakpoint('md');
-      else if (width >= BREAKPOINTS.sm) setBreakpoint('sm');
+      // Use matchMedia.matches instead of window.innerWidth to avoid forced reflow
+      // Check from largest to smallest breakpoint
+      if (queries['2xl'].matches) setBreakpoint('2xl');
+      else if (queries.xl.matches) setBreakpoint('xl');
+      else if (queries.lg.matches) setBreakpoint('lg');
+      else if (queries.md.matches) setBreakpoint('md');
+      else if (queries.sm.matches) setBreakpoint('sm');
       else setBreakpoint('xs');
     };
 
+    // Set initial breakpoint using matchMedia.matches (doesn't force reflow)
     updateBreakpoint();
-    window.addEventListener('resize', updateBreakpoint);
-    return () => window.removeEventListener('resize', updateBreakpoint);
+
+    // Listen to all media query changes
+    const handlers: Array<() => void> = [];
+    Object.values(queries).forEach((mql) => {
+      const handler = () => updateBreakpoint();
+      mql.addEventListener('change', handler);
+      handlers.push(() => mql.removeEventListener('change', handler));
+    });
+
+    return () => {
+      handlers.forEach((cleanup) => cleanup());
+    };
   }, []);
 
   return {

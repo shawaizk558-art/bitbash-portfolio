@@ -58,7 +58,7 @@ async function convertAsset(asset: AssetConfig) {
   const inputPath = path.join(sourceDir, asset.input);
   const mp4Path = path.join(outputVideoDir, `${asset.name}.mp4`);
   const webmPath = path.join(outputVideoDir, `${asset.name}.webm`);
-  const posterPath = path.join(outputPosterDir, `${asset.name}.jpg`);
+  const posterPath = path.join(outputPosterDir, `${asset.name}.webp`);
 
   await fs.access(inputPath);
 
@@ -108,6 +108,10 @@ async function convertAsset(asset: AssetConfig) {
     "1",
     "-update",
     "1",
+    "-c:v",
+    "libwebp",
+    "-quality",
+    "85",
     posterPath,
   ]);
 }

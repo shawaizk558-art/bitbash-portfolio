@@ -260,7 +260,7 @@ const Projects = () => {
         title="Our Projects - BitBash"
         description="Explore our portfolio of successful software development and automation projects. See how we help businesses grow."
         canonical="/projects"
-        image="/stack1.png"
+        image="/stack1.webp"
       />
       <Navigation />
 

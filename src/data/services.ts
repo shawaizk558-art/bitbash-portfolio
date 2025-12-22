@@ -27,7 +27,7 @@ export const coreServices: ServiceOffering[] = [
     category: "Product Engineering",
     summary: "Full stack development covers both front-end and back-end technologies.",
     description: "Complete product teams that deliver modern web & mobile apps, APIs, and cloud deployments.",
-    image: "/fullstack1.png",
+    image: "/fullstack1.webp",
     icon: Code,
     deliverables: [
       "UX/UI, frontend, and backend development",
@@ -47,7 +47,7 @@ export const coreServices: ServiceOffering[] = [
     category: "Applied AI",
     summary: "Custom AI models and machine learning solutions for your business.",
     description: "Predictive analytics, NLP, and intelligent assistants that plug into your workflows.",
-    image: "/aisolutions2.png",
+    image: "/aisolutions2.webp",
     icon: Bot,
     deliverables: [
       "Model design & fine-tuning",
@@ -67,7 +67,7 @@ export const coreServices: ServiceOffering[] = [
     category: "Automation Engineering",
     summary: "Intelligent automation systems that streamline your workflows.",
     description: "Browser, desktop, and workflow automation that eliminate repetitive tasks with governance built-in.",
-    image: "/automation3.png",
+    image: "/automation3.webp",
     icon: Zap,
     deliverables: [
       "Browser automation & RPA scripts",
@@ -87,7 +87,7 @@ export const coreServices: ServiceOffering[] = [
     category: "Data Engineering",
     summary: "Automated data collection from any source.",
     description: "Stealth scraping infrastructure with rotating proxies, anti-bot bypass, and clean delivery formats.",
-    image: "/webscraping4.png",
+    image: "/webscraping4.webp",
     icon: Database,
     deliverables: [
       "Custom scrapers & crawlers",
@@ -107,7 +107,7 @@ export const coreServices: ServiceOffering[] = [
     category: "Product Acceleration",
     summary: "Launch-ready SaaS products and MVPs built for scale.",
     description: "Rapid prototyping and launch support for early-stage SaaS, analytics dashboards, and internal tools.",
-    image: "/dataanalytics5.png",
+    image: "/dataanalytics5.webp",
     icon: BarChart3,
     deliverables: [
       "Product discovery & UX sprints",

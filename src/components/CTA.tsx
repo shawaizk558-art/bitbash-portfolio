@@ -12,7 +12,7 @@ export const CTA = () => {
             {/* Top-Left Smoke Effect */}
             <div className="absolute -top-8 sm:-top-16 -left-8 sm:-left-16 w-80 h-80 sm:w-96 sm:h-96 opacity-80">
               <img 
-                src="/splash.png" 
+                src="/splash.webp" 
                 alt="Splash effect" 
                 className="w-full h-full object-cover rotate-12 blur-[2px]"
               />
@@ -21,7 +21,7 @@ export const CTA = () => {
             {/* Top-Right Smoke Effect */}
             <div className="absolute -top-8 sm:-top-16 -right-8 sm:-right-16 w-80 h-80 sm:w-96 sm:h-96 opacity-80">
               <img 
-                src="/splash.png" 
+                src="/splash.webp" 
                 alt="Splash effect" 
                 className="w-full h-full object-cover -rotate-12 blur-[2px]"
               />
@@ -161,7 +161,7 @@ export const CTA = () => {
                 {/* Social Proof - Reusable */}
                 <SocialProof 
                   className="pt-6 pb-2"
-                  avatars={["/zee.jpg", "/awais.jpg", "/hassan-arslan.png", "/mughees.jpg", "/fras.png"]}
+                  avatars={["/zee.webp", "/awais.webp", "/hassan-arslan.webp", "/mughees.webp", "/fras.webp"]}
                 />
               </div>
             </div>

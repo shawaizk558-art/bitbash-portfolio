@@ -20,6 +20,7 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && sitemapDevMiddleware(),
     mode === "development" && apiRoutesDevMiddleware(),
     mode === "production" && inlineCriticalCss(),
+    mode === "production" && addModulePreload(),
     mode === "production" && visualizer({
       filename: "dist/stats.html",
       open: false,
@@ -55,26 +56,79 @@ export default defineConfig(({ mode }) => ({
 
     rollupOptions: {
       output: {
-        // Manual chunk splitting - consolidated to reduce critical path depth
-        manualChunks: {
-          // Single vendor chunk for all React-related libraries
-          "vendor": [
-            "react",
-            "react-dom",
-            "react-router-dom",
-            "@radix-ui/react-dropdown-menu",
-            "@radix-ui/react-label",
-            "@radix-ui/react-slot",
-            "@radix-ui/react-toast",
-            "@radix-ui/react-tooltip",
-            "clsx",
-            "class-variance-authority",
-            "tailwind-merge",
-          ],
+        // Manual chunk splitting - aggressively optimized to reduce critical path depth
+        manualChunks: (id) => {
+          // React core - smallest possible chunk (most critical)
+          if (id.includes("node_modules/react/") && !id.includes("react-dom")) {
+            return "react-core";
+          }
+          
+          // React-DOM in separate chunk (loads in parallel with react-core)
+          if (id.includes("node_modules/react-dom")) {
+            return "react-dom";
+          }
 
-          // Separate chunk for heavy libraries
-          "markdown": ["react-markdown", "remark-gfm"],
-          "sonner": ["sonner"],
+          // Router in separate chunk (can load in parallel, not needed immediately)
+          if (id.includes("node_modules/react-router-dom")) {
+            return "router";
+          }
+
+          // Large icon library - separate chunk
+          if (id.includes("node_modules/lucide-react")) {
+            return "icons";
+          }
+
+          // Smooth scroll library - separate chunk
+          if (id.includes("node_modules/lenis")) {
+            return "lenis";
+          }
+
+          // Three.js and related libraries - separate chunk (heavy, not critical)
+          if (
+            id.includes("node_modules/three") ||
+            id.includes("node_modules/@react-three")
+          ) {
+            return "three";
+          }
+
+          // Separate Radix UI components into UI vendor chunk
+          if (id.includes("node_modules/@radix-ui")) {
+            return "ui-vendor";
+          }
+
+          // Core utilities - small chunk
+          if (
+            id.includes("node_modules/clsx") ||
+            id.includes("node_modules/class-variance-authority") ||
+            id.includes("node_modules/tailwind-merge")
+          ) {
+            return "utils";
+          }
+
+          // Showcase component and its dependencies in separate chunk
+          if (
+            id.includes("/components/Showcase") ||
+            id.includes("/components/AutoPlayVideo") ||
+            id.includes("/components/LiteYouTubeEmbed") ||
+            id.includes("/components/HomepagePricing")
+          ) {
+            return "showcase";
+          }
+
+          // Heavy markdown libraries
+          if (id.includes("node_modules/react-markdown") || id.includes("node_modules/remark-gfm")) {
+            return "markdown";
+          }
+
+          // Sonner toast library
+          if (id.includes("node_modules/sonner")) {
+            return "sonner";
+          }
+
+          // Helmet for head management
+          if (id.includes("node_modules/react-helmet-async")) {
+            return "helmet";
+          }
         },
 
         // Optimize chunk file names for better caching
@@ -117,6 +171,69 @@ function inlineCriticalCss(): Plugin {
       const html = await fs.readFile(htmlPath, "utf8");
       const inlined = await critters.process(html);
       await fs.writeFile(htmlPath, inlined, "utf8");
+    },
+  };
+}
+
+/**
+ * Vite plugin to add modulepreload links for critical chunks
+ * This helps browser start parsing critical chunks earlier, improving parallel loading
+ */
+function addModulePreload(): Plugin {
+  return {
+    name: "vite-add-modulepreload",
+    apply: "build",
+    enforce: "post",
+    async writeBundle() {
+      const outDir = path.resolve(__dirname, "dist");
+      const htmlPath = path.join(outDir, "index.html");
+      const manifestPath = path.join(outDir, ".vite/manifest.json");
+
+      try {
+        await fs.access(htmlPath);
+      } catch {
+        return;
+      }
+
+      // Read manifest to get chunk file names with hashes
+      let manifest: Record<string, any> = {};
+      try {
+        const manifestContent = await fs.readFile(manifestPath, "utf8");
+        manifest = JSON.parse(manifestContent);
+      } catch {
+        // Manifest might not exist or be in different location, try alternative
+        try {
+          const altManifestPath = path.join(outDir, "manifest.json");
+          const manifestContent = await fs.readFile(altManifestPath, "utf8");
+          manifest = JSON.parse(manifestContent);
+        } catch {
+          // No manifest found, Vite will handle modulepreload automatically
+          return;
+        }
+      }
+
+      const html = await fs.readFile(htmlPath, "utf8");
+
+      // Find critical chunks in manifest (react-core, react-dom, and entry chunks)
+      const preloadLinks: string[] = [];
+      for (const [key, value] of Object.entries(manifest)) {
+        if (
+          value.isEntry ||
+          (value.name && (value.name === "react-core" || value.name === "react-dom"))
+        ) {
+          if (value.file && value.file.endsWith(".js")) {
+            const filePath = value.file.startsWith("/") ? value.file : `/${value.file}`;
+            preloadLinks.push(`<link rel="modulepreload" href="${filePath}" />`);
+          }
+        }
+      }
+
+      // Insert modulepreload links before closing </head> tag
+      if (preloadLinks.length > 0) {
+        const preloadHtml = `\n  <!-- Modulepreload critical chunks for faster parallel loading -->\n  ${preloadLinks.join("\n  ")}\n`;
+        const updatedHtml = html.replace("</head>", `${preloadHtml}</head>`);
+        await fs.writeFile(htmlPath, updatedHtml, "utf8");
+      }
     },
   };
 }

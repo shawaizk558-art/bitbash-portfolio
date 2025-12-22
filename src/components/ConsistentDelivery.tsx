@@ -15,7 +15,7 @@ export const ConsistentDelivery = () => {
             {/* Image */}
             <div className="w-full max-w-5xl mx-auto">
               <img 
-                src="/client-communication.png" 
+                src="/client-communication.webp" 
                 alt="Real client communication examples" 
                 className="w-full h-auto rounded-lg shadow-lg"
               />

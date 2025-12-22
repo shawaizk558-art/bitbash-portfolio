@@ -306,17 +306,17 @@ export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
               </div>
               {/* Certification Badges */}
               <img
-                src="/badges/ssl-secured.png"
+                src="/badges/ssl-secured.webp"
                 alt="SSL Secured"
                 className="h-12 sm:h-14 w-auto opacity-80 hover:opacity-100 transition-opacity"
               />
               <img
-                src="/badges/norton-secured.png"
+                src="/badges/norton-secured.webp"
                 alt="Norton Secured"
                 className="h-12 sm:h-14 w-auto opacity-80 hover:opacity-100 transition-opacity"
               />
               <img
-                src="/badges/pci-compliant.png"
+                src="/badges/pci-compliant.webp"
                 alt="PCI Compliant"
                 className="h-12 sm:h-14 w-auto opacity-80 hover:opacity-100 transition-opacity"
               />
