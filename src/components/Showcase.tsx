@@ -1,5 +1,5 @@
 import { Play, Star, X } from "lucide-react";
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useEffect, type ComponentType } from "react";
 import { Link } from "react-router-dom";
 import { projects } from "@/data/projects";
 import { AutoPlayVideo } from "@/components/AutoPlayVideo";
@@ -42,7 +42,7 @@ export const Showcase = ({
   
   // Dynamically import HomepagePricing only when needed (not at module level)
   // This ensures it's truly deferred and not bundled with Showcase
-  const [HomepagePricingComponent, setHomepagePricingComponent] = useState<React.ComponentType | null>(null);
+  const [HomepagePricingComponent, setHomepagePricingComponent] = useState<ComponentType<{}> | null>(null);
 
   useEffect(() => {
     if (showTestimonials && !limit && !HomepagePricingComponent) {
