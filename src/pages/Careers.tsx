@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Rocket, Code, Building2, Users, MessageCircle, CheckCircle2, Calendar, FileText, Zap, TrendingUp, BarChart3, Target } from "@/lib/icons";
 import { OurValues } from "@/components/OurValues";
 import { Benefits } from "@/components/Benefits";
+import { ImageGrid } from "@/components/ImageGrid";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
@@ -579,6 +580,9 @@ const Careers = () => {
 
       {/* Benefits Section */}
       <Benefits />
+
+      {/* Image Grid Section */}
+      <ImageGrid />
 
       {/* Qualities You'll Develop Section */}
       <section className="pt-6 sm:pt-8 md:pt-12 pb-12 sm:pb-16 md:pb-24 bg-white">

@@ -151,3 +151,4 @@ console.log('2. Move heavy libraries to separate chunks (already done in vite.co
 console.log('3. Defer data file loading until needed');
 console.log('4. Use dynamic imports for heavy components\n');
 
+

@@ -3,39 +3,39 @@ import { SocialProof } from "@/components/SocialProof";
 
 export const CTA = () => {
   return (
-    <section className="relative bg-gray-50 pb-0 -mb-20 sm:-mb-32 -mt-20 sm:-mt-40">
+    <section className="relative pb-0 -mb-20 sm:-mb-32 -mt-20 sm:-mt-40 z-20" style={{ contain: 'none' }}>
       <div className="container-responsive">
         {/* Overlapping Card */}
-        <div className="relative max-w-7xl mx-auto z-20">
+        <div className="relative max-w-7xl mx-auto z-30 -mb-20 sm:-mb-32 md:-mb-40">
           {/* Gradient Background Card - Mobile Optimized */}
           <div className="relative bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border border-gray-200">
             {/* Top-Left Smoke Effect */}
             <div className="absolute -top-8 sm:-top-16 -left-8 sm:-left-16 w-80 h-80 sm:w-96 sm:h-96 opacity-80">
-              <img 
-                src="/splash.webp" 
-                alt="Splash effect" 
+              <img
+                src="/splash.webp"
+                alt="Splash effect"
                 className="w-full h-full object-cover rotate-12 blur-[2px]"
               />
             </div>
-            
+
             {/* Top-Right Smoke Effect */}
             <div className="absolute -top-8 sm:-top-16 -right-8 sm:-right-16 w-80 h-80 sm:w-96 sm:h-96 opacity-80">
-              <img 
-                src="/splash.webp" 
-                alt="Splash effect" 
+              <img
+                src="/splash.webp"
+                alt="Splash effect"
                 className="w-full h-full object-cover -rotate-12 blur-[2px]"
               />
             </div>
-            
+
             {/* Top-Left Gradient Blob - Mobile Optimized */}
             <div className="absolute -top-16 sm:-top-32 -left-16 sm:-left-32 w-48 h-48 sm:w-96 sm:h-96 bg-gradient-to-br from-purple-300 via-purple-400 to-purple-200 rounded-full blur-3xl opacity-60"></div>
-            
+
             {/* Top-Right Gradient Blob - Mobile Optimized */}
             <div className="absolute -top-16 sm:-top-32 -right-16 sm:-right-32 w-48 h-48 sm:w-96 sm:h-96 bg-gradient-to-bl from-purple-300 via-purple-400 to-purple-200 rounded-full blur-3xl opacity-60"></div>
-            
+
             {/* Center subtle glow - Mobile Optimized */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-32 sm:h-64 bg-gradient-to-r from-purple-100 via-purple-200 to-purple-100 blur-3xl opacity-30"></div>
-            
+
             {/* Stacked Document Mockups - Bottom Center (Cut off from bottom) */}
             <div className="absolute bottom-0 left-0 right-0 hidden lg:block z-20 overflow-hidden" style={{ height: '350px' }}>
               <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex items-end justify-center -space-x-16">
@@ -124,7 +124,7 @@ export const CTA = () => {
                 </div>
               </div>
             </div>
-            
+
             {/* Content - Mobile Optimized */}
             <div className="relative z-10 px-4 sm:px-8 md:px-16 pt-8 sm:pt-20 md:pt-24 pb-12 sm:pb-56 md:pb-72">
               <div className="text-center space-y-2 sm:space-y-3 md:space-y-4">
@@ -134,22 +134,22 @@ export const CTA = () => {
                 <p className="text-sm sm:text-base text-gray-700 max-w-2xl mx-auto -mt-2">
                   Schedule your consultation and turn your idea into a real, working product.
                 </p>
-                
+
                 {/* Call-to-Action Buttons */}
                 <div className="relative max-w-3xl mx-auto pt-4">
                   <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
-                    <Button 
-                      variant="outline" 
-                      size="lg" 
+                    <Button
+                      variant="outline"
+                      size="lg"
                       className="h-12 py-4 px-6 text-lg font-semibold rounded-xl w-full sm:w-auto bg-transparent hover:bg-transparent text-gray-900 hover:text-gray-900 border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-lg shadow-gray-400/20 hover:shadow-gray-400/35 transition-colors transition-shadow duration-300"
                       asChild
                       style={{ height: '48px' }}
                     >
                       <a href="/contact">Contact Us</a>
                     </Button>
-                    <Button 
-                      variant="default" 
-                      size="lg" 
+                    <Button
+                      variant="default"
+                      size="lg"
                       className="h-12 py-4 px-6 text-lg font-semibold rounded-xl w-full sm:w-auto"
                       style={{ height: '48px' }}
                     >
@@ -159,7 +159,7 @@ export const CTA = () => {
                 </div>
 
                 {/* Social Proof - Reusable */}
-                <SocialProof 
+                <SocialProof
                   className="pt-6 pb-2"
                   avatars={["/zee.webp", "/awais.webp", "/hassan-arslan.webp", "/mughees.webp", "/fras.webp"]}
                 />

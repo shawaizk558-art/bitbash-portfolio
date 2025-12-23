@@ -19,7 +19,7 @@ export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
   };
 
   return (
-    <footer className={`relative ${isHomepage ? 'pt-40 sm:pt-60 md:pt-80 pb-8 sm:pb-12 md:pb-16' : 'pt-12 sm:pt-16 pb-6 sm:pb-8'} bg-[#1a1d29] text-white z-10`}>
+    <footer className={`relative ${isHomepage ? 'pt-40 sm:pt-60 md:pt-80 pb-8 sm:pb-12 md:pb-16' : 'pt-12 sm:pt-16 pb-6 sm:pb-8'} bg-[#1a1d29] text-white z-0`}>
       <div className="container-responsive">
         {/* Footer Links Grid - Mobile Optimized */}
         <div className={`grid grid-cols-1 lg:grid-cols-[1fr,2fr] gap-8 sm:gap-12 md:gap-16 lg:gap-20 ${isHomepage ? 'mb-24 sm:mb-32 md:mb-40 lg:mb-48' : 'mb-20 sm:mb-24 md:mb-28 lg:mb-32'}`}>

@@ -48,16 +48,12 @@ const Index = () => {
           <FAQ />
         </Suspense>
       </LazySection>
-      <LazySection>
-        <Suspense fallback={null}>
-          <CTA />
-        </Suspense>
-      </LazySection>
-      <LazySection>
-        <Suspense fallback={null}>
-          <Footer isHomepage={true} />
-        </Suspense>
-      </LazySection>
+      <Suspense fallback={null}>
+        <CTA />
+      </Suspense>
+      <Suspense fallback={null}>
+        <Footer isHomepage={true} />
+      </Suspense>
     </div>
   );
 };

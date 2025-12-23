@@ -6,6 +6,8 @@ interface LazySectionProps {
   fallback?: ReactNode;
   rootMargin?: string;
   waitForInteraction?: boolean; // On mobile, wait for user interaction before loading
+  className?: string;
+  style?: React.CSSProperties;
 }
 
 /**
@@ -14,11 +16,13 @@ interface LazySectionProps {
  * On mobile, can optionally wait for user interaction to reduce initial JS execution
  * This breaks the critical request chain by deferring component loading
  */
-export const LazySection = ({ 
-  children, 
+export const LazySection = ({
+  children,
   fallback = null,
   rootMargin = "200px", // Start loading 200px before visible
-  waitForInteraction = false // Set to true for mobile-heavy components
+  waitForInteraction = false, // Set to true for mobile-heavy components
+  className = "",
+  style
 }: LazySectionProps) => {
   const [shouldLoad, setShouldLoad] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
@@ -72,6 +76,6 @@ export const LazySection = ({
     };
   }, [rootMargin, isMobile, waitForInteraction, hasInteracted]);
 
-  return <div ref={ref}>{shouldLoad ? children : fallback}</div>;
+  return <div ref={ref} className={className} style={style}>{shouldLoad ? children : fallback}</div>;
 };
 

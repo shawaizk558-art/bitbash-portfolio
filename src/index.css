@@ -100,11 +100,6 @@ All colors MUST be HSL.
   }
 
   /* Performance optimizations - reduce style recalculation and layout work */
-  /* Add CSS containment to all sections to isolate style recalculation */
-  section {
-    contain: layout style paint;
-    will-change: auto;
-  }
 
   /* Optimize images to prevent layout shifts */
   img {
@@ -114,13 +109,13 @@ All colors MUST be HSL.
 
   /* Reduce style recalculation for common elements */
   * {
-    backface-visibility: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   /* Optimize transitions and animations to use GPU */
-  [class*="transition"], [class*="animate"] {
+  [class*="transition"],
+  [class*="animate"] {
     will-change: transform, opacity;
     transform: translateZ(0);
     backface-visibility: hidden;
@@ -133,21 +128,12 @@ All colors MUST be HSL.
 
   /* Mobile layout optimizations - reduce layout work */
   @media (max-width: 767px) {
+
     /* Reduce animation complexity on mobile */
     /* Exclude pulse-dot and beam animations which need their specific durations */
     *:not(.animate-pulse-dot):not(.animate-beam) {
       animation-duration: 0.3s !important;
       transition-duration: 0.2s !important;
-    }
-
-    /* Disable complex transforms on mobile */
-    .transform {
-      transform: none !important;
-    }
-
-    /* More aggressive containment on mobile */
-    section {
-      contain: layout style paint;
     }
   }
 }
