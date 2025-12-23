@@ -11,7 +11,8 @@ interface SEOProps {
 }
 
 export const SEO = ({ title, description, canonical, image, robots = "index, follow", keywords, structuredData }: SEOProps) => {
-    const siteUrl = 'https://bitbash.dev';
+    // Use the canonical host Google should index to avoid duplicates between www/non-www
+    const siteUrl = 'https://www.bitbash.dev';
     const fullUrl = canonical ? `${siteUrl}${canonical}` : siteUrl;
     const metaImage = image ? `${siteUrl}${image}` : `${siteUrl}/placeholder.webp`;
 
