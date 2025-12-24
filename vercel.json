@@ -1,28 +1,14 @@
 {
   "redirects": [
     {
-      "source": "/Service-Details/:id",
-      "destination": "/services",
-      "permanent": true
-    },
-    {
-      "source": "/Contact-us",
-      "destination": "/contact",
-      "permanent": true
-    },
-    {
-      "source": "/contact-us",
-      "destination": "/contact",
-      "permanent": true
-    },
-    {
-      "source": "/Testimonials",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/testimonials",
-      "destination": "/",
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.bitbash.dev"
+        }
+      ],
+      "destination": "https://bitbash.dev",
       "permanent": true
     },
     {

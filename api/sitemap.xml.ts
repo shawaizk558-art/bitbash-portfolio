@@ -14,8 +14,8 @@ type VercelResponse = {
   end: () => void;
 };
 
-// Use www host consistently to align with canonical tags and avoid duplicates
-const SITE_URL = 'https://www.bitbash.dev';
+// Use non-www host consistently to align with canonical tags and avoid duplicates
+const SITE_URL = 'https://bitbash.dev';
 const BLOB_FILE_NAME = 'mongodb-projects.json';
 
 // Hardcoded project slugs (from src/data/projects.ts)

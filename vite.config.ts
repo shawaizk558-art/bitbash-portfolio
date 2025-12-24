@@ -6,6 +6,7 @@ import { componentTagger } from "lovable-tagger";
 import { reactGrab } from "react-grab/plugins/vite";
 import Critters from "critters";
 import { visualizer } from "rollup-plugin-visualizer";
+import { prerenderProjectPages } from "./vite-plugin-prerender";
 
 
 // https://vitejs.dev/config/
@@ -22,6 +23,7 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && apiRoutesDevMiddleware(),
     mode === "production" && inlineCriticalCss(),
     mode === "production" && addModulePreload(),
+    mode === "production" && prerenderProjectPages(),
     mode === "production" && visualizer({
       filename: "dist/stats.html",
       open: false,

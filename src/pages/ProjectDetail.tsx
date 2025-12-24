@@ -4,9 +4,9 @@ import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Hero } from "@/components/Hero";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { getProjectBySlug as getHardcodedProject } from "@/data/projects";
-import { getProjectBySlug as getStrapiProject, getMongoProjectBySlug } from "@/lib/strapi";
-import { useState, useEffect } from "react";
+import { getProjectBySlug as getHardcodedProject, projects as hardcodedProjects } from "@/data/projects";
+import { getProjectBySlug as getStrapiProject, getMongoProjectBySlug, getMongoProjects } from "@/lib/strapi";
+import { useState, useEffect, useRef } from "react";
 import type { Project } from "@/data/projects";
 import { getMediaAssets } from "@/lib/mediaAssets";
 import { truncateDescription } from "@/lib/utils";
@@ -15,6 +15,7 @@ import { buildProjectSchema, buildProjectBreadcrumbSchema } from "@/lib/schema";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import telegramWeatherMarkdown from "../../content/projects/project1.md?raw";
+import { ProjectCard } from "@/components/ProjectCard";
 
 /**
  * Convert a string to title case (capitalize first letter of each word)
@@ -116,6 +117,9 @@ const ProjectDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const [project, setProject] = useState<(Project & { title?: string; description?: string; readme?: string; [key: string]: any }) | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [allProjects, setAllProjects] = useState<(Project & { title?: string; description?: string; readme?: string; [key: string]: any })[]>([]);
+  const [relatedProjects, setRelatedProjects] = useState<(Project & { title?: string; description?: string; readme?: string; [key: string]: any })[]>([]);
+  const sidebarRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     async function loadProject() {
@@ -159,6 +163,235 @@ const ProjectDetail = () => {
     loadProject();
   }, [slug]);
 
+  // Fetch all projects for related projects section
+  useEffect(() => {
+    async function fetchAllProjects() {
+      try {
+        // Get hardcoded projects
+        const hardcoded = [...hardcodedProjects];
+        
+        // Get MongoDB projects
+        const mongoProjects = await getMongoProjects();
+        
+        // Combine and deduplicate (hardcoded takes precedence)
+        const hardcodedSlugs = new Set(hardcoded.map(p => p.slug));
+        const uniqueMongoProjects = mongoProjects.filter(
+          (p) => p.slug && !hardcodedSlugs.has(p.slug)
+        );
+        
+        const all = [...hardcoded, ...uniqueMongoProjects];
+        setAllProjects(all);
+      } catch (error) {
+        // If MongoDB fetch fails, just use hardcoded projects
+        console.warn('[ProjectDetail] Failed to fetch all projects, using hardcoded only:', error);
+        setAllProjects([...hardcodedProjects]);
+      }
+    }
+    
+    fetchAllProjects();
+  }, []);
+
+  // Debug: Check sidebar sticky positioning (must be before early returns)
+  useEffect(() => {
+    // Only run debug if we have a project and sidebar ref
+    if (!project || !sidebarRef.current) return;
+    
+    const isHardcoded = slug ? Boolean(getHardcodedProject(slug)) : false;
+    if (isHardcoded) return; // Skip debug for hardcoded projects
+    
+    const sidebar = sidebarRef.current;
+    const computedStyle = window.getComputedStyle(sidebar);
+    const parent = sidebar.parentElement;
+    const section = parent?.closest('section');
+    
+    console.log('🔍 [Sidebar Debug] ====================');
+    console.log('Sidebar element:', sidebar);
+    console.log('Sidebar position:', computedStyle.position);
+    console.log('Sidebar top:', computedStyle.top);
+    console.log('Sidebar classes:', sidebar.className);
+    console.log('Sidebar offsetTop:', sidebar.offsetTop);
+    console.log('Sidebar offsetHeight:', sidebar.offsetHeight);
+    
+    if (parent) {
+      const parentStyle = window.getComputedStyle(parent);
+      console.log('Parent element:', parent);
+      console.log('Parent display:', parentStyle.display);
+      console.log('Parent overflow:', parentStyle.overflow);
+      console.log('Parent overflowX:', parentStyle.overflowX);
+      console.log('Parent overflowY:', parentStyle.overflowY);
+      console.log('Parent height:', parentStyle.height);
+      console.log('Parent minHeight:', parentStyle.minHeight);
+    }
+    
+    if (section) {
+      const sectionStyle = window.getComputedStyle(section);
+      console.log('Section element:', section);
+      console.log('Section overflow:', sectionStyle.overflow);
+      console.log('Section overflowX:', sectionStyle.overflowX);
+      console.log('Section overflowY:', sectionStyle.overflowY);
+      console.log('Section height:', sectionStyle.height);
+      console.log('Section scrollHeight:', section.scrollHeight);
+    }
+    
+    // Check scroll container
+    let scrollContainer = sidebar;
+    while (scrollContainer && scrollContainer !== document.body) {
+      const style = window.getComputedStyle(scrollContainer);
+      if (style.overflow === 'auto' || style.overflow === 'scroll' || 
+          style.overflowY === 'auto' || style.overflowY === 'scroll') {
+        console.log('⚠️ Found scroll container:', scrollContainer, 'overflow:', style.overflow);
+      }
+      scrollContainer = scrollContainer.parentElement;
+    }
+    
+    console.log('Viewport height:', window.innerHeight);
+    console.log('Window scrollY:', window.scrollY);
+    console.log('=====================================');
+  }, [project, slug]);
+
+  // Calculate related projects when project or allProjects change
+  // This must be before any early returns to follow Rules of Hooks
+  useEffect(() => {
+    if (project && allProjects.length > 0) {
+      // Extract keyword function
+      const extractKeyword = (p: Project & { title?: string; [key: string]: any }): string => {
+        const name = ((p as any).title || p.name || p.slug || '').toLowerCase();
+        const slug = (p.slug || '').toLowerCase();
+        const skipWords = ['scraper', 'scraping', 'bot', 'automation', 'automated', 'data', 'extractor', 'extraction', 'tool', 'platform', 'system', 'api', 'service', 'services'];
+        
+        if (slug) {
+          const slugParts = slug.split(/[-_]/);
+          for (const part of slugParts) {
+            if (part && !skipWords.includes(part)) {
+              return part;
+            }
+          }
+        }
+        
+        if (name) {
+          const nameParts = name.split(/[\s\-_]/);
+          for (const part of nameParts) {
+            if (part && !skipWords.includes(part)) {
+              return part;
+            }
+          }
+        }
+        
+        const fallback = slug || name;
+        if (fallback) {
+          const parts = fallback.split(/[\s\-_]/);
+          return parts[0] || fallback;
+        }
+        
+        return '';
+      };
+
+      // Detect category for a project
+      const detectCategoryForProject = (p: Project & { title?: string; [key: string]: any }) => {
+        const category = String((p as any).category || '').toLowerCase().trim();
+        if (category === 'automation') return 'automation';
+        if (category === 'scraper' || category === 'scraping') return 'scraping';
+        
+        const role = String(p.role || '').toLowerCase().trim();
+        const name = String(p.name || '').toLowerCase().trim();
+        const slug = String(p.slug || '').toLowerCase().trim();
+        const allText = `${category} ${role} ${name} ${slug}`.toLowerCase();
+        
+        const hasBot = /\bbot\b/.test(allText) || 
+                       name.includes(' bot') || 
+                       name.endsWith('bot') ||
+                       slug.includes('-bot') ||
+                       slug.endsWith('-bot') ||
+                       role.includes('bot');
+        
+        const hasAutomation = category.includes('automation') ||
+                             role.includes('automation') ||
+                             name.includes('automation') ||
+                             slug.includes('automation');
+        
+        if (hasBot || hasAutomation) return 'automation';
+        return 'scraping';
+      };
+
+      // Shuffle array using Fisher-Yates algorithm
+      const shuffleArray = <T,>(array: T[]): T[] => {
+        const shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+      };
+
+      // Get related projects
+      const currentSlug = project.slug;
+      const currentKeyword = extractKeyword(project);
+      const currentCategory = detectCategoryForProject(project);
+      
+      // Create a set of hardcoded project slugs to exclude from related projects
+      const hardcodedSlugs = new Set(hardcodedProjects.map(p => p.slug));
+      
+      // Filter out current project and all hardcoded projects (top 9)
+      const otherProjects = allProjects.filter(p => 
+        p.slug !== currentSlug && !hardcodedSlugs.has(p.slug)
+      );
+      
+      if (otherProjects.length === 0) {
+        setRelatedProjects([]);
+        return;
+      }
+      
+      const related: (Project & { title?: string; [key: string]: any })[] = [];
+      
+      // Priority 1: Same keyword matching (randomized)
+      if (currentKeyword) {
+        const keywordMatches = otherProjects.filter(p => {
+          const keyword = extractKeyword(p);
+          const name = ((p as any).title || p.name || p.slug || '').toLowerCase();
+          const slug = (p.slug || '').toLowerCase();
+          
+          return keyword === currentKeyword || 
+                 name.includes(currentKeyword) || 
+                 slug.includes(currentKeyword);
+        });
+        
+        // Shuffle and take up to 3
+        const shuffledKeywordMatches = shuffleArray(keywordMatches);
+        related.push(...shuffledKeywordMatches.slice(0, 3));
+      }
+      
+      // Priority 2: Same category matching (randomized)
+      if (related.length < 3) {
+        const categoryMatches = otherProjects.filter(p => {
+          if (related.some(r => r.slug === p.slug)) return false;
+          const pCategory = detectCategoryForProject(p);
+          return pCategory === currentCategory;
+        });
+        
+        // Shuffle and take remaining needed
+        const shuffledCategoryMatches = shuffleArray(categoryMatches);
+        const remaining = 3 - related.length;
+        related.push(...shuffledCategoryMatches.slice(0, remaining));
+      }
+      
+      // Priority 3: Any projects (fallback, randomized)
+      if (related.length < 3) {
+        const remaining = otherProjects.filter(p => 
+          !related.some(r => r.slug === p.slug)
+        );
+        
+        // Shuffle and take needed
+        const shuffledRemaining = shuffleArray(remaining);
+        const needed = 3 - related.length;
+        related.push(...shuffledRemaining.slice(0, needed));
+      }
+      
+      setRelatedProjects(related.slice(0, 3));
+    } else {
+      setRelatedProjects([]);
+    }
+  }, [project, allProjects]);
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-white">
@@ -189,6 +422,32 @@ const ProjectDetail = () => {
   }
 
   const mediaAssets = getMediaAssets(project.slug);
+  
+  // Determine OG image - prefer screenshot, then avatar/logo, then placeholder
+  const ogImage = (() => {
+    // Check if screenshot exists (for MongoDB projects)
+    const screenshotPath = `/project-screenshots/${project.slug}.png`;
+    // In production, screenshots are served via API, but for OG we can reference the path
+    // For now, use avatar/logo which is more reliable
+    return mediaAssets.avatarSrc || '/placeholder.webp';
+  })();
+  
+  // Create SEO-optimized description WITH timeline for meta tags only (not for frontend display)
+  const createSEODescription = (): string => {
+    const detectedCategory = detectProjectCategory();
+    const projectName = toTitleCase((project as any).title || project.name);
+    const description = (project as any).description || project.description || project.quote || '';
+    
+    // Create keyword-rich description with timeline for SEO
+    if (detectedCategory === 'scraping') {
+      return `${projectName} to extract data via keywords, IDs, URLs, and custom queries. JSON output. Delivery in 7-10 days.`;
+    } else if (detectedCategory === 'automation') {
+      return `${projectName} for automated workflows with retries, alerts, and monitoring. Custom scope. Delivery in 15-20 days.`;
+    }
+    
+    // Fallback to cleaned description (remove emojis)
+    return description.replace(/[\u{1F300}-\u{1F9FF}]/gu, '').trim();
+  };
   
   // Helper function to detect project category - reads from category field primarily
   const detectProjectCategory = () => {
@@ -296,7 +555,10 @@ const ProjectDetail = () => {
   // Build structured data schemas
   const projectUrl = `https://bitbash.dev/project/${project.slug}`;
   const projectName = toTitleCase((project as any).title || project.name);
-  const projectDescription = ((project as any).description || project.description).substring(0, 160);
+  // Get full description without truncation for meta tags (SEO component will handle proper length)
+  const projectDescription = (project as any).description || project.description || project.quote || '';
+  // Use SEO-optimized description with timeline for meta tags
+  const seoDescription = createSEODescription();
   
   const projectSchema = buildProjectSchema({
     name: projectName,
@@ -314,12 +576,12 @@ const ProjectDetail = () => {
   const structuredData = [projectSchema, breadcrumbSchema];
 
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden">
+    <div className="min-h-screen bg-white">
       <SEO
         title={`${projectName} - BitBash Project`}
-        description={projectDescription}
+        description={seoDescription}
         canonical={`/project/${project.slug}`}
-        image={mediaAssets.avatarSrc}
+        image={ogImage}
         keywords={keywordsString}
         structuredData={structuredData}
       />
@@ -354,11 +616,11 @@ const ProjectDetail = () => {
       {/* Content Section - Description, Technologies, etc */}
       {slug === "telegram-weather-alert-bot" ? (
         // Special case: render full markdown from content/projects/project1.md
-        <section className="container-responsive pb-12 sm:pb-16 md:pb-20 lg:pb-24 px-4 sm:px-0 overflow-x-hidden">
+        <section className="container-responsive pb-12 sm:pb-16 md:pb-20 lg:pb-24 px-4 sm:px-0 overflow-y-visible">
           <div className={`max-w-5xl lg:max-w-6xl xl:max-w-7xl mx-auto w-full ${!isHardcodedProject ? 'grid lg:grid-cols-[320px,minmax(0,1fr)] gap-6 sm:gap-8 lg:gap-10' : ''}`}>
             {!isHardcodedProject && (
-            <aside className="order-1 w-full lg:w-auto">
-              <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4 sm:p-5 md:p-6 lg:p-8 space-y-4 sm:space-y-5 md:space-y-6 lg:space-y-7 lg:sticky lg:top-28 overflow-hidden">
+            <aside ref={sidebarRef} className="order-1 w-full lg:w-auto lg:self-start lg:sticky lg:top-24 lg:max-h-[calc(100vh-6rem)] lg:z-10">
+              <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4 sm:p-5 md:p-6 lg:p-8 space-y-4 sm:space-y-5 md:space-y-6 lg:space-y-7 lg:overflow-y-auto overflow-hidden h-full lg:mt-8">
                 <div className="flex items-center justify-between">
                   <h3 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900">Project Details</h3>
                 </div>
@@ -419,11 +681,11 @@ const ProjectDetail = () => {
           </div>
         </section>
       ) : (
-        <section className="container-responsive pb-12 sm:pb-16 md:pb-20 lg:pb-24 px-4 sm:px-0 overflow-x-hidden">
+        <section className="container-responsive pb-12 sm:pb-16 md:pb-20 lg:pb-24 px-4 sm:px-0 overflow-y-visible">
           <div className={`max-w-5xl lg:max-w-6xl xl:max-w-7xl mx-auto w-full ${!isHardcodedProject ? 'grid lg:grid-cols-[320px,minmax(0,1fr)] gap-6 sm:gap-8 lg:gap-10' : ''}`}>
             {!isHardcodedProject && (
-            <aside className="order-first lg:order-none w-full lg:w-auto">
-              <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4 sm:p-5 md:p-6 lg:p-8 space-y-4 sm:space-y-5 md:space-y-6 lg:space-y-7 lg:sticky lg:top-28 overflow-hidden">
+            <aside ref={sidebarRef} className="order-first lg:order-none w-full lg:w-auto lg:self-start lg:sticky lg:top-24 lg:max-h-[calc(100vh-6rem)] lg:z-10">
+              <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4 sm:p-5 md:p-6 lg:p-8 space-y-4 sm:space-y-5 md:space-y-6 lg:space-y-7 lg:overflow-y-auto overflow-hidden h-full lg:mt-8">
                 <div className="flex items-center justify-between">
                   <h3 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900">Project Details</h3>
                 </div>
@@ -478,7 +740,7 @@ const ProjectDetail = () => {
               {/* Description - Use readme from MongoDB if available, otherwise use description */}
               {/* For hardcoded projects (top 9): small positive margin for spacing */}
               {/* For MongoDB projects: negative margin to pull content up (works with sidebar layout) */}
-              <div className={`w-full overflow-x-hidden ${!isHardcodedProject ? '-mt-6 sm:-mt-8 md:-mt-10 lg:-mt-12 xl:-mt-14' : 'mt-4 sm:mt-6 md:mt-8'}`}>
+              <div className={`w-full overflow-x-hidden ${!isHardcodedProject ? '-mt-6 sm:-mt-8 md:-mt-10 lg:mt-0 xl:mt-0' : 'mt-4 sm:mt-6 md:mt-8'}`}>
                 {isHardcodedProject && (
                   <>
                     <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb-0">
@@ -584,6 +846,32 @@ const ProjectDetail = () => {
                   </div>
                 )}
 
+              {/* More Projects Section - Related Projects */}
+              {relatedProjects.length > 0 && (
+                <div className={isHardcodedProject ? 'bg-white rounded-2xl p-6 sm:p-8 md:p-10 border border-gray-200 shadow-sm' : 'mt-8 sm:mt-10'}>
+                  <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">
+                    More Projects
+                  </h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                    {relatedProjects.map((relatedProject, index) => (
+                      <ProjectCard 
+                        key={relatedProject.slug} 
+                        project={relatedProject} 
+                        index={index} 
+                      />
+                    ))}
+                  </div>
+                  <div className="mt-6 text-center">
+                    <Link 
+                      to="/projects" 
+                      className="inline-flex items-center px-4 py-2 bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors font-medium"
+                    >
+                      View All Projects
+                    </Link>
+                  </div>
+                </div>
+              )}
+
             </div>
           </div>
         </section>
@@ -603,7 +891,7 @@ const ProjectDetail = () => {
           >
             <img 
               src="/logos/whatsapp.svg" 
-              alt="WhatsApp" 
+              alt="Contact BitBash on WhatsApp for automation and scraping services" 
               className="w-7 h-7 sm:w-9 sm:h-9 brightness-0 invert"
             />
           </a>

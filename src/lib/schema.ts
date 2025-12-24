@@ -134,14 +134,37 @@ export const buildProjectSchema = (project: {
   rating?: number;
   developer?: string;
 }, projectUrl: string) => {
+  // Determine application subcategory based on role/name
+  const getApplicationSubCategory = (role?: string, name?: string): string => {
+    const roleLower = (role || '').toLowerCase();
+    const nameLower = (name || '').toLowerCase();
+    
+    if (roleLower.includes('scraper') || nameLower.includes('scraper')) {
+      return 'DataExtraction';
+    }
+    if (roleLower.includes('bot') || nameLower.includes('bot') || roleLower.includes('automation')) {
+      return 'Automation';
+    }
+    if (roleLower.includes('platform') || roleLower.includes('app')) {
+      return 'WebApplication';
+    }
+    return 'WebApplication';
+  };
+
   const schema: any = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": project.name,
-    "description": project.description.substring(0, 500), // Limit description length
+    "description": project.description, // No truncation - let Google handle it
     "url": projectUrl,
     "applicationCategory": project.role || "WebApplication",
+    "applicationSubCategory": getApplicationSubCategory(project.role, project.name),
     "operatingSystem": "Any",
+    "publisher": {
+      "@type": "Organization",
+      "name": "BitBash",
+      "url": SITE_URL
+    },
     "offers": {
       "@type": "Offer",
       "availability": "https://schema.org/InStock",
@@ -156,15 +179,18 @@ export const buildProjectSchema = (project: {
 
   // Add pricing if available
   if (project.pricing) {
-    // Try to extract price from pricing string (e.g., "$100-$300")
+    // Try to extract starting price from pricing string (e.g., "$100-$300" -> "100")
     const priceMatch = project.pricing.match(/\$?(\d+)/);
     if (priceMatch) {
+      // Use the first number as the starting price
       schema.offers.price = priceMatch[1];
       schema.offers.priceCurrency = "USD";
     }
+    // Always include priceSpecification for clarity
     schema.offers.priceSpecification = {
       "@type": "PriceSpecification",
-      "price": project.pricing
+      "price": project.pricing,
+      "priceCurrency": "USD"
     };
   }
 
