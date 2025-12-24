@@ -205,13 +205,13 @@ export const buildProjectSchema = (project: {
     };
   }
 
-  // Add author/developer if available
-  if (project.developer) {
-    schema.author = {
-      "@type": "Person",
-      "name": project.developer
-    };
-  }
+  // Add author/developer if available (removed to avoid personal names in structured data)
+  // if (project.developer) {
+  //   schema.author = {
+  //     "@type": "Person",
+  //     "name": project.developer
+  //   };
+  // }
 
   return schema;
 };

@@ -528,8 +528,7 @@ const ProjectDetail = () => {
     timeline: getCategoryBasedTimeline(),
     postDeliverySupport: "Available at $4/hr",
     paymentMethods: "Wise, Payoneer, Bank Transfer (USD/EUR/GBP), and Crypto (USDT TRC20/ERC20)",
-    moreDetails: "Schedule a quick demo anytime.",
-    developer: "Zeeshan Ahmad"
+    moreDetails: "Schedule a quick demo anytime."
   };
 
   const sidebarContent = {
@@ -538,8 +537,7 @@ const ProjectDetail = () => {
     timeline: defaultSidebarContent.timeline,
     postDeliverySupport: project.postDeliverySupport ?? defaultSidebarContent.postDeliverySupport,
     paymentMethods: project.paymentMethods ?? defaultSidebarContent.paymentMethods,
-    moreDetails: project.moreDetails ?? defaultSidebarContent.moreDetails,
-    developer: project.developer ?? defaultSidebarContent.developer
+    moreDetails: project.moreDetails ?? defaultSidebarContent.moreDetails
   };
 
   // Check if this is a hardcoded (top 9) project
@@ -566,8 +564,7 @@ const ProjectDetail = () => {
     technologies: primaryTags,
     pricing: sidebarContent.pricing,
     role: project.role,
-    rating: project.rating,
-    developer: sidebarContent.developer
+    rating: project.rating
   }, projectUrl);
 
   const breadcrumbSchema = buildProjectBreadcrumbSchema(projectName, project.slug);
@@ -883,7 +880,7 @@ const ProjectDetail = () => {
       <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 flex flex-col gap-2 sm:gap-3">
           {/* WhatsApp Icon */}
           <a
-            href="https://api.whatsapp.com/send/?phone=923249868488&text=Hi+Zeeshan%2C+I%27m+interested+in+automation.&type=phone_number&app_absent=0"
+            href="https://api.whatsapp.com/send/?phone=923249868488&text=Hi+BitBash%2C+I%27m+interested+in+automation.&type=phone_number&app_absent=0"
             target="_blank"
             rel="noopener noreferrer"
             className="w-12 h-12 sm:w-14 sm:h-14 bg-[#25D366] rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"

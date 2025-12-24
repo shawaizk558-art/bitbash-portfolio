@@ -18,7 +18,7 @@ function ContactUsCardsSection() {
             heading={"WhatsApp & Inquiries"}
             desc={"Get in touch via WhatsApp for instant responses. We're here to help you with your needs"}
             btncontent="Message on WhatsApp"
-            bluebtnlink="https://api.whatsapp.com/send/?phone=923249868488&text=Hi+Zeeshan%2C+I%27m+interested+in+automation.&type=phone_number&app_absent=0"
+            bluebtnlink="https://api.whatsapp.com/send/?phone=923249868488&text=Hi+BitBash%2C+I%27m+interested+in+automation.&type=phone_number&app_absent=0"
           />
 
           <IconHpb

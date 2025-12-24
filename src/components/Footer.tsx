@@ -37,7 +37,7 @@ export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
             {/* Quick Chat Options */}
             <div className="space-y-3">
               <a
-                href="https://api.whatsapp.com/send/?phone=923249868488&text=Hi+Zeeshan%2C+I%27m+interested+in+automation.&type=phone_number&app_absent=0"
+                href="https://api.whatsapp.com/send/?phone=923249868488&text=Hi+BitBash%2C+I%27m+interested+in+automation.&type=phone_number&app_absent=0"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block w-full bg-purple-600 hover:bg-green-600 text-white text-center py-3 px-4 rounded-lg transition-colors font-medium"
@@ -169,7 +169,7 @@ export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
               </li>
               <li className="m-0 p-0">
                 <a
-                  href="https://api.whatsapp.com/send/?phone=923249868488&text=Hi+Zeeshan%2C+I%27m+interested+in+automation.&type=phone_number&app_absent=0"
+                  href="https://api.whatsapp.com/send/?phone=923249868488&text=Hi+BitBash%2C+I%27m+interested+in+automation.&type=phone_number&app_absent=0"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors block flex items-center gap-2"
