@@ -199,27 +199,12 @@ function isDevelopment(): boolean {
   return typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 }
 
-/**
- * Send debug log only in development
- */
-function debugLog(data: any): void {
-  if (isDevelopment()) {
-    fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}).catch(()=>{});
-  }
-}
-
 export async function getMongoProjects(): Promise<(Project & { title?: string; description?: string; readme?: string; [key: string]: any })[]> {
   const isServer = typeof window === 'undefined';
   console.log(`[${isServer ? 'SSR' : 'Client'}] 🚀 getMongoProjects() called`);
-  // #region agent log
-  debugLog({location:'strapi.ts:169',message:'getMongoProjects called',data:{isServer:typeof window==='undefined',isProd:typeof window==='undefined'?Boolean(process.env.VERCEL):false},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A,B,C'});
-  // #endregion
   try {
     // In Node.js (server-side), always try Blob Storage first, fallback to local file in development
     if (typeof window === 'undefined') {
-      // #region agent log
-      debugLog({location:'strapi.ts:173',message:'Server-side execution path',data:{isProduction:isProduction(),vercelEnv:process.env.VERCEL},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'});
-      // #endregion
       
       // Always try Blob Storage first (works in both local and production if BLOB_READ_WRITE_TOKEN is set)
       // Get blob token from environment
@@ -288,7 +273,6 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
               uploadedAt: blob.uploadedAt
             });
             
-            debugLog({location:'strapi.ts:180',message:'Fetching from blob URL (SSR)',data:{blobUrl:blob.url,blobPathname:blob.pathname},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'});
             const response = await fetch(blob.url);
             console.log(`[SSR] Fetch response status: ${response.status} ${response.statusText}`);
             
@@ -299,7 +283,6 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
               const projectCount = Array.isArray(projects) ? projects.length : 0;
               console.log(`[SSR] ✅ Successfully parsed JSON, found ${projectCount} projects`);
               
-              debugLog({location:'strapi.ts:186',message:'SSR blob fetch success (list)',data:{projectCount:Array.isArray(projects)?projects.length:0,source:'blob-storage'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'});
               if (Array.isArray(projects)) {
                 console.log(`[SSR] ✅ Returning ${projects.length} projects from blob storage`);
                 return projects as (Project & { title?: string; description?: string; readme?: string; [key: string]: any })[];
@@ -376,9 +359,6 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
           const projects = JSON.parse(content);
           const projectCount = Array.isArray(projects) ? projects.length : 0;
           console.log(`[SSR] ✅ Local file read success: ${projectCount} projects`);
-          // #region agent log
-          debugLog({location:'strapi.ts:203',message:'SSR local file read success (fallback)',data:{projectCount:Array.isArray(projects)?projects.length:0,filePath,source:'local-file'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'});
-          // #endregion
           if (Array.isArray(projects)) {
             return projects as (Project & { title?: string; description?: string; readme?: string; [key: string]: any })[];
           }
@@ -410,9 +390,6 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
     // Check cache first
     const cachedProjects = cache.get<(Project & { title?: string; description?: string; readme?: string; [key: string]: any })[]>(CACHE_KEYS.MONGO_PROJECTS);
     console.log(`[Client] Cache check: ${cachedProjects ? `Found ${cachedProjects.length} cached projects` : 'No cache'}`);
-    // #region agent log
-    debugLog({location:'strapi.ts:222',message:'Client-side cache check',data:{hasCache:!!cachedProjects,cacheCount:cachedProjects?.length||0,source:'memory-cache'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'});
-    // #endregion
     if (cachedProjects) {
       console.log(`[Client] ✅ Returning ${cachedProjects.length} projects from cache`);
       return cachedProjects;
@@ -426,27 +403,18 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
         // API route reads from Blob Storage (production) or local file (local)
         const apiUrl = '/api/mongodb-projects';
         console.log(`[Client] Fetching from API: ${apiUrl}`);
-        // #region agent log
-        debugLog({location:'strapi.ts:232',message:'Fetching from API route',data:{apiUrl,cacheStrategy:'no-cache'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B,C'});
-        // #endregion
         const response = await fetch(apiUrl, {
           // Use no-cache to avoid stale HTML error pages
           cache: 'no-cache',
         });
         
-        // #region agent log
         const contentType = response.headers.get('content-type') || '';
         console.log(`[Client] API response: ${response.status} ${response.statusText}, Content-Type: ${contentType}`);
-        debugLog({location:'strapi.ts:256',message:'API response received',data:{status:response.status,statusText:response.statusText,contentType,isOk:response.ok,url:response.url},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B,C'});
-        // #endregion
         
       if (response.ok) {
         // Check if response is actually JSON before parsing
         if (!contentType.includes('application/json')) {
-          // #region agent log
           const responseText = await response.text().catch(() => 'Unable to read');
-          debugLog({location:'strapi.ts:262',message:'API returned non-JSON',data:{contentType,responsePreview:responseText.substring(0,300)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B,C'});
-          // #endregion
           throw new Error(`API returned ${contentType} instead of JSON`);
         }
         
@@ -456,14 +424,8 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
           const responseText = await response.text();
           data = JSON.parse(responseText);
         } catch (parseError: any) {
-          // #region agent log
-          fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'strapi.ts:275',message:'JSON parse error',data:{error:parseError?.message,contentType},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B,C'})}).catch(()=>{});
-          // #endregion
           throw new Error(`Failed to parse JSON response: ${parseError?.message}`);
         }
-        // #region agent log
-        debugLog({location:'strapi.ts:239',message:'API route response received',data:{hasProjects:!!data.projects,projectsCount:data.projects?.length||0,isArray:Array.isArray(data),total:data.pagination?.total||0,responseStatus:response.status,responseHeaders:Object.fromEntries(response.headers.entries())},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B,C'});
-        // #endregion
         // Handle paginated response (new format) or array response (old format)
         let projects: any[];
         if (data.projects && Array.isArray(data.projects)) {
@@ -483,9 +445,6 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
         if (Array.isArray(projects)) {
           const typedProjects = projects as (Project & { title?: string; description?: string; readme?: string; [key: string]: any })[];
           console.log(`[Client] ✅ Successfully loaded ${typedProjects.length} projects from API route`);
-          // #region agent log
-          debugLog({location:'strapi.ts:255',message:'Caching API response',data:{projectCount:typedProjects.length,ttl:3600000,source:'api-route'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'});
-          // #endregion
           // Cache the results (1 hour TTL)
           cache.set(CACHE_KEYS.MONGO_PROJECTS, typedProjects, 3600000);
           return typedProjects;
@@ -498,9 +457,6 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
       } catch (apiError: any) {
         console.error('[Client] ❌ API route error:', apiError.message);
         console.error('[Client] Error name:', apiError.name);
-        // #region agent log
-        debugLog({location:'strapi.ts:300',message:'API route error - falling back',data:{error:apiError?.message||'Unknown error',errorName:apiError?.name},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B,C'});
-        // #endregion
         // API route failed - fallback to local file (only in development)
         // Don't re-throw, continue to fallback
       }
@@ -509,9 +465,6 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
       // In production, if blob storage is empty, return empty array (no file fallback)
       if (isDevelopment()) {
         console.log('[Client] Development mode - trying public file fallback');
-        // #region agent log
-        debugLog({location:'strapi.ts:264',message:'Fallback to public file',data:{url:'/data/mongodb-projects.json',cacheStrategy:'force-cache'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'});
-        // #endregion
         const response = await fetch('/data/mongodb-projects.json', {
           // OPTIMIZED: Use force-cache with revalidation instead of no-store
           cache: 'force-cache',
@@ -519,9 +472,6 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
 
         console.log(`[Client] Public file fetch response: ${response.status} ${response.statusText}`);
         if (!response.ok) {
-          // #region agent log
-          debugLog({location:'strapi.ts:271',message:'Public file fetch failed',data:{status:response.status,statusText:response.statusText},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'});
-          // #endregion
           // File doesn't exist yet or error - return empty array
           if (response.status === 404) {
             console.log('[Client] ⚠️  Public file not found (404), returning empty array');
@@ -534,17 +484,11 @@ export async function getMongoProjects(): Promise<(Project & { title?: string; d
         const projects = await response.json();
         const projectCount = Array.isArray(projects) ? projects.length : 0;
         console.log(`[Client] ✅ Public file fetch success: ${projectCount} projects`);
-        // #region agent log
-        debugLog({location:'strapi.ts:277',message:'Public file fetch success',data:{projectCount:Array.isArray(projects)?projects.length:0,source:'public-file'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'});
-        // #endregion
         
         // Validate and return projects with all fields preserved
         if (Array.isArray(projects)) {
           const typedProjects = projects as (Project & { title?: string; description?: string; readme?: string; [key: string]: any })[];
           console.log(`[Client] ✅ Returning ${typedProjects.length} projects from public file`);
-          // #region agent log
-          debugLog({location:'strapi.ts:283',message:'Caching public file response',data:{projectCount:typedProjects.length,ttl:3600000,source:'public-file'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'});
-          // #endregion
           // Cache the results (1 hour TTL)
           cache.set(CACHE_KEYS.MONGO_PROJECTS, typedProjects, 3600000);
           return typedProjects;

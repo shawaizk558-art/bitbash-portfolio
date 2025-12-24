@@ -24,42 +24,26 @@ export const Logo = ({ className, size = "lg", variant = "default" }: LogoProps)
   const containerRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Logo.tsx:useEffect',message:'Logo component mounted',data:{size,variant,isMobile:window.innerWidth<1024},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-    // #endregion
-
     const dot = dotRef.current;
     const container = containerRef.current;
     if (!dot || !container) return;
 
-    // #region agent log
     const dotRect = dot.getBoundingClientRect();
     const computedStyle = window.getComputedStyle(dot);
-    fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Logo.tsx:useEffect',message:'Dot element found',data:{hasWillChange:computedStyle.willChange!=='auto',hasTransform:computedStyle.transform!=='none',opacity:computedStyle.opacity,animationName:computedStyle.animationName,animationDuration:computedStyle.animationDuration,width:dotRect.width,height:dotRect.height},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-    // #endregion
 
     let animationIterationCount = 0;
     let lastOpacity = parseFloat(computedStyle.opacity);
 
     const handleAnimationStart = () => {
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Logo.tsx:handleAnimationStart',message:'Animation started',data:{iteration:animationIterationCount},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
-      // #endregion
     };
 
     const handleAnimationIteration = () => {
       animationIterationCount++;
       const currentOpacity = parseFloat(window.getComputedStyle(dot).opacity);
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Logo.tsx:handleAnimationIteration',message:'Animation iteration',data:{iteration:animationIterationCount,opacity:currentOpacity,opacityChange:Math.abs(currentOpacity-lastOpacity)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
-      // #endregion
       lastOpacity = currentOpacity;
     };
 
     const handleAnimationEnd = () => {
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Logo.tsx:handleAnimationEnd',message:'Animation ended unexpectedly',data:{iteration:animationIterationCount},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
-      // #endregion
     };
 
     dot.addEventListener('animationstart', handleAnimationStart);
@@ -70,9 +54,6 @@ export const Logo = ({ className, size = "lg", variant = "default" }: LogoProps)
     const opacityObserver = new MutationObserver(() => {
       const currentOpacity = parseFloat(window.getComputedStyle(dot).opacity);
       if (Math.abs(currentOpacity - lastOpacity) > 0.1) {
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Logo.tsx:opacityObserver',message:'Opacity changed significantly',data:{from:lastOpacity,to:currentOpacity,change:currentOpacity-lastOpacity},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
-        // #endregion
         lastOpacity = currentOpacity;
       }
     });
@@ -84,9 +65,6 @@ export const Logo = ({ className, size = "lg", variant = "default" }: LogoProps)
     const layoutObserver = new ResizeObserver(() => {
       const currentRect = dot.getBoundingClientRect();
       if (Math.abs(currentRect.top - lastRect.top) > 1 || Math.abs(currentRect.left - lastRect.left) > 1) {
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Logo.tsx:layoutObserver',message:'Layout shift detected',data:{topChange:currentRect.top-lastRect.top,leftChange:currentRect.left-lastRect.left},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
-        // #endregion
         lastRect = currentRect;
       }
     });
@@ -101,9 +79,6 @@ export const Logo = ({ className, size = "lg", variant = "default" }: LogoProps)
       const isMobile = currentWidth < 1024;
       if (wasMobile !== isMobile) {
         const computedStyle = window.getComputedStyle(dot);
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Logo.tsx:handleResize',message:'Media query breakpoint crossed',data:{fromWidth:lastWidth,toWidth:currentWidth,fromMobile:wasMobile,toMobile:isMobile,animationDuration:computedStyle.animationDuration},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
-        // #endregion
       }
       lastWidth = currentWidth;
     };

@@ -6,24 +6,14 @@ export const HeroBackground = () => {
     const beam2Ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'HeroBackground.tsx:useEffect',message:'HeroBackground mounted',data:{isMobile:window.innerWidth<1024},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
-        // #endregion
-
         const beam1 = beam1Ref.current;
         const beam2 = beam2Ref.current;
         if (!beam1 || !beam2) return;
 
         const handleBeam1Animation = (e: AnimationEvent) => {
-            // #region agent log
-            fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'HeroBackground.tsx:handleBeam1Animation',message:'Beam1 animation event',data:{type:e.type,elapsedTime:e.elapsedTime},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
-            // #endregion
         };
 
         const handleBeam2Animation = (e: AnimationEvent) => {
-            // #region agent log
-            fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'HeroBackground.tsx:handleBeam2Animation',message:'Beam2 animation event',data:{type:e.type,elapsedTime:e.elapsedTime},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
-            // #endregion
         };
 
         beam1.addEventListener('animationstart', handleBeam1Animation);
@@ -33,18 +23,6 @@ export const HeroBackground = () => {
         beam2.addEventListener('animationiteration', handleBeam2Animation);
         beam2.addEventListener('animationend', handleBeam2Animation);
 
-        // Monitor repaints
-        let repaintCount = 0;
-        const checkRepaint = () => {
-            repaintCount++;
-            if (repaintCount % 10 === 0) {
-                // #region agent log
-                fetch('http://127.0.0.1:7242/ingest/355e7c21-0ece-4d51-b822-cffffbac4c7d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'HeroBackground.tsx:checkRepaint',message:'Repaint check',data:{repaintCount},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
-                // #endregion
-            }
-            requestAnimationFrame(checkRepaint);
-        };
-        const rafId = requestAnimationFrame(checkRepaint);
 
         return () => {
             beam1.removeEventListener('animationstart', handleBeam1Animation);
@@ -53,7 +31,6 @@ export const HeroBackground = () => {
             beam2.removeEventListener('animationstart', handleBeam2Animation);
             beam2.removeEventListener('animationiteration', handleBeam2Animation);
             beam2.removeEventListener('animationend', handleBeam2Animation);
-            cancelAnimationFrame(rafId);
         };
     }, []);
 
