@@ -8,7 +8,7 @@ import { getProjectBySlug as getHardcodedProject, projects as hardcodedProjects 
 import { getProjectBySlug as getStrapiProject, getMongoProjectBySlug, getMongoProjects } from "@/lib/strapi";
 import { useState, useEffect, useRef } from "react";
 import type { Project } from "@/data/projects";
-import { getMediaAssets } from "@/lib/mediaAssets";
+import { getMediaAssets, getVideoSources, getPosterPath } from "@/lib/mediaAssets";
 import { truncateDescription } from "@/lib/utils";
 import { formatTagsAsKeywords, getPrimaryTags } from "@/lib/seoUtils";
 import { buildProjectSchema, buildProjectBreadcrumbSchema } from "@/lib/schema";
@@ -16,6 +16,9 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import telegramWeatherMarkdown from "../../content/projects/project1.md?raw";
 import { ProjectCard } from "@/components/ProjectCard";
+import { AutoPlayVideo } from "@/components/AutoPlayVideo";
+import { LiteYouTubeEmbed } from "@/components/LiteYouTubeEmbed";
+import { Play, X } from "lucide-react";
 
 /**
  * Convert a string to title case (capitalize first letter of each word)
@@ -119,6 +122,7 @@ const ProjectDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [allProjects, setAllProjects] = useState<(Project & { title?: string; description?: string; readme?: string; [key: string]: any })[]>([]);
   const [relatedProjects, setRelatedProjects] = useState<(Project & { title?: string; description?: string; readme?: string; [key: string]: any })[]>([]);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const sidebarRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -422,6 +426,16 @@ const ProjectDetail = () => {
   }
 
   const mediaAssets = getMediaAssets(project.slug);
+  
+  // Gradient classes for video placeholders
+  const gradientClasses = {
+    purple: "from-purple-400 to-purple-600",
+    blue: "from-blue-400 to-blue-600",
+    green: "from-green-400 to-green-600",
+    orange: "from-orange-400 to-orange-600",
+    pink: "from-pink-400 to-pink-600",
+    teal: "from-teal-400 to-teal-600",
+  };
   
   // Create SEO-optimized description WITH timeline for meta tags only (not for frontend display)
   const createSEODescription = (): string => {
@@ -750,6 +764,83 @@ const ProjectDetail = () => {
                   )}
                 </div>
               </div>
+
+              {/* Media Section - Video and GIF - Only for top 9 projects */}
+              {isHardcodedProject && (
+                <div className="w-full">
+                  <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb-4 sm:mb-5 md:mb-6 lg:mb-8">
+                    Project Demo
+                  </h2>
+                  <div className="relative aspect-video bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl overflow-hidden border border-gray-200 shadow-lg">
+                    {project.youtubeVideoId ? (
+                      <div className="absolute inset-0 w-full h-full z-0">
+                        <LiteYouTubeEmbed
+                          videoId={project.youtubeVideoId}
+                          title={`${project.name} Demo Video`}
+                          isPlaying={isVideoPlaying}
+                          onPlay={() => setIsVideoPlaying(true)}
+                          className="w-full h-full"
+                          placeholderClassName="relative block w-full h-full text-left"
+                        >
+                          <>
+                            {mediaAssets.videoKey ? (
+                              <AutoPlayVideo
+                                sources={getVideoSources(mediaAssets.videoKey)}
+                                poster={getPosterPath(mediaAssets.videoKey)}
+                                alt={mediaAssets.alt}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className={`absolute inset-0 bg-gradient-to-br ${gradientClasses[project.videoPlaceholder]} opacity-80`} />
+                            )}
+                            <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+                              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                                <Play className="w-8 h-8 sm:w-10 text-gray-900 ml-1" fill="currentColor" />
+                              </div>
+                            </div>
+                          </>
+                        </LiteYouTubeEmbed>
+                        {isVideoPlaying && (
+                          <button
+                            type="button"
+                            className="absolute top-3 right-3 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-gray-900 shadow-md hover:bg-white transition-colors"
+                            aria-label="Close video"
+                            onClick={() => setIsVideoPlaying(false)}
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
+                    ) : mediaAssets.videoKey ? (
+                      <div className="absolute inset-0 w-full h-full z-0">
+                        <AutoPlayVideo
+                          sources={getVideoSources(mediaAssets.videoKey)}
+                          poster={getPosterPath(mediaAssets.videoKey)}
+                          alt={mediaAssets.alt}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    ) : (
+                      <>
+                        {/* Check for GIF */}
+                        <img
+                          src={`/media/${project.slug}.gif`}
+                          alt={`${project.name} demo`}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            // Hide GIF if it doesn't exist, show gradient fallback
+                            const target = e.currentTarget as HTMLImageElement;
+                            target.style.display = 'none';
+                            const fallback = target.nextElementSibling as HTMLElement | null;
+                            if (fallback) fallback.style.display = 'block';
+                          }}
+                        />
+                        <div className={`absolute inset-0 bg-gradient-to-br ${gradientClasses[project.videoPlaceholder]} opacity-80 hidden`}></div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
 
               {/* Technologies Showcase - Only for hardcoded projects */}
               {isHardcodedProject && project.technologies && project.technologies.length > 0 && (
