@@ -20,8 +20,8 @@ export const SEO = ({ title, description, canonical, image, robots = "index, fol
         ? description.substring(0, 157).trim() + '...'
         : description;
     
-    // Use project-specific OG image, fallback to screenshot, then placeholder
-    const metaImage = image ? `${siteUrl}${image}` : `${siteUrl}/placeholder.webp`;
+    // Only use OG image if explicitly provided
+    const metaImage = image ? `${siteUrl}${image}` : null;
 
     return (
         <Helmet>
@@ -37,19 +37,23 @@ export const SEO = ({ title, description, canonical, image, robots = "index, fol
             <meta property="og:url" content={fullUrl} />
             <meta property="og:title" content={title} />
             <meta property="og:description" content={metaDescription} />
-            <meta property="og:image" content={metaImage} />
-            <meta property="og:image:width" content="1200" />
-            <meta property="og:image:height" content="630" />
+            {metaImage && (
+                <>
+                    <meta property="og:image" content={metaImage} />
+                    <meta property="og:image:width" content="1200" />
+                    <meta property="og:image:height" content="630" />
+                </>
+            )}
             <meta property="og:locale" content="en_US" />
             <meta property="og:site_name" content="BitBash" />
             {keywords && <meta property="og:keywords" content={keywords} />}
 
             {/* Twitter */}
-            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:card" content={metaImage ? "summary_large_image" : "summary"} />
             <meta name="twitter:url" content={fullUrl} />
             <meta name="twitter:title" content={title} />
             <meta name="twitter:description" content={metaDescription} />
-            <meta name="twitter:image" content={metaImage} />
+            {metaImage && <meta name="twitter:image" content={metaImage} />}
             {keywords && <meta name="twitter:keywords" content={keywords} />}
 
             {/* Structured Data (JSON-LD) */}

@@ -423,15 +423,6 @@ const ProjectDetail = () => {
 
   const mediaAssets = getMediaAssets(project.slug);
   
-  // Determine OG image - prefer screenshot, then avatar/logo, then placeholder
-  const ogImage = (() => {
-    // Check if screenshot exists (for MongoDB projects)
-    const screenshotPath = `/project-screenshots/${project.slug}.png`;
-    // In production, screenshots are served via API, but for OG we can reference the path
-    // For now, use avatar/logo which is more reliable
-    return mediaAssets.avatarSrc || '/placeholder.webp';
-  })();
-  
   // Create SEO-optimized description WITH timeline for meta tags only (not for frontend display)
   const createSEODescription = (): string => {
     const detectedCategory = detectProjectCategory();
@@ -578,7 +569,6 @@ const ProjectDetail = () => {
         title={`${projectName} - BitBash Project`}
         description={seoDescription}
         canonical={`/project/${project.slug}`}
-        image={ogImage}
         keywords={keywordsString}
         structuredData={structuredData}
       />

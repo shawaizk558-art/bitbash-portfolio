@@ -72,34 +72,12 @@ function toTitleCase(str: string): string {
 }
 
 /**
- * Get media assets for a project (simplified version)
- */
-function getProjectImage(slug: string): string {
-  // Use a simple mapping - in production, this would use getMediaAssets
-  // For now, try common paths
-  const commonImages: Record<string, string> = {
-    petla: "/petla.svg",
-    "actuary-list": "/actuarylist-logo.webp",
-    "scraper-glass": "/scraperglass-logo.webp",
-    "threads-scraper": "/avatars/threads.svg",
-    ttinit: "/ttinit-logo.webp",
-    purepeak: "/purepeak_ltd_logo.webp",
-    "facebook-scraper": "/avatars/facebook.svg",
-    "linkedin-automation": "/avatars/linkedin.svg",
-    "api-scraper": "/avatars/telegram.svg",
-  };
-  return commonImages[slug] || "/placeholder.webp";
-}
-
-/**
  * Generate meta tags HTML for a project
  */
 function generateMetaTags(project: any, slug: string): string {
   const projectName = toTitleCase(project.title || project.name);
   const description = (project.description || project.quote || "").substring(0, 160);
   const projectUrl = `${SITE_URL}/project/${slug}`;
-  const ogImage = getProjectImage(slug);
-  const fullOgImage = ogImage.startsWith("http") ? ogImage : `${SITE_URL}${ogImage}`;
 
   return `
   <title>${projectName} - BitBash Project</title>
@@ -109,16 +87,12 @@ function generateMetaTags(project: any, slug: string): string {
   <meta property="og:url" content="${projectUrl}" />
   <meta property="og:title" content="${projectName} - BitBash Project" />
   <meta property="og:description" content="${description.replace(/"/g, "&quot;")}" />
-  <meta property="og:image" content="${fullOgImage}" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
   <meta property="og:locale" content="en_US" />
   <meta property="og:site_name" content="BitBash" />
-  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:card" content="summary" />
   <meta name="twitter:url" content="${projectUrl}" />
   <meta name="twitter:title" content="${projectName} - BitBash Project" />
   <meta name="twitter:description" content="${description.replace(/"/g, "&quot;")}" />
-  <meta name="twitter:image" content="${fullOgImage}" />
   <meta name="robots" content="index, follow" />`;
 }
 
