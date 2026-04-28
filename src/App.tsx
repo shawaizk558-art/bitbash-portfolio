@@ -18,11 +18,11 @@ const ServiceFullStack = lazy(() => import("./pages/ServiceFullStack"));
 const ServiceAiSolutions = lazy(() => import("./pages/ServiceAiSolutions"));
 const ServiceSaasMvp = lazy(() => import("./pages/ServiceSaasMvp"));
 const Pricing = lazy(() => import("./pages/Pricing"));
-const Contact = lazy(() => import("./pages/Contact"));
+//const Contact = lazy(() => import("./pages/Contact"));
 const Projects = lazy(() => import("./pages/Projects"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogPostDetail = lazy(() => import("./pages/BlogPostDetail"));
-const Partners = lazy(() => import("./pages/Partners"));
+//const Partners = lazy(() => import("./pages/Partners"));
 const ProjectDetail = lazy(() => import("./pages/ProjectDetail"));
 const OurWorkModel = lazy(() => import("./pages/OurWorkModel"));
 const Careers = lazy(() => import("./pages/Careers"));
@@ -57,10 +57,10 @@ const App = () => {
                 <Route path="/services/ai-solutions" element={<ServiceAiSolutions />} />
                 <Route path="/services/saas-mvp" element={<ServiceSaasMvp />} />
                 <Route path="/pricing" element={<Pricing />} />
-                <Route path="/contact" element={<Contact />} />
+                {/*<Route path="/contact" element={<Contact />} />*/}
                 <Route path="/blog" element={<Blog />} />
                 <Route path="/blog/:slug" element={<BlogPostDetail />} />
-                <Route path="/partners" element={<Partners />} />
+                {/*<Route path="/partners" element={<Partners />} />*/}
                 <Route path="/projects" element={<Projects />} />
                 <Route path="/our-work-model" element={<OurWorkModel />} />
                 <Route path="/project/:slug" element={<ProjectDetail />} />

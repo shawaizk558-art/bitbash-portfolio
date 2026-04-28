@@ -29,7 +29,7 @@ export const RoutePreloader = () => {
                 "/contact": () => import("@/pages/Contact"),
                 "/projects": () => import("@/pages/Projects"),
                 "/blog": () => import("@/pages/Blog"),
-                "/partners": () => import("@/pages/Partners"),
+                //"/partners": () => import("@/pages/Partners"),
                 "/our-work-model": () => import("@/pages/OurWorkModel"),
             };
 

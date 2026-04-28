@@ -34,8 +34,8 @@ export const Hero = ({ title, subtitle, variant = "default", buttons }: HeroProp
 
   // Default buttons for index page
   const defaultButtons: HeroButton[] = [
-    { label: "Contact Us", href: "/contact", variant: "outline" },
-    { label: "Book a Call", href: "/contact", variant: "default" }
+    //{ label: "Contact Us", href: "/contact", variant: "outline" },
+    //{ label: "Book a Call", href: "/contact", variant: "default" }
   ];
 
   const heroButtons = buttons || defaultButtons;

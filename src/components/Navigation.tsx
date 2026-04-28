@@ -340,9 +340,9 @@ const NavigationComponent = () => {
             </div>
 
             {/* Desktop CTA Buttons - Right Side */}
-            <div className="hidden lg:flex items-center ml-auto">
+            {/*<div className="hidden lg:flex items-center ml-auto">
               <ContactButton label="Contact us" fullWidth={false} />
-            </div>
+            </div>*/}
           </div>
 
         </div>
@@ -440,7 +440,7 @@ const NavigationComponent = () => {
                 >
                   <span>Careers</span>
                 </Link>
-                <Link
+                {/* <Link
                   to="/contact"
                   className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
                   onClick={() => {
@@ -450,10 +450,11 @@ const NavigationComponent = () => {
                 >
                   <span>Contact</span>
                 </Link>
+                */}
               </div>
             </div>
 
-            {/* CTA Buttons - At Bottom */}
+            {/* CTA Buttons - At Bottom
             <div className="px-4 sm:px-6 py-4 sm:py-6 pt-6 sm:pt-8">
               <Link
                 to="/contact"
@@ -480,6 +481,7 @@ const NavigationComponent = () => {
                 </button>
               </Link>
             </div>
+            */}
           </div>
         </div>
       )}

@@ -1,22 +1,22 @@
-import { useState } from "react";
+// import { useState } from "react";
 import { Logo } from "@/components/Logo";
 import { Link } from "react-router-dom";
 import { scrollToTopImmediate } from "@/lib/scrollToTop";
-import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+// import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
 
 export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
-  const [copied, setCopied] = useState(false);
+  // const [copied, setCopied] = useState(false);
 
-  const handleCopyEmail = async () => {
-    try {
-      await navigator.clipboard.writeText("sale@bitbash.dev");
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    } catch {
-      // Fallback: do nothing if clipboard is unavailable
-    }
-  };
+  // const handleCopyEmail = async () => {
+  //   try {
+  //     await navigator.clipboard.writeText("sale@bitbash.dev");
+  //     setCopied(true);
+  //     setTimeout(() => setCopied(false), 1500);
+  //   } catch {
+  //     // Fallback: do nothing if clipboard is unavailable
+  //   }
+  // };
 
   return (
     <footer className={`relative ${isHomepage ? 'pt-40 sm:pt-60 md:pt-80 pb-8 sm:pb-12 md:pb-16' : 'pt-12 sm:pt-16 pb-6 sm:pb-8'} bg-[#1a1d29] text-white z-0`}>
@@ -34,7 +34,7 @@ export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
               LET'S MAKE IT HAPPEN
             </p>
             
-            {/* Quick Chat Options */}
+            {/* Quick Chat Options removed
             <div className="space-y-3">
               <a
                 href="https://api.whatsapp.com/send/?phone=923249868488&text=Hi+BitBash%2C+I%27m+interested+in+automation.&type=phone_number&app_absent=0"
@@ -53,6 +53,7 @@ export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
                 Chat on Telegram
               </a>
             </div>
+            */}
           </div>
 
           {/* Right Side Columns */}
@@ -152,7 +153,7 @@ export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
             </ul>
           </div>
 
-          {/* Connect Section */}
+          {/* Connect Section removed
           <div>
             <h3 className="text-xs sm:text-sm font-bold text-white mb-4 sm:mb-5 md:mb-6 uppercase tracking-wider">Connect</h3>
             <ul className="space-y-2 sm:space-y-3 m-0 p-0 list-none">
@@ -227,13 +228,13 @@ export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
                 </Link>
               </li>
               <li className="m-0 p-0">
-                <Link
+                {/*<Link
                   to="/partners"
                   onClick={scrollToTopImmediate}
                   className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors block"
                 >
                   Partners
-                </Link>
+                </Link>*/}
               </li>
               <li className="m-0 p-0">
                 <Link
@@ -244,7 +245,7 @@ export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
                   Our Work Model
                 </Link>
               </li>
-              <li className="m-0 p-0">
+              {/* <li className="m-0 p-0">
                 <Link
                   to="/contact"
                   onClick={scrollToTopImmediate}
@@ -252,7 +253,7 @@ export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
                 >
                   Contact
                 </Link>
-              </li>
+              </li> */}
               <li className="m-0 p-0">
                 <Link
                   to="/careers#open-positions"
@@ -285,9 +286,9 @@ export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
             >
               <Logo size="lg" variant="white" />
             </Link>
-            {/* Trusted Partner and Certification Badges - aligned with logo */}
+           {/* Trusted Partner and Certification Badges - aligned with logo removed */}
             <div className="flex items-center gap-3 sm:gap-4 flex-wrap justify-center">
-              {/* Trusted Partner Separator and Logo */}
+              {/* Trusted Partner Separator and Logo
               <div className="flex flex-col items-center gap-2 pr-3 sm:pr-4 border-r border-gray-700">
                 <span className="text-[10px] sm:text-xs text-gray-500 font-medium uppercase tracking-wider whitespace-nowrap">Trusted Partner</span>
                 <a
@@ -304,6 +305,7 @@ export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
                   />
                 </a>
               </div>
+              */}
               {/* Certification Badges */}
               <img
                 src="/badges/ssl-secured.webp"
@@ -328,7 +330,7 @@ export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
               Copyright 2025. BITBASH. LTD. All rights reserved!
             </p>
 
-            {/* Email Link - aligned with copyright text */}
+            {/* Email Link removed
             <div className="flex items-center">
               <Tooltip open={copied}>
                 <TooltipTrigger asChild>
@@ -350,6 +352,7 @@ export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
                 </TooltipContent>
               </Tooltip>
             </div>
+            */}
           </div>
         </div>
       </div>

@@ -958,6 +958,7 @@ const ProjectDetail = () => {
       <Footer isHomepage={false} />
 
       {/* Floating Social Icons - Bottom Right */}
+      {false && (
       <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 flex flex-col gap-2 sm:gap-3">
           {/* WhatsApp Icon */}
           <a
@@ -991,6 +992,7 @@ const ProjectDetail = () => {
             </svg>
           </a>
         </div>
+      )}
     </div>
   );
 };

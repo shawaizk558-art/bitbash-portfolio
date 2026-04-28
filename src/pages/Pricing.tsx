@@ -4,13 +4,13 @@ import { Footer } from "@/components/Footer";
 import { FAQ } from "@/components/FAQ";
 import { Check, Info, Database, Zap } from "lucide-react";
 import { HeroBackground } from "@/components/HeroBackground";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { Showcase } from "@/components/Showcase";
-import { ContactButton } from "@/components/ContactButton";
+//import { ContactButton } from "@/components/ContactButton";
 import { SEO } from "@/components/SEO";
 
 const Pricing = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [billingPeriod, setBillingPeriod] = useState<"hourly" | "monthly">("monthly");
 
   const developerPlans = {
@@ -124,9 +124,9 @@ const Pricing = () => {
                   </div>
                 </div>
 
-                <div className="w-full lg:w-auto flex-shrink-0">
+                {/*<div className="w-full lg:w-auto flex-shrink-0">
                   <ContactButton />
-                </div>
+                </div>*/}
               </div>
             </div>
           </div>
@@ -164,9 +164,9 @@ const Pricing = () => {
                   </div>
                 </div>
 
-                <div className="w-full lg:w-auto flex-shrink-0">
+                {/*<div className="w-full lg:w-auto flex-shrink-0">
                   <ContactButton />
-                </div>
+                </div>*/}
               </div>
             </div>
           </div>
@@ -440,7 +440,7 @@ const Pricing = () => {
 
               {/* Row 12: Plan CTAs (no visible cell in first column) */}
               <div className="p-0 border-0 bg-transparent" />
-              <div className="p-6 border border-gray-300 rounded-b-2xl flex items-center justify-center">
+              {/* <div className="p-6 border border-gray-300 rounded-b-2xl flex items-center justify-center">
                 <button
                   onClick={() => navigate('/contact')}
                   className="text-base sm:text-lg font-semibold text-purple-600 hover:text-purple-700 hover:underline"
@@ -463,7 +463,7 @@ const Pricing = () => {
                 >
                   Hire a Senior Developer
                 </button>
-              </div>
+              </div> */}
 
             </div>
           </div>
@@ -530,14 +530,14 @@ const Pricing = () => {
                   <p className="text-sm text-gray-700">Learning and following instructions</p>
                 </div>
               </div>
-              <div className="mt-4 flex justify-center">
+              {/* <div className="mt-4 flex justify-center">
                 <button
                   onClick={() => navigate('/contact')}
                   className="text-base font-semibold text-purple-600 hover:text-purple-700 hover:underline"
                 >
                   Hire a Junior Developer
                 </button>
-              </div>
+              </div> */}
             </div>
 
             {/* Associate Developer Card */}
@@ -600,14 +600,14 @@ const Pricing = () => {
                   <p className="text-sm text-gray-700">Consistent without reminders</p>
                 </div>
               </div>
-              <div className="mt-4 flex justify-center">
+              {/* <div className="mt-4 flex justify-center">
                 <button
                   onClick={() => navigate('/contact')}
                   className="text-base font-semibold text-purple-600 hover:text-purple-700 hover:underline"
                 >
                   Hire an Associate Developer
                 </button>
-              </div>
+              </div> */}
             </div>
 
             {/* Senior Developer Card */}

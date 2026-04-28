@@ -1,7 +1,7 @@
 import { Navigation } from "@/components/Navigation";
 import { SEO } from "@/components/SEO";
 import { Footer } from "@/components/Footer";
-import { getMongoProjects } from "@/lib/strapi";
+//import { getMongoProjects } from "@/lib/strapi";
 import { Play, Star, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState, useCallback, useRef, useMemo } from "react";
@@ -79,16 +79,17 @@ function extractIntroductionFromReadme(readme: string): string | null {
 }
 
 const Projects = () => {
-  const [mongoProjects, setMongoProjects] = useState<Project[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  //const [mongoProjects, setMongoProjects] = useState<Project[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [playingVideoIndex, setPlayingVideoIndex] = useState<number | null>(null);
   const [displayCount, setDisplayCount] = useState(30); // Show 30 projects initially
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const { searchQuery, setSearchQuery, setFilteredCount, setTotalCount } = useProjectsSearch();
   const observerTarget = useRef<HTMLDivElement>(null);
+  const mongoProjects: Project[] = [];
 
-  useEffect(() => {
-    async function fetchDynamicProjects() {
+  //useEffect(() => {
+   /* async function fetchDynamicProjects() {
       console.log('[Projects] Starting to fetch MongoDB projects...');
       try {
         const mongoProjectsData = await getMongoProjects();
@@ -117,6 +118,7 @@ const Projects = () => {
 
     fetchDynamicProjects();
   }, []);
+  */
 
   // OPTIMIZED: Memoize expensive project processing operations
   // Filter out Telegram Weather Alert Bot and reorder projects (swap 2nd and 3rd for homepage consistency)

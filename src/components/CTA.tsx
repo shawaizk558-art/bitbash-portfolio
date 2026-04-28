@@ -132,12 +132,13 @@ export const CTA = () => {
                   Let's Build Something That Works.
                 </h2>
                 <p className="text-sm sm:text-base text-gray-700 max-w-2xl mx-auto -mt-2">
-                  Schedule your consultation and turn your idea into a real, working product.
+                Explore our portfolio and see how we turn ideas into real, high-performing products.
                 </p>
 
                 {/* Call-to-Action Buttons */}
                 <div className="relative max-w-3xl mx-auto pt-4">
                   <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
+                    {/*
                     <Button
                       variant="outline"
                       size="lg"
@@ -154,6 +155,15 @@ export const CTA = () => {
                       style={{ height: '48px' }}
                     >
                       Book a Call
+                    </Button>
+                    */}
+                    <Button
+                      variant="default"
+                      size="lg"
+                      className="h-12 py-4 px-6 text-lg font-semibold rounded-xl w-full sm:w-auto"
+                      style={{ height: '48px' }}
+                    >
+                     <a href="/projects">View Portfolio</a>
                     </Button>
                   </div>
                 </div>

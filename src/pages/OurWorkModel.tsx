@@ -20,9 +20,9 @@ const OurWorkModel = () => {
       <Hero
         title="Transparent, Efficient, and Results-Driven"
         subtitle="See how we turn complex requirements into polished software through our proven process."
+       //remove start your project button
         buttons={[
-          { label: "Start Your Project", href: "/contact", variant: "default" },
-          { label: "View Our Work", href: "/projects", variant: "outline" }
+          { label: "View Our Work", href: "/projects", variant: "default" }
         ]}
       />
       <ServiceModels />

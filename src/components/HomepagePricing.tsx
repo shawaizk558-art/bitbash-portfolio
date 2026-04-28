@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Check, Database, Zap } from "lucide-react";
-import { ContactButton } from "@/components/ContactButton";
+//import { ContactButton } from "@/components/ContactButton";
 import { Link } from "react-router-dom";
 
 export const HomepagePricing = () => {
@@ -94,9 +94,9 @@ export const HomepagePricing = () => {
                   </div>
                 </div>
 
-                <div className="w-full lg:w-auto flex-shrink-0">
+               {/* <div className="w-full lg:w-auto flex-shrink-0">
                   <ContactButton />
-                </div>
+                </div>*/}
               </div>
             </div>
           </div>
@@ -134,9 +134,9 @@ export const HomepagePricing = () => {
                   </div>
                 </div>
 
-                <div className="w-full lg:w-auto flex-shrink-0">
+                {/*<div className="w-full lg:w-auto flex-shrink-0">
                   <ContactButton />
-                </div>
+                </div>*/}
               </div>
             </div>
           </div>
