@@ -134,11 +134,11 @@ export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
               </li>
               <li className="m-0 p-0">
                 <Link
-                  to="/projects"
+                  to="/portfolio"
                   onClick={scrollToTopImmediate}
                   className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors block"
                 >
-                  Projects
+                  Portfolio
                 </Link>
               </li>
               <li className="m-0 p-0">

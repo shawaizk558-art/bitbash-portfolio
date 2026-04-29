@@ -237,8 +237,8 @@ export const buildProjectBreadcrumbSchema = (projectName: string, projectSlug: s
       {
         "@type": "ListItem",
         "position": 2,
-        "name": "Projects",
-        "item": `${SITE_URL}/projects`
+        "name": "Portfolio",
+        "item": `${SITE_URL}/portfolio`
       },
       {
         "@type": "ListItem",

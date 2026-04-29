@@ -27,7 +27,7 @@ export const RoutePreloader = () => {
                 "/services/saas-mvp": () => import("@/pages/ServiceSaasMvp"),
                 "/pricing": () => import("@/pages/Pricing"),
                 "/contact": () => import("@/pages/Contact"),
-                "/projects": () => import("@/pages/Projects"),
+                "/portfolio": () => import("@/pages/Projects"),
                 "/blog": () => import("@/pages/Blog"),
                 //"/partners": () => import("@/pages/Partners"),
                 "/our-work-model": () => import("@/pages/OurWorkModel"),

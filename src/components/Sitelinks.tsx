@@ -3,7 +3,7 @@ import { scrollToTopImmediate } from "@/lib/scrollToTop";
 
 export const Sitelinks = () => {
   const links = [
-    { label: "View Our Projects", path: "/projects" },
+    { label: "View Our Portfolio", path: "/portfolio" },
     { label: "See Pricing Plans", path: "/pricing" },
     { label: "Services", path: "/services" },
     { label: "Hiring", path: "/careers" },

@@ -63,7 +63,7 @@ export const Showcase = ({
     [reorderedProjects[1], reorderedProjects[2]] = [reorderedProjects[2], reorderedProjects[1]];
   }
 
-  const projectsToDisplay = limit ? reorderedProjects.slice(0, limit) : reorderedProjects.slice(0, 9);
+  const projectsToDisplay = limit ? reorderedProjects.slice(0, limit) : reorderedProjects.slice(0, 6);
 
   const setHighPriority = useCallback((node: HTMLImageElement | null) => {
     if (node) {
@@ -78,7 +78,7 @@ export const Showcase = ({
         {showHeader && (
           <div className="text-center mb-12 sm:mb-16">
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 mb-4">
-              <span className="text-purple-600">500+</span> Completed Projects. Proven Engineering.
+              <span className="text-purple-600">500+</span> Portfolio Projects. Proven Engineering.
             </h2>
             <p className="text-base sm:text-lg lg:text-lg text-gray-600 max-w-3xl mx-auto px-4 sm:px-0">
               Every system below was designed, built, and delivered by our in-house development team
@@ -117,11 +117,12 @@ export const Showcase = ({
                       >
                         <>
                           {hasVideo ? (
-                            <AutoPlayVideo
-                              sources={getVideoSources(mediaAssets.videoKey!)}
-                              poster={getPosterPath(mediaAssets.videoKey!)}
+                            <img
+                              src={getPosterPath(mediaAssets.videoKey!)}
                               alt={mediaAssets.alt}
                               className="w-full h-full object-cover"
+                              loading="lazy"
+                              decoding="async"
                             />
                           ) : (
                             <div className={`absolute inset-0 bg-gradient-to-br ${gradientClasses[project.videoPlaceholder]} opacity-80`} />
@@ -146,11 +147,12 @@ export const Showcase = ({
                     </div>
                   ) : hasVideo ? (
                     <div className="absolute inset-0 w-full h-full z-0">
-                      <AutoPlayVideo
-                        sources={getVideoSources(mediaAssets.videoKey!)}
-                        poster={getPosterPath(mediaAssets.videoKey!)}
+                      <img
+                        src={getPosterPath(mediaAssets.videoKey!)}
                         alt={mediaAssets.alt}
                         className="w-full h-full object-cover"
+                        loading="lazy"
+                        decoding="async"
                       />
                     </div>
                   ) : (
@@ -221,11 +223,11 @@ export const Showcase = ({
           })}
         </div>
 
-        {/* View All Projects - Button */}
+        {/* View All Portfolio - Button */}
         {showViewAllLink && (
           <div className="mt-8 sm:mt-10 flex justify-center">
-            <a href="/projects" className="text-black hover:text-black font-bold">
-              View all projects →
+            <a href="/portfolio" className="text-black hover:text-black font-bold">
+              View all portfolio →
             </a>
           </div>
         )}

@@ -14,10 +14,10 @@ const NavigationComponent = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const isMobile = useIsMobile();
   const location = useLocation();
-  const isProjectsPage = location.pathname === "/projects";
+  const isPortfolioPage = location.pathname === "/portfolio";
   const { searchQuery, setSearchQuery, filteredCount, totalCount } = useProjectsSearch();
 
-  // Track scroll position to show search bar only when scrolled on Projects page
+  // Track scroll position to show search bar only when scrolled on Portfolio page
   // Use throttled handler on mobile to reduce work
   const handleScroll = useCallback(() => {
     const scrollY = window.scrollY;
@@ -25,7 +25,7 @@ const NavigationComponent = () => {
   }, []);
 
   useEffect(() => {
-    if (!isProjectsPage) return;
+    if (!isPortfolioPage) return;
 
     // On mobile, throttle scroll events more aggressively
     let ticking = false;
@@ -50,7 +50,7 @@ const NavigationComponent = () => {
     return () => {
       window.removeEventListener("scroll", throttledHandleScroll);
     };
-  }, [isProjectsPage, handleScroll]);
+  }, [isPortfolioPage, handleScroll]);
 
   const menuToggleRef = useRef<HTMLButtonElement | null>(null);
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
@@ -216,18 +216,18 @@ const NavigationComponent = () => {
               )}
             </button>
 
-            {/* Desktop Navigation Links with Dropdowns - Centered OR Search Bar on Projects Page when scrolled or when searching */}
+            {/* Desktop Navigation Links with Dropdowns - Centered OR Search Bar on Portfolio page when scrolled or when searching */}
             <div
               className="hidden lg:flex items-center space-x-1 xl:space-x-2 absolute left-1/2 transform -translate-x-1/2 transition-all duration-300"
             >
-              {isProjectsPage && (isScrolled || searchQuery.trim()) ? (
-                /* Search Bar - Only on Projects Page when scrolled */
+              {isPortfolioPage && (isScrolled || searchQuery.trim()) ? (
+                /* Search Bar - Only on Portfolio page when scrolled */
                 <div className="w-[400px] max-w-[90vw]">
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 z-10" />
                     <input
                       type="text"
-                      placeholder="Search projects..."
+                      placeholder="Search portfolio..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className={`w-full pl-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm bg-white/95 backdrop-blur-md shadow-sm ${searchQuery.trim() ? 'pr-28' : 'pr-20'
@@ -305,11 +305,11 @@ const NavigationComponent = () => {
 
 
                   <Link
-                    to="/projects"
+                    to="/portfolio"
                     className="flex items-center space-x-1 cursor-pointer group px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] lg:min-h-0"
                     onClick={scrollToTopImmediate}
                   >
-                    <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Projects</span>
+                    <span className="font-normal text-black text-base lg:text-[17px]" style={{ fontSize: '17px' }}>Portfolio</span>
                   </Link>
 
                   <Link
@@ -401,14 +401,14 @@ const NavigationComponent = () => {
                   </div>
                 </div>
                 <Link
-                  to="/projects"
+                  to="/portfolio"
                   className="flex items-center justify-between py-3 px-2 text-base sm:text-lg font-medium text-white hover:text-purple-300 transition-colors min-h-[44px] rounded-lg"
                   onClick={() => {
                     scrollToTopImmediate();
                     closeMobileMenu();
                   }}
                 >
-                  <span>Projects</span>
+                  <span>Portfolio</span>
                 </Link>
                 <Link
                   to="/pricing"

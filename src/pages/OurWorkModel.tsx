@@ -22,7 +22,7 @@ const OurWorkModel = () => {
         subtitle="See how we turn complex requirements into polished software through our proven process."
        //remove start your project button
         buttons={[
-          { label: "View Our Work", href: "/projects", variant: "default" }
+          { label: "View Our Work", href: "/portfolio", variant: "default" }
         ]}
       />
       <ServiceModels />

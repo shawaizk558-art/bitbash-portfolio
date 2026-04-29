@@ -505,7 +505,7 @@ function sitemapDevMiddleware(): Plugin {
             { path: '/pricing', priority: '0.75', changefreq: 'monthly' },
             { path: '/contact', priority: '0.75', changefreq: 'monthly' },
             { path: '/blog', priority: '0.70', changefreq: 'weekly' },
-            { path: '/projects', priority: '0.70', changefreq: 'monthly' },
+            { path: '/portfolio', priority: '0.70', changefreq: 'monthly' },
             { path: '/our-work-model', priority: '0.60', changefreq: 'monthly' },
           ];
           

@@ -8,12 +8,10 @@ import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import type { Project } from "@/data/projects";
 import { projects as hardcodedProjects } from "@/data/projects";
 import { HeroBackground } from "@/components/HeroBackground";
-import { AutoPlayVideo } from "@/components/AutoPlayVideo";
 import { LiteYouTubeEmbed } from "@/components/LiteYouTubeEmbed";
 import {
   getMediaAssets,
   getPosterPath,
-  getVideoSources,
 } from "@/lib/mediaAssets";
 import { ProjectCard } from "@/components/ProjectCard";
 import { useProjectsSearch } from "@/contexts/ProjectsSearchContext";
@@ -82,7 +80,7 @@ const Projects = () => {
   //const [mongoProjects, setMongoProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [playingVideoIndex, setPlayingVideoIndex] = useState<number | null>(null);
-  const [displayCount, setDisplayCount] = useState(30); // Show 30 projects initially
+  const [displayCount, setDisplayCount] = useState(12); // Show fewer projects initially for smoother scroll
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const { searchQuery, setSearchQuery, setFilteredCount, setTotalCount } = useProjectsSearch();
   const observerTarget = useRef<HTMLDivElement>(null);
@@ -122,12 +120,7 @@ const Projects = () => {
 
   // OPTIMIZED: Memoize expensive project processing operations
   // Filter out Telegram Weather Alert Bot and reorder projects (swap 2nd and 3rd for homepage consistency)
-  const { filteredHardcodedProjects, reorderedHardcodedProjects, hardcodedSlugs, filteredMongoProjects, allProjects } = useMemo(() => {
-    console.log('[Projects] Processing projects...', {
-      hardcodedCount: hardcodedProjects.length,
-      mongoCount: mongoProjects.length,
-    });
-
+  const { hardcodedSlugs, allProjects } = useMemo(() => {
     const filtered = hardcodedProjects.filter(
       project => project.slug !== 'telegram-weather-alert-bot'
     );
@@ -144,30 +137,13 @@ const Projects = () => {
       project => !slugs.has(project.slug)
     );
     
-    console.log('[Projects] Project filtering results:', {
-      hardcodedAfterFilter: filtered.length,
-      hardcodedAfterReorder: reordered.length,
-      mongoAfterDeduplication: filteredMongo.length,
-      duplicateSlugs: mongoProjects.length - filteredMongo.length,
-    });
-    
     const all = [
       ...reordered, 
       ...filteredMongo
     ];
 
-    console.log('[Projects] ✅ Final project counts:', {
-      total: all.length,
-      hardcoded: reordered.length,
-      mongo: filteredMongo.length,
-      sampleMongoSlugs: filteredMongo.slice(0, 5).map(p => p.slug),
-    });
-
     return {
-      filteredHardcodedProjects: filtered,
-      reorderedHardcodedProjects: reordered,
       hardcodedSlugs: slugs,
-      filteredMongoProjects: filteredMongo,
       allProjects: all,
     };
   }, [mongoProjects]); // Only recalculate when mongoProjects changes
@@ -192,7 +168,7 @@ const Projects = () => {
 
   // Reset display count when search query changes
   useEffect(() => {
-    setDisplayCount(30);
+    setDisplayCount(12);
   }, [searchQuery]);
 
   // Scroll to top when user starts searching
@@ -221,7 +197,7 @@ const Projects = () => {
         if (entries[0].isIntersecting && hasMoreProjects && !isLoadingMore) {
           setIsLoadingMore(true);
           setTimeout(() => {
-            setDisplayCount((prev) => prev + 30);
+            setDisplayCount((prev) => prev + 12);
             setIsLoadingMore(false);
           }, 300);
         }
@@ -259,9 +235,9 @@ const Projects = () => {
   return (
     <div className="min-h-screen bg-white">
       <SEO
-        title="Our Projects - BitBash"
+        title="Our Portfolio- BitBash"
         description="Explore our portfolio of successful software development and automation projects. See how we help businesses grow."
-        canonical="/projects"
+        canonical="/portfolio"
         image="/stack1.webp"
       />
       <Navigation />
@@ -273,7 +249,7 @@ const Projects = () => {
           <div className="max-w-5xl mx-auto text-center flex flex-col items-center justify-center space-y-4 sm:space-responsive-lg">
             <div className="mt-4 sm:mt-6 lg:mt-10">
               <h1 className="text-3xl sm:text-responsive-3xl sm:text-responsive-4xl md:text-5xl lg:text-6xl font-bold text-gray-900">
-                BitBash <span className="text-purple-600">Projects</span>
+                BitBash <span className="text-purple-600">Portfolio</span>
               </h1>
             </div>
             <div className="hidden sm:block space-responsive-sm">
@@ -341,11 +317,12 @@ const Projects = () => {
                         >
                           <>
                             {hasVideo ? (
-                              <AutoPlayVideo
-                                sources={getVideoSources(mediaAssets.videoKey!)}
-                                poster={getPosterPath(mediaAssets.videoKey!)}
+                              <img
+                                src={getPosterPath(mediaAssets.videoKey!)}
                                 alt={mediaAssets.alt}
                                 className="w-full h-full object-cover"
+                                loading="lazy"
+                                decoding="async"
                               />
                             ) : (
                               <div className={`absolute inset-0 bg-gradient-to-br ${gradientClasses[project.videoPlaceholder]} opacity-80`} />
@@ -370,11 +347,12 @@ const Projects = () => {
                       </div>
                     ) : hasVideo ? (
                       <div className="absolute inset-0 w-full h-full z-0">
-                        <AutoPlayVideo
-                          sources={getVideoSources(mediaAssets.videoKey!)}
-                          poster={getPosterPath(mediaAssets.videoKey!)}
+                        <img
+                          src={getPosterPath(mediaAssets.videoKey!)}
                           alt={mediaAssets.alt}
                           className="w-full h-full object-cover"
+                          loading="lazy"
+                          decoding="async"
                         />
                       </div>
                     ) : shouldUseScreenshot && screenshotPath ? (

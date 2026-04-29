@@ -416,8 +416,8 @@ const ProjectDetail = () => {
         <div className="container-responsive py-20 text-center">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">Project Not Found</h1>
           <p className="text-gray-600 mb-8">The project you're looking for doesn't exist.</p>
-          <Link to="/projects" className="text-purple-600 hover:text-purple-700 font-semibold">
-            ← Back to Projects
+          <Link to="/portfolio" className="text-purple-600 hover:text-purple-700 font-semibold">
+            ← Back to Portfolio
           </Link>
         </div>
         <Footer isHomepage={false} />
@@ -593,7 +593,7 @@ const ProjectDetail = () => {
         <Breadcrumbs
           items={[
             { name: "Home", href: "/" },
-            { name: "Projects", href: "/projects" },
+            { name: "Portfolio", href: "/portfolio" },
             { name: projectName, href: `/project/${project.slug}` }
           ]}
         />
@@ -609,7 +609,7 @@ const ProjectDetail = () => {
         }
         variant="compact"
         buttons={[
-          { label: "See Our Work", href: "/projects", variant: "outline" },
+          { label: "See Our Work", href: "/portfolio", variant: "outline" },
           { label: "Get a Quote", href: "/contact", variant: "default" }
         ]}
       />
@@ -924,11 +924,11 @@ const ProjectDetail = () => {
                   </div>
                 )}
 
-              {/* More Projects Section - Related Projects */}
+              {/* More Portfolio Section - Related Portfolio */}
               {relatedProjects.length > 0 && (
                 <div className={isHardcodedProject ? 'bg-white rounded-2xl p-6 sm:p-8 md:p-10 border border-gray-200 shadow-sm' : 'mt-8 sm:mt-10'}>
                   <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">
-                    More Projects
+                    More Portfolio
                   </h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                     {relatedProjects.map((relatedProject, index) => (
@@ -941,10 +941,10 @@ const ProjectDetail = () => {
                   </div>
                   <div className="mt-6 text-center">
                     <Link 
-                      to="/projects" 
+                      to="/portfolio" 
                       className="inline-flex items-center px-4 py-2 bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors font-medium"
                     >
-                      View All Projects
+                      View All Portfolio
                     </Link>
                   </div>
                 </div>

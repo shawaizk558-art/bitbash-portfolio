@@ -3,7 +3,6 @@ import { Showcase } from "@/components/Showcase";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { ContactButton } from "@/components/ContactButton";
 import { Clock, Users } from "@/lib/icons";
 import { HeroBackground } from "@/components/HeroBackground";
 import { Zap, Database, Code, Bot, Rocket } from "@/lib/icons";
@@ -128,14 +127,6 @@ const AllServices = () => {
                     <span className="leading-relaxed">Dedicated PM + engineers on day one</span>
                   </li>
                 </ul>
-              </div>
-              <div className="mt-auto pt-4">
-                <Link to="/contact" className="inline-block w-full">
-                  <ContactButton
-                    label="Contact us"
-                    fullWidth={true}
-                  />
-                </Link>
               </div>
             </Card>
           </div>

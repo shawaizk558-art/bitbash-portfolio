@@ -414,26 +414,6 @@ const Careers = () => {
             <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-6 sm:mb-8 px-4 leading-relaxed">
               Join the BitBash team to help people get more value from automation and web data.
             </p>
-            <div className="px-4">
-              <a
-                href="#open-positions"
-                onClick={(e) => {
-                  e.preventDefault();
-                  const element = document.getElementById('open-positions');
-                  if (element) {
-                    const yOffset = -80;
-                    const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-                    window.scrollTo({ top: y, behavior: 'smooth' });
-                    // Update URL without triggering scroll
-                    window.history.pushState(null, '', '#open-positions');
-                  }
-                }}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-all duration-300 font-semibold text-sm sm:text-base shadow-lg hover:shadow-xl min-h-[44px]"
-              >
-                View open positions
-                <ArrowRight className="w-4 h-4" />
-              </a>
-            </div>
           </div>
         </div>
       </section>
@@ -612,39 +592,7 @@ const Careers = () => {
           </div>
         </div>
       </section>
-
-      {/* Open Positions Section */}
-      <section id="open-positions" className="py-12 sm:py-16 md:py-20 lg:py-24 bg-gray-50">
-        <div className="container-responsive">
-          <div className="max-w-4xl mx-auto px-4 sm:px-0">
-            <div className="text-center mb-8 sm:mb-12 md:mb-16">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 leading-tight">
-                Open Positions
-              </h2>
-              <p className="text-base sm:text-lg md:text-xl text-gray-600">
-                Explore opportunities to join our growing team
-              </p>
-            </div>
-
-            <div className="bg-white rounded-2xl p-6 sm:p-8 md:p-10 lg:p-12 border border-gray-200 shadow-sm">
-              <div className="text-center">
-                <p className="text-sm sm:text-base md:text-lg text-gray-700 mb-5 sm:mb-6 leading-relaxed">
-                  We're currently building our careers page. Check back soon for open positions!
-                </p>
-                <Link
-                  to="/contact"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors font-medium min-h-[44px] text-sm sm:text-base"
-                >
-                  Get in Touch
-                  <Rocket className="w-4 h-4" />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <Footer isHomepage={false} />
+       <Footer isHomepage={false} />
     </div>
   );
 };
