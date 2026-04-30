@@ -1,4 +1,4 @@
-// import { ContactButton } from "@/components/ContactButton";
+
 import { Card } from "@/components/ui/card";
 import { Check } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -19,8 +19,7 @@ export const ServiceCtaCard = ({
   description,
   priceLabel = "Custom pricing",
   bullets,
-  // ctaLabel = "Schedule Your Strategy Call",
-  // ctaHref = "/contact",
+
 }: ServiceCtaCardProps) => {
   return (
     <Card className="bg-gradient-to-br from-purple-50 via-white to-purple-100/60 border border-purple-100 shadow-md overflow-hidden">
@@ -32,9 +31,7 @@ export const ServiceCtaCard = ({
             <p className="text-sm font-semibold text-gray-600">Starting from</p>
             <p className="text-3xl sm:text-4xl font-bold text-gray-900">{priceLabel}</p>
           </div>
-          {/* <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-            <ContactButton label={ctaLabel} fullWidth={false} />
-          </div> */}
+          
         </div>
         <div className="space-y-3">
           {bullets.map((bullet) => (

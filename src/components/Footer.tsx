@@ -3,7 +3,6 @@ import { Logo } from "@/components/Logo";
 import { Link } from "react-router-dom";
 import { scrollToTopImmediate } from "@/lib/scrollToTop";
 // import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
-import { Badge } from "@/components/ui/badge";
 
 export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
   // const [copied, setCopied] = useState(false);
@@ -256,17 +255,14 @@ export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
               </li> */}
               <li className="m-0 p-0">
                 <Link
-                  to="/careers#open-positions"
+                  to="/careers"
                   onClick={(e) => {
                     // Don't prevent default - let React Router handle navigation
                     // Scroll will be handled by useEffect in Careers component
                   }}
-                  className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors block flex items-center gap-2"
+                  className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors block"
                 >
-                  Jobs
-                  <Badge className="bg-white text-gray-900 hover:bg-gray-100 text-xs sm:text-sm px-2 py-0.5 rounded-md">
-                    We're hiring!
-                  </Badge>
+                  Career
                 </Link>
               </li>
             </ul>

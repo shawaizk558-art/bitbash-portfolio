@@ -528,47 +528,6 @@ const FeaturesComponent = () => {
           </div>
         </div>
 
-        {/* Tagline Section */}
-        <div className="mt-16 sm:mt-20 md:mt-24 mb-16 sm:mb-20 md:mb-24">
-          <div className="max-w-7xl mx-auto text-center px-4">
-            <p className="text-2xl sm:text-3xl md:text-2xl lg:text-4xl text-gray-900 leading-tight lg:leading-tight font-bold line-clamp-3">
-              Custom automations, stealth-grade scraping, and full-stack engineering built to work as one engine — cutting manual work, boosting performance, and delivering results most teams can't touch.
-            </p>
-          </div>
-        </div>
-
-        {/* How We Work Section */}
-        <div className="mt-12 sm:mt-16 md:mt-24">
-          <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-gray-900 mb-4">
-              This is how we work
-            </h2>
-          </div>
-
-          {/* Video Placeholder */}
-          <div className="relative w-full max-w-5xl mx-auto">
-            <div className="relative w-full aspect-video bg-gray-100 rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg border border-gray-200">
-              {/* Placeholder image */}
-              <div className="absolute inset-0">
-                <ResponsiveImage
-                  src="/placeholder.webp"
-                  alt="How we work"
-                  width={668}
-                  height={371}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              {/* Play button overlay */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gray-900/50 backdrop-blur-sm flex items-center justify-center hover:bg-gray-900/60 transition-all cursor-pointer">
-                  <svg className="w-10 h-10 sm:w-12 sm:h-12 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );

@@ -4,7 +4,6 @@ import { useEffect, useRef, useState, useMemo, memo, useCallback } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Logo } from "@/components/Logo";
-import { ContactButton } from "@/components/ContactButton";
 import { scrollToTopImmediate } from "@/lib/scrollToTop";
 import { useProjectsSearch } from "@/contexts/ProjectsSearchContext";
 
@@ -340,9 +339,15 @@ const NavigationComponent = () => {
             </div>
 
             {/* Desktop CTA Buttons - Right Side */}
-            {/*<div className="hidden lg:flex items-center ml-auto">
-              <ContactButton label="Contact us" fullWidth={false} />
-            </div>*/}
+            <div className="hidden lg:flex items-center ml-auto">
+              <Link
+                to="/portfolio"
+                onClick={scrollToTopImmediate}
+                className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold text-white bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors min-h-[44px]"
+              >
+                View Portfolio
+              </Link>
+            </div>
           </div>
 
         </div>
