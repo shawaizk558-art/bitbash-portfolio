@@ -165,6 +165,14 @@ export const CTA = () => {
                     >
                      <a href="/portfolio">View Portfolio</a>
                     </Button>
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      className="h-12 py-4 px-6 text-lg font-semibold rounded-xl w-full sm:w-auto"
+                      style={{ height: '48px' }}
+                    >
+                     <a href="/pricing">View Pricing</a>
+                    </Button>
                   </div>
                 </div>
 

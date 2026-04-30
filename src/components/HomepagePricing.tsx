@@ -279,17 +279,17 @@ export const HomepagePricing = () => {
                 <div className="min-w-[600px] grid grid-cols-3 gap-x-4">
                   {/* Junior Developer */}
                   <div className="p-6 border border-gray-300 text-center rounded-2xl">
-                    <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-4">Junior Developer</h3>
+                    <h3 className="text-xl sm:text-3xl font-semibold text-gray-900 mb-4">Junior Developer</h3>
                   </div>
 
                   {/* Associate Developer */}
                   <div className="p-6 border border-gray-300 text-center rounded-2xl">
-                    <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-4">Associate Developer</h3>
+                    <h3 className="text-xl sm:text-3xl font-semibold text-gray-900 mb-4">Associate Developer</h3>
                   </div>
 
                   {/* Senior Developer */}
                   <div className="p-6 border border-gray-300 text-center rounded-2xl">
-                    <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-4">Senior Developer</h3>
+                    <h3 className="text-xl sm:text-3xl font-semibold text-gray-900 mb-4">Senior Developer</h3>
                   </div>
                 </div>
               </div>

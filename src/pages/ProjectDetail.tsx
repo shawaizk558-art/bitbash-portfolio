@@ -609,8 +609,8 @@ const ProjectDetail = () => {
         }
         variant="compact"
         buttons={[
-          { label: "See Our Work", href: "/portfolio", variant: "outline" },
-          { label: "Get a Quote", href: "/contact", variant: "default" }
+          { label: "See Our Work", href: "/portfolio", variant: "default" },
+          { label: "See Our Pricing", href: "/pricing", variant: "outline" }
         ]}
       />
 

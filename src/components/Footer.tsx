@@ -23,36 +23,36 @@ export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
         {/* Footer Links Grid - Mobile Optimized */}
         <div className={`grid grid-cols-1 lg:grid-cols-[1fr,2fr] gap-8 sm:gap-12 md:gap-16 lg:gap-20 ${isHomepage ? 'mb-24 sm:mb-32 md:mb-40 lg:mb-48' : 'mb-20 sm:mb-24 md:mb-28 lg:mb-32'}`}>
           {/* Left Side Text */}
-          <div className="lg:max-w-xs">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white leading-tight mb-4">
-              READY TO WORK
-              <br />
-              TOGETHER?
+          <div className="lg:max-w-sm">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white leading-tight mb-3">
+              Ready to build your next product?
             </h2>
-            <p className="text-sm sm:text-base text-white leading-relaxed mb-6">
-              LET'S MAKE IT HAPPEN
+            <p className="text-sm sm:text-base text-gray-300 leading-relaxed mb-6">
+              From automation systems to scalable SaaS products, we design and ship software that performs in real-world conditions.
             </p>
-            
-            {/* Quick Chat Options removed
-            <div className="space-y-3">
-              <a
-                href="https://api.whatsapp.com/send/?phone=923249868488&text=Hi+BitBash%2C+I%27m+interested+in+automation.&type=phone_number&app_absent=0"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full bg-purple-600 hover:bg-green-600 text-white text-center py-3 px-4 rounded-lg transition-colors font-medium"
+
+            <ul className="m-0 mb-6 p-0 list-none space-y-2.5">
+              <li className="text-xs sm:text-sm text-gray-300">2500+ projects delivered across multiple industries</li>
+              <li className="text-xs sm:text-sm text-gray-300">Transparent process with weekly progress visibility</li>
+              <li className="text-xs sm:text-sm text-gray-300">Dedicated team focused on speed, quality, and outcomes</li>
+            </ul>
+
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Link
+                to="/portfolio"
+                onClick={scrollToTopImmediate}
+                className="inline-flex items-center justify-center px-5 py-2.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-sm font-semibold transition-colors"
               >
-                Chat on WhatsApp
-              </a>
-              <a
-                href="https://t.me/Bitbash333"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full bg-purple-600 hover:bg-blue-500 text-white text-center py-3 px-4 rounded-lg transition-colors font-medium"
+                View Portfolio
+              </Link>
+              <Link
+                to="/pricing"
+                onClick={scrollToTopImmediate}
+                className="inline-flex items-center justify-center px-5 py-2.5 rounded-lg border border-gray-600 hover:border-gray-400 text-white text-sm font-semibold transition-colors"
               >
-                Chat on Telegram
-              </a>
+                Explore Pricing
+              </Link>
             </div>
-            */}
           </div>
 
           {/* Right Side Columns */}
@@ -152,64 +152,13 @@ export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
             </ul>
           </div>
 
-          {/* Connect Section removed
           <div>
-            <h3 className="text-xs sm:text-sm font-bold text-white mb-4 sm:mb-5 md:mb-6 uppercase tracking-wider">Connect</h3>
+            <h3 className="text-xs sm:text-sm font-bold text-white mb-4 sm:mb-5 md:mb-6 uppercase tracking-wider">Why BitBash</h3>
             <ul className="space-y-2 sm:space-y-3 m-0 p-0 list-none">
-              <li className="m-0 p-0">
-                <a
-                  href="mailto:sale@bitbash.dev"
-                  className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors block flex items-center gap-2"
-                >
-                  <svg className="w-4 h-4" fill="#EA4335" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/>
-                  </svg>
-                  Email
-                </a>
-              </li>
-              <li className="m-0 p-0">
-                <a
-                  href="https://api.whatsapp.com/send/?phone=923249868488&text=Hi+BitBash%2C+I%27m+interested+in+automation.&type=phone_number&app_absent=0"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors block flex items-center gap-2"
-                >
-                  <img
-                    src="/logos/whatsapp.svg"
-                    alt="WhatsApp"
-                    className="w-4 h-4"
-                  />
-                  WhatsApp
-                </a>
-              </li>
-              <li className="m-0 p-0">
-                <a
-                  href="https://t.me/Bitbash333"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors block flex items-center gap-2"
-                >
-                  <img
-                    src="/logos/telegram.svg"
-                    alt="Telegram"
-                    className="w-4 h-4"
-                  />
-                  Telegram
-                </a>
-              </li>
-              <li className="m-0 p-0">
-                <a
-                  href="https://calendar.app.google/RSyUVmGtkqpucGCY7"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors block flex items-center gap-2"
-                >
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zM5 7V6h14v1H5zm7 4h5v5h-5v-5z"/>
-                  </svg>
-                  Book a Demo
-                </a>
-              </li>
+              <li className="m-0 p-0 text-xs sm:text-sm text-gray-400">Execution-first product teams</li>
+              <li className="m-0 p-0 text-xs sm:text-sm text-gray-400">Fast iterations and clean delivery</li>
+              <li className="m-0 p-0 text-xs sm:text-sm text-gray-400">Architecture built for long-term scale</li>
+              <li className="m-0 p-0 text-xs sm:text-sm text-gray-400">Clear reporting with zero guesswork</li>
             </ul>
           </div>
 
@@ -306,24 +255,24 @@ export const Footer = ({ isHomepage = false }: { isHomepage?: boolean }) => {
               <img
                 src="/badges/ssl-secured.webp"
                 alt="SSL Secured"
-                className="h-12 sm:h-14 w-auto opacity-80 hover:opacity-100 transition-opacity"
+                className="h-14 sm:h-16 w-auto opacity-80 hover:opacity-100 transition-opacity"
               />
               <img
                 src="/badges/norton-secured.webp"
                 alt="Norton Secured"
-                className="h-12 sm:h-14 w-auto opacity-80 hover:opacity-100 transition-opacity"
+                className="h-14 sm:h-16 w-auto opacity-80 hover:opacity-100 transition-opacity"
               />
               <img
                 src="/badges/pci-compliant.webp"
                 alt="PCI Compliant"
-                className="h-12 sm:h-14 w-auto opacity-80 hover:opacity-100 transition-opacity"
+                className="h-14 sm:h-16 w-auto opacity-80 hover:opacity-100 transition-opacity"
               />
             </div>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-8 lg:gap-12 mt-4 sm:mt-6">
             <p className="text-xs sm:text-sm text-gray-500 m-0 p-0 block">
-              Copyright 2025. BITBASH. LTD. All rights reserved!
+              Copyright 2026. BITBASH. LTD. All rights reserved!
             </p>
 
             {/* Email Link removed

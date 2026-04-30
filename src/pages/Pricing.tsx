@@ -334,8 +334,8 @@ const Pricing = () => {
             <div className="min-w-[800px] grid grid-cols-4 gap-x-4">
 
               {/* Header Row - Plans */}
-              <div className="p-6 border-b border-gray-300 flex flex-col items-center justify-center text-center">
-                <p className="text-2xl font-semibold text-gray-900 mb-2">
+              <div className="px-6 pt-6 pb-2 border-b border-gray-300 flex flex-col items-center justify-center text-center">
+                <p className="text-2xl font-semibold text-gray-900 mb-1.5">
                   Characteristics
                 </p>
                 <p className="text-base text-gray-600">
@@ -344,171 +344,171 @@ const Pricing = () => {
               </div>
 
               {/* Junior Developer */}
-              <div className="p-6 border border-gray-300 text-center rounded-t-2xl">
-                <h3 className="text-2xl font-semibold text-gray-900 mb-4">Junior Developer</h3>
+              <div className="px-6 pt-7 pb-2 border border-gray-300 flex flex-col items-center justify-center text-center rounded-t-2xl">
+                <h3 className="text-2xl font-semibold text-gray-900">Junior Developer</h3>
               </div>
 
               {/* Associate Developer */}
-              <div className="p-6 border border-gray-300 text-center rounded-t-2xl">
-                <h3 className="text-2xl font-semibold text-gray-900 mb-4">Associate Developer</h3>
+              <div className="px-6 pt-7 pb-2 border border-gray-300 flex flex-col items-center justify-center text-center rounded-t-2xl">
+                <h3 className="text-2xl font-semibold text-gray-900">Associate Developer</h3>
               </div>
 
               {/* Senior Developer */}
-              <div className="p-6 border border-gray-300 text-center rounded-t-2xl rounded-tr-2xl">
-                <h3 className="text-2xl font-semibold text-gray-900 mb-4">Senior Developer</h3>
+              <div className="px-6 pt-7 pb-2 border border-gray-300 flex flex-col items-center justify-center text-center rounded-t-2xl rounded-tr-2xl">
+                <h3 className="text-2xl font-semibold text-gray-900">Senior Developer</h3>
               </div>
 
               {/* Row 1: Code Quality & Completion of Tasks */}
-              <div className="p-6 border-y border-gray-300">
+              <div className="p-6 border-y border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base font-medium text-gray-900">Code Quality & Completion of Tasks</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Basic quality; needs reviews</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Good quality; mostly self-managed</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">High quality; minimal/no review required</p>
               </div>
 
               {/* Row 2: % of Tasks Delivered on Time */}
-              <div className="p-6 border-y border-gray-300">
+              <div className="p-6 border-y border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base font-medium text-gray-900">% of Tasks Delivered on Time</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Inconsistent; still learning planning</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Mostly on time</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Consistently on or before deadlines</p>
               </div>
 
               {/* Row 3: Client Communication */}
-              <div className="p-6 border-y border-gray-300">
+              <div className="p-6 border-y border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base font-medium text-gray-900">Client Communication</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Limited; supervised</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Handles routine updates</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Leads client calls & escalations confidently</p>
               </div>
 
               {/* Row 4: Contribution as Solution Architect */}
-              <div className="p-6 border-y border-gray-300">
+              <div className="p-6 border-y border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base font-medium text-gray-900">Contribution as Solution Architect</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Not expected</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Gives suggestions</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Leads architectural decisions</p>
               </div>
 
               {/* Row 5: Demonstrate Full Empowerment in Role */}
-              <div className="p-6 border-y border-gray-300">
+              <div className="p-6 border-y border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base font-medium text-gray-900">Demonstrate Full Empowerment in Role</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Not yet; depends on mentors</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Owns modules and sections</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Fully accountable for major areas</p>
               </div>
 
               {/* Row 6: Adhere to Team Communication Standards */}
-              <div className="p-6 border-y border-gray-300">
+              <div className="p-6 border-y border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base font-medium text-gray-900">Adhere to Team Communication Standards</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Needs reminders</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Consistent</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Sets and enforces standards</p>
               </div>
 
               {/* Row 7: Maintain Meeting Etiquette and Standards */}
-              <div className="p-6 border-y border-gray-300">
+              <div className="p-6 border-y border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base font-medium text-gray-900">Maintain Meeting Etiquette and Standards</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Learning professionalism</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Follows consistently</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Exemplary behavior; guides others</p>
               </div>
 
               {/* Row 8: Follow Baselag Reporting Practices */}
-              <div className="p-6 border-y border-gray-300">
+              <div className="p-6 border-y border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base font-medium text-gray-900">Follow Baselag Reporting Practices</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Needs reminders</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Regular and consistent</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Fully consistent; mentors others</p>
               </div>
 
               {/* Row 9: Deep Work Focus & Execution */}
-              <div className="p-6 border-y border-gray-300">
+              <div className="p-6 border-y border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base font-medium text-gray-900">Deep Work Focus & Execution</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Developing discipline</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Strong focus</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">High discipline; deep execution</p>
               </div>
 
               {/* Row 10: Git & GitHub Ethics */}
-              <div className="p-6 border-y border-gray-300">
+              <div className="p-6 border-y border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base font-medium text-gray-900">Git & GitHub Ethics</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Understands basics; guided</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Strong discipline; helps juniors</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Enforces standards; mentors team</p>
               </div>
 
               {/* Row 11: Follow PDLC Process Consistently */}
-              <div className="p-6 border-y border-gray-300">
+              <div className="p-6 border-y border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base font-medium text-gray-900">Follow PDLC Process Consistently</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Learning and following instructions</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Consistent without reminders</p>
               </div>
-              <div className="p-6 border border-gray-300">
+              <div className="p-6 border border-gray-300 flex flex-col items-center justify-center text-center">
                 <p className="text-base text-gray-700">Ensures entire team follows PDLC</p>
               </div>
 
@@ -546,10 +546,10 @@ const Pricing = () => {
           <div className="mt-8 space-y-6 md:hidden">
             {/* Junior Developer Card */}
             <div className="bg-white rounded-2xl border border-gray-300 p-6 shadow-sm">
-              <div className="text-center mb-4">
-                <h3 className="text-xl font-semibold text-gray-900 mb-1">Junior Developer</h3>
+              <div className="text-center mb-2 pt-1">
+                <h3 className="text-xl font-semibold text-gray-900">Junior Developer</h3>
               </div>
-              <div className="space-y-3 text-left">
+              <div className="space-y-3 text-center">
                 <div>
                   <p className="text-sm font-medium text-gray-900">Code Quality & Completion of Tasks</p>
                   <p className="text-sm text-gray-700">Basic quality; needs reviews</p>
@@ -607,10 +607,10 @@ const Pricing = () => {
 
             {/* Associate Developer Card */}
             <div className="bg-white rounded-2xl border border-gray-300 p-6 shadow-sm">
-              <div className="text-center mb-4">
-                <h3 className="text-xl font-semibold text-gray-900 mb-1">Associate Developer</h3>
+              <div className="text-center mb-2 pt-1">
+                <h3 className="text-xl font-semibold text-gray-900">Associate Developer</h3>
               </div>
-              <div className="space-y-3 text-left">
+              <div className="space-y-3 text-center">
                 <div>
                   <p className="text-sm font-medium text-gray-900">Code Quality & Completion of Tasks</p>
                   <p className="text-sm text-gray-700">Good quality; mostly self-managed</p>
@@ -668,10 +668,10 @@ const Pricing = () => {
 
             {/* Senior Developer Card */}
             <div className="bg-white rounded-2xl border border-gray-300 p-6 shadow-sm">
-              <div className="text-center mb-4">
-                <h3 className="text-xl font-semibold text-gray-900 mb-1">Senior Developer</h3>
+              <div className="text-center mb-2 pt-1">
+                <h3 className="text-xl font-semibold text-gray-900">Senior Developer</h3>
               </div>
-              <div className="space-y-3 text-left">
+              <div className="space-y-3 text-center">
                 <div>
                   <p className="text-sm font-medium text-gray-900">Code Quality & Completion of Tasks</p>
                   <p className="text-sm text-gray-700">High quality; minimal/no review required</p>

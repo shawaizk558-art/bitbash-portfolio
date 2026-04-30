@@ -367,12 +367,12 @@ const BlogPostDetail = () => {
                   </div>
                   <div className="relative z-10">
                     <h3 className="text-xl font-bold text-white mb-2">Build the tool for your Needs.</h3>
-                    <p className="text-purple-100 text-sm mb-4">Get started with a free consultation</p>
+                    <p className="text-purple-100 text-sm mb-4">Explore our portfolio and see what we have already built</p>
                     <Button
-                      onClick={() => navigate("/contact")}
+                      onClick={() => navigate("/portfolio")}
                       className="w-full bg-white text-purple-600 hover:bg-gray-100 font-semibold"
                     >
-                      Get started
+                      See Our Work
                     </Button>
                   </div>
                 </div>

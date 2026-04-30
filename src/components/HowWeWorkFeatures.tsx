@@ -17,7 +17,7 @@ import {
     Calendar,
     ArrowRight
 } from "@/lib/icons";
-import { PaymentMethods } from "@/components/PaymentMethods";
+
 import { HomepagePricing } from "@/components/HomepagePricing";
 import { Testimonials } from "@/components/Testimonials";
 
@@ -695,8 +695,7 @@ export const HowWeWorkFeatures = () => {
                 </div>
             </div>
             
-            {/* Payment Methods */}
-            <PaymentMethods />
+       
             
             {/* Pricing Section */}
             <HomepagePricing />

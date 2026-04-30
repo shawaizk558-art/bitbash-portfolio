@@ -4,7 +4,7 @@ import { Footer } from "@/components/Footer";
 import { HeroBackground } from "@/components/HeroBackground";
 import { Link } from "react-router-dom";
 import { ArrowRight, Rocket, Code, Building2, Users, MessageCircle, CheckCircle2, Calendar, FileText, Zap, TrendingUp, BarChart3, Target } from "@/lib/icons";
-import { OurValues } from "@/components/OurValues";
+//import { OurValues } from "@/components/OurValues";
 import { Benefits } from "@/components/Benefits";
 import { ImageGrid } from "@/components/ImageGrid";
 import { useEffect } from "react";
@@ -556,7 +556,7 @@ const Careers = () => {
       </section>
 
       {/* Our Values Section */}
-      <OurValues />
+      {/* <OurValues /> */}
 
       {/* Benefits Section */}
       <Benefits />
