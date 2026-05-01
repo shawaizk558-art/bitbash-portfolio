@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { FAQ } from "@/components/FAQ";
@@ -11,54 +10,12 @@ import { SEO } from "@/components/SEO";
 
 const Pricing = () => {
   // const navigate = useNavigate();
-  const [billingPeriod, setBillingPeriod] = useState<"hourly" | "monthly">("monthly");
-
-  const developerPlans = {
-    junior: { monthlyMin: 1000, monthlyMax: 1500 },
-    associate: { monthlyMin: 1500, monthlyMax: 2500 },
-    senior: { monthlyMin: 2500, monthlyMax: 3500 },
-  } as const;
-
-  const HOURS_PER_MONTH = 160;
-
-  const formatPrice = (amount: number) =>
-    amount.toLocaleString("en-US", { maximumFractionDigits: 0 });
-
-  const getDisplayPrice = (plan: { monthlyMin: number; monthlyMax: number }) => {
-    const { monthlyMin, monthlyMax } = plan;
-
-    if (billingPeriod === "monthly") {
-      return {
-        amount: `${formatPrice(monthlyMin)} - ${formatPrice(monthlyMax)}`,
-        suffix: "per month",
-        note: "Save 20% vs hourly",
-      };
-    }
-
-    // Derive base hourly rate from discounted monthly price:
-    // monthlyDiscounted = hourlyRate * HOURS_PER_MONTH * 0.8
-    const hourlyMinRaw = monthlyMin / (HOURS_PER_MONTH * 0.8);
-    const hourlyMaxRaw = monthlyMax / (HOURS_PER_MONTH * 0.8);
-
-    const hourlyMin = Math.round(hourlyMinRaw);
-    const hourlyMax = Math.round(hourlyMaxRaw);
-
-    return {
-      amount: `${formatPrice(hourlyMin)} - ${formatPrice(hourlyMax)}`,
-      suffix: "per hour",
-      note: "",
-    };
-  };
-
-  const juniorPricing = getDisplayPrice(developerPlans.junior);
-  const associatePricing = getDisplayPrice(developerPlans.associate);
-  const seniorPricing = getDisplayPrice(developerPlans.senior);
 
   return (
     <div className="min-h-screen bg-gray-50">
       <SEO
         title="Pricing - Transparent Project-Based Pricing | BitBash"
-        description="Transparent project-based pricing. No hidden fees. Fixed cost projects and flexible engagement models. Hire dedicated developers on monthly or hourly basis."
+        description="Transparent project-based pricing. No hidden fees. Fixed cost projects and flexible engagement models. Hire dedicated developers on a monthly basis."
         canonical="/pricing"
       />
       <Navigation />
@@ -284,49 +241,13 @@ const Pricing = () => {
             </div>
           </div>
 
-          <div className="mt-4 mb-16 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-            <div className="text-left max-w-2xl">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-2">
-                {billingPeriod === "hourly" ? "Hourly Basis" : "Monthly Basis"}
-              </h2>
-              <p className="text-lg text-gray-600">
-                {billingPeriod === "hourly"
-                  ? "Hire dedicated developers on an hourly basis - flexible and scalable to your needs"
-                  : "Hire dedicated developers on a monthly basis - save 20% compared to hourly"}
-              </p>
-            </div>
-
-            <div className="flex sm:justify-end">
-              <div className="inline-flex items-center rounded-full bg-white shadow-sm border border-gray-200 p-1.5 sm:p-2">
-                <button
-                  type="button"
-                  onClick={() => setBillingPeriod("hourly")}
-                  aria-pressed={billingPeriod === "hourly"}
-                  className={`px-5 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base font-semibold rounded-full transition ${
-                    billingPeriod === "hourly"
-                      ? "bg-purple-600 text-white shadow-sm"
-                      : "text-gray-700"
-                  }`}
-                >
-                  Hourly
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setBillingPeriod("monthly")}
-                  aria-pressed={billingPeriod === "monthly"}
-                  className={`ml-1 flex items-center gap-1.5 px-5 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base font-semibold rounded-full transition ${
-                    billingPeriod === "monthly"
-                      ? "bg-purple-600 text-white shadow-sm"
-                      : "text-gray-700"
-                  }`}
-                >
-                  <span>Monthly</span>
-                  <span className="text-[11px] sm:text-xs font-medium opacity-80">
-                    Save 20%+
-                  </span>
-                </button>
-              </div>
-            </div>
+          <div className="mt-4 mb-16 max-w-2xl text-left">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-2">
+              Monthly Basis
+            </h2>
+            <p className="text-1xl sm:text-2xl text-gray-600">
+              Hire dedicated developers on a monthly basis.
+            </p>
           </div>
 
           {/* Desktop comparison table */}

@@ -1,51 +1,8 @@
-import { useState } from "react";
 import { Check, Database, Zap, Code, Bot, Rocket } from "lucide-react";
 //import { ContactButton } from "@/components/ContactButton";
 import { Link } from "react-router-dom";
 
 export const HomepagePricing = () => {
-  const [billingPeriod, setBillingPeriod] = useState<"hourly" | "monthly">("monthly");
-
-  const developerPlans = {
-    junior: { monthlyMin: 1000, monthlyMax: 1500 },
-    associate: { monthlyMin: 1500, monthlyMax: 2500 },
-    senior: { monthlyMin: 2500, monthlyMax: 3500 },
-  } as const;
-
-  const HOURS_PER_MONTH = 160;
-
-  const formatPrice = (amount: number) =>
-    amount.toLocaleString("en-US", { maximumFractionDigits: 0 });
-
-  const getDisplayPrice = (plan: { monthlyMin: number; monthlyMax: number }) => {
-    const { monthlyMin, monthlyMax } = plan;
-
-    if (billingPeriod === "monthly") {
-      return {
-        amount: `${formatPrice(monthlyMin)} - ${formatPrice(monthlyMax)}`,
-        suffix: "per month",
-        note: "Save 20% vs hourly",
-      };
-    }
-
-    // Derive base hourly rate from discounted monthly price:
-    // monthlyDiscounted = hourlyRate * HOURS_PER_MONTH * 0.8
-    const hourlyMinRaw = monthlyMin / (HOURS_PER_MONTH * 0.8);
-    const hourlyMaxRaw = monthlyMax / (HOURS_PER_MONTH * 0.8);
-
-    const hourlyMin = Math.round(hourlyMinRaw);
-    const hourlyMax = Math.round(hourlyMaxRaw);
-
-    return {
-      amount: `${formatPrice(hourlyMin)} - ${formatPrice(hourlyMax)}`,
-      suffix: "per hour",
-      note: "",
-    };
-  };
-
-  const juniorPricing = getDisplayPrice(developerPlans.junior);
-  const associatePricing = getDisplayPrice(developerPlans.associate);
-  const seniorPricing = getDisplayPrice(developerPlans.senior);
   return (
     <section className="pt-12 sm:pt-16 md:pt-20 bg-white">
       <div className="container-responsive">
@@ -225,53 +182,14 @@ export const HomepagePricing = () => {
             </div>
           </div>
 
-          {/* Card 6: Monthly/Hourly Basis with Comparison Table */}
+          {/* Card 6: Monthly basis + comparison header */}
           <div className="bg-white rounded-3xl shadow-sm border border-gray-300 hover:shadow-md transition-shadow overflow-hidden">
             <div className="p-6 sm:p-8">
-              {/* Header with Toggle */}
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-                <div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                    {billingPeriod === "hourly" ? "Hourly Basis" : "Monthly Basis"}
-                  </h3>
-                  <p className="text-base text-gray-600">
-                    {billingPeriod === "hourly"
-                      ? "Hire dedicated developers on an hourly basis - flexible and scalable to your needs"
-                      : "Hire dedicated developers on a monthly basis - save 20% compared to hourly"}
-                  </p>
-                </div>
-
-                <div className="flex sm:justify-end">
-                  <div className="inline-flex items-center rounded-full bg-white shadow-sm border border-gray-200 p-1.5 sm:p-2">
-                    <button
-                      type="button"
-                      onClick={() => setBillingPeriod("hourly")}
-                      aria-pressed={billingPeriod === "hourly"}
-                      className={`px-5 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base font-semibold rounded-full transition ${
-                        billingPeriod === "hourly"
-                          ? "bg-purple-600 text-white shadow-sm"
-                          : "text-gray-700"
-                      }`}
-                    >
-                      Hourly
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setBillingPeriod("monthly")}
-                      aria-pressed={billingPeriod === "monthly"}
-                      className={`ml-1 flex items-center gap-1.5 px-5 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base font-semibold rounded-full transition ${
-                        billingPeriod === "monthly"
-                          ? "bg-purple-600 text-white shadow-sm"
-                          : "text-gray-700"
-                      }`}
-                    >
-                      <span>Monthly</span>
-                      <span className="text-[11px] sm:text-xs font-medium opacity-80">
-                        Save 20%+
-                      </span>
-                    </button>
-                  </div>
-                </div>
+              <div className="mb-6">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Monthly Basis</h3>
+                <p className="text-base text-gray-600">
+                  Hire dedicated developers on a monthly basis.
+                </p>
               </div>
 
               {/* Comparison Table - Only Header Row */}

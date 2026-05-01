@@ -1,5 +1,5 @@
 User-agent: Googlebot
-Allow: /
+DisAllow: /
 
 User-agent: Bingbot
 Allow: /
@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://bitbash.dev/sitemap.xml
+

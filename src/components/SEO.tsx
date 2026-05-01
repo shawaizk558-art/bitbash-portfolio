@@ -10,7 +10,7 @@ interface SEOProps {
     structuredData?: object | object[];
 }
 
-export const SEO = ({ title, description, canonical, image, robots = "index, follow", keywords, structuredData }: SEOProps) => {
+export const SEO = ({ title, description, canonical, image, robots = "noindex, nofollow", keywords, structuredData }: SEOProps) => {
     // Use the canonical host Google should index to avoid duplicates between www/non-www
     const siteUrl = 'https://bitbash.dev';
     const fullUrl = canonical ? `${siteUrl}${canonical}` : siteUrl;
